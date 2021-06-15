@@ -2,7 +2,6 @@ mod component;
 pub mod components;
 mod hook;
 pub mod hooks;
-mod js;
 mod stores;
 mod unmounted_lock;
 

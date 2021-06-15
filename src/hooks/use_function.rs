@@ -2,6 +2,7 @@ use std::{ops::Deref, rc::Rc};
 
 use js_sys::Function;
 use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::console;
 
 use crate::hook::{HookBuilder, HookValue};
 
@@ -35,6 +36,9 @@ pub fn use_function<F: Fn() + 'static>(
     let closure = Closure::wrap(Box::new(move || {
         if lock.is_mounted() {
             function();
+        }
+        else {
+            console::warn_1(&"Trying to call a function whose component tree had been unmounted. This is a no-op.".into());
         }
     }) as Box<dyn Fn()>);
     let rf = ReiaFunction {
