@@ -1,8 +1,4 @@
-use crate::{
-    hook::{HookBuilder, HookStores, HookValue, Rerun, Rerunner},
-    stores::{StoreCons, StoreConsEnd, StoresList},
-    unmounted_lock::UnmountedLock,
-};
+use crate::{holes::{HoleNodeCons, HoleNodeConsEnd, HoleNodesList}, hook::{HookBuilder, HookStores, HookValue, Rerun, Rerunner}, stores::{StoreCons, StoreConsEnd, StoresList}, unmounted_lock::UnmountedLock};
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Node};
 
@@ -85,38 +81,41 @@ impl ComponentBuilder {
 
 pub trait ComponentValue {
     type StoresList: StoresList;
-    fn get_node(self) -> Node;
+    type HolesList: HoleNodesList;
+    fn get_holes(self) -> Self::HolesList;
 }
 
 type EmptyComponentStores<Entire> = ComponentStores<StoreConsEnd, Entire>;
 
-impl<UsedStores> ComponentValue for ComponentStoresWithNode<StoreConsEnd, UsedStores>
+impl<UsedStores, Holes> ComponentValue for ComponentStoresWithNode<StoreConsEnd, UsedStores, Holes>
 where
-    UsedStores: StoresList,
+    UsedStores: StoresList, Holes: HoleNodesList
 {
     type StoresList = UsedStores;
-    fn get_node(self) -> Node {
-        self.last_node
+    type HolesList = Holes;
+    fn get_holes(self) -> Self::HolesList {
+        self.hole_nodes
     }
 }
 
-pub struct ComponentStoresWithNode<CurrentStores: StoresList, EntireStores: StoresList> {
+pub struct ComponentStoresWithNode<CurrentStores: StoresList, EntireStores: StoresList, Holes: HoleNodesList> {
     pub(crate) hook_stores: HookStores<CurrentStores, EntireStores>,
     pub(crate) parent_node: Node,
-    pub(crate) last_node: Node,
+    pub(crate) hole_nodes: Holes
 }
 
-fn run_component<Stores, Func, Props, Ret>(
+fn run_component<Stores, Func, Props, Ret, Holes>(
     store: &'static Stores,
     lock: UnmountedLock,
     rerun: Rerunner,
     component_func: &Func,
     props: Props,
     on_node: Node,
-) -> Node
+) -> Holes
 where
     Stores: StoresList,
-    Ret: ComponentValue<StoresList = Stores>,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = Stores, HolesList = Holes>,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     let untyped_stores = unsafe { transmute::<&'static Stores, &'static ()>(store) };
@@ -128,8 +127,7 @@ where
         },
         parent_node: on_node,
     };
-    let node = component_func(reia, props).get_node();
-    node
+    component_func(reia, props).get_holes()
 }
 
 impl<ThisStores, RestStores, EntireStores>
@@ -161,36 +159,39 @@ where
     }
 }
 
-pub struct ComponentContainer<Stores, Func, Ret, Props>
+pub struct ComponentContainer<Stores, Func, Ret, Props, Holes>
 where
     Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = Stores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     stores: Stores,
-    initialized: RefCell<Option<InitializedComponentInfo<Stores, Func, Ret, Props>>>,
+    initialized: RefCell<Option<InitializedComponentInfo<Stores, Func, Ret, Props, Holes>>>,
 }
 
-struct InitializedComponentInfo<Stores, Func, Ret, Props>
+struct InitializedComponentInfo<Stores, Func, Ret, Props, Holes>
 where
     Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = Stores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     func: Func,
     props: Props,
     parent_node: Node,
-    ret_node: Option<Node>,
+    ret_holes: Option<Holes>,
     lock: UnmountedLock,
 }
 
-impl<Stores, Func, Ret, Props> Default for ComponentContainer<Stores, Func, Ret, Props>
+impl<Stores, Func, Ret, Props, Holes> Default for ComponentContainer<Stores, Func, Ret, Props, Holes>
 where
     Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = Stores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn default() -> Self {
@@ -201,11 +202,12 @@ where
     }
 }
 
-impl<Stores, Func, Ret, Props> Rerun for ComponentContainer<Stores, Func, Ret, Props>
+impl<Stores, Func, Ret, Props, Holes> Rerun for ComponentContainer<Stores, Func, Ret, Props, Holes>
 where
     Stores: StoresList,
     Props: 'static + Clone,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = Stores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn rerun(self: &'static Self) {
@@ -214,12 +216,12 @@ where
         let InitializedComponentInfo {
             func,
             props,
-            ret_node,
+            ret_holes,
             lock,
             parent_node,
         } = ran_borrow.deref_mut().as_mut().unwrap();
         let rerun = Rerunner(self);
-        *ret_node = Some(run_component(
+        *ret_holes = Some(run_component(
             stores,
             lock.clone(),
             rerun,
@@ -230,16 +232,17 @@ where
     }
 }
 
-impl<ThisStores, RestStores, EntireStores, Func, Ret, Props>
+impl<ThisStores, RestStores, EntireStores, Func, Ret, Props, Holes>
     ComponentStores<
-        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props, Holes>, RestStores>,
         EntireStores,
     >
 where
     ThisStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue<StoresList = ThisStores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = ThisStores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -247,7 +250,7 @@ where
         self,
         component_func: Func,
         component_props: Props,
-    ) -> ComponentStoresWithNode<RestStores, EntireStores> {
+    ) -> ComponentStoresWithNode<RestStores, EntireStores, Holes> {
         let ComponentStores {
             hook_stores,
             parent_node,
@@ -269,7 +272,7 @@ where
                     *opt = Some(InitializedComponentInfo {
                         func: component_func,
                         props: component_props,
-                        ret_node: None,
+                        ret_holes: None,
                         lock: rests.lock.clone(),
                         parent_node: parent_node.clone(),
                     });
@@ -281,18 +284,18 @@ where
         if should_rerun {
             rerunner.rerun();
         }
-        let node = container_store
+        let hole_nodes = container_store
             .initialized
             .borrow()
             .as_ref()
             .unwrap()
-            .ret_node
+            .ret_holes
             .clone()
             .unwrap();
         ComponentStoresWithNode {
             hook_stores: rests,
             parent_node,
-            last_node: node,
+            hole_nodes,
         }
     }
 }
@@ -301,10 +304,10 @@ impl<EntireStores> EmptyComponentStores<EntireStores>
 where
     EntireStores: StoresList,
 {
-    pub(crate) fn bare_node(
+    pub(crate) fn bare_container_node(
         self,
         node: Node,
-    ) -> ComponentStoresWithNode<StoreConsEnd, EntireStores> {
+    ) -> ComponentStoresWithNode<StoreConsEnd, EntireStores, HoleNodeCons<HoleNodeConsEnd>> {
         let ComponentStores {
             hook_stores,
             parent_node,
@@ -312,21 +315,36 @@ where
         ComponentStoresWithNode {
             hook_stores,
             parent_node,
-            last_node: node,
+            hole_nodes: HoleNodeCons (node, HoleNodeConsEnd ())
+        }
+    }
+    pub(crate) fn bare_leaf_node(
+        self
+    ) -> ComponentStoresWithNode<StoreConsEnd, EntireStores, HoleNodeConsEnd> {
+        let ComponentStores {
+            hook_stores,
+            parent_node,
+        } = self;
+        ComponentStoresWithNode {
+            hook_stores,
+            parent_node,
+            hole_nodes: HoleNodeConsEnd ()
         }
     }
 }
 
-impl<ThisStores, RestStores, EntireStores, Func, Ret, Props>
+impl<ThisStores, RestStores, EntireStores, Func, Ret, Props, Holes>
     ComponentStoresWithNode<
-        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props, Holes>, RestStores>,
         EntireStores,
+        HoleNodeConsEnd
     >
 where
     ThisStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue<StoresList = ThisStores> + 'static,
+    Holes: HoleNodesList,
+    Ret: ComponentValue<StoresList = ThisStores, HolesList = Holes> + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -334,7 +352,7 @@ where
         self,
         component_func: Func,
         props: Props,
-    ) -> ComponentStoresWithNode<RestStores, EntireStores> {
+    ) -> ComponentStoresWithNode<RestStores, EntireStores, Holes> {
         let ComponentStoresWithNode {
             hook_stores,
             parent_node,
@@ -348,27 +366,27 @@ where
     }
 }
 
-impl<ThisStores, RestStores, EntireStores>
-    ComponentStoresWithNode<StoreCons<ThisStores, RestStores>, EntireStores>
+impl<ThisStores, RestStores, EntireStores, RestHoles>
+    ComponentStoresWithNode<StoreCons<ThisStores, RestStores>, EntireStores, HoleNodeCons<RestHoles>>
 where
     ThisStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
+    RestHoles: HoleNodesList
 {
     pub fn child<Builder>(
         self,
         builder: Builder,
-    ) -> ComponentStoresWithNode<RestStores, EntireStores>
+    ) -> ComponentStoresWithNode<RestStores, EntireStores, RestHoles>
     where
         Builder: Fn(
             ComponentStores<ThisStores, ThisStores>,
-        ) -> ComponentStoresWithNode<StoreConsEnd, ThisStores>,
+        ) -> ComponentStoresWithNode<StoreConsEnd, ThisStores, HoleNodeConsEnd>,
     {
         let ComponentStoresWithNode {
             hook_stores,
             parent_node,
-            last_node,
-            ..
+            hole_nodes
         } = self;
         let (rest_stores, store) = hook_stores.use_one_store();
         let comp_stores = ComponentStores {
@@ -378,13 +396,13 @@ where
                 lock: rest_stores.lock.clone(),
                 rerun: rest_stores.rerun.clone(),
             },
-            parent_node: last_node.clone(),
+            parent_node: hole_nodes.0,
         };
         builder(comp_stores);
         ComponentStoresWithNode {
             hook_stores: rest_stores,
-            last_node,
             parent_node,
+            hole_nodes: hole_nodes.1,
         }
     }
 }

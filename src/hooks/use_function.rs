@@ -38,7 +38,7 @@ pub fn use_function<F: Fn() + 'static>(
             function();
         }
         else {
-            console::warn_1(&"Trying to call a function whose component tree had been unmounted. This is a no-op.".into());
+            unsafe { console::warn_1(&"Trying to call a function whose component tree had been unmounted. This is a no-op.".into()); }
         }
     }) as Box<dyn Fn()>);
     let rf = ReiaFunction {
