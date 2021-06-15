@@ -1,3 +1,14 @@
+mod component;
+pub mod components;
+mod hook;
+pub mod hooks;
+mod js;
+mod stores;
+mod unmounted_lock;
+
+pub use component::{mount, ComponentBuilder, ComponentValue};
+pub use hook::{HookBuilder, HookValue};
+
 #[cfg(test)]
 mod tests {
     #[test]
