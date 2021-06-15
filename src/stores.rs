@@ -1,9 +1,6 @@
-use std::marker::PhantomData;
-
 pub trait StoresList: Sized + Default + 'static {
     type Head: Sized;
     type Tail: Sized + StoresList;
-    type Phantom;
     fn create() -> Self;
 }
 #[derive(Default)]
@@ -17,7 +14,6 @@ where
 {
     type Head = H;
     type Tail = T;
-    type Phantom = PhantomData<Self>;
     fn create() -> Self {
         Self(H::default(), T::create())
     }
@@ -26,7 +22,6 @@ where
 impl StoresList for StoreConsEnd {
     type Head = Self;
     type Tail = Self;
-    type Phantom = PhantomData<Self>;
     fn create() -> Self {
         Self()
     }
