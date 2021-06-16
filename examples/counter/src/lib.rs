@@ -41,7 +41,12 @@ fn count_button(
                 SpanProps {
                     text: "Decrement Counter".to_string(),
                 },
-            )
+            ).sibling(span, SpanProps {
+                text: "Yay".to_string(),
+            })
+            .child(|reia| reia.node(span, SpanProps {
+                text: "Yay2".to_string(),
+            }))
         })
 }
 

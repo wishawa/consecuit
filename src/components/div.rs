@@ -24,5 +24,5 @@ pub fn div(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
             node.clone()
         })
         .unwrap();
-    reia.bare_node(node)
+    reia.bare_container_node(node)
 }

@@ -32,5 +32,5 @@ pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentReturn {
             span.clone()
         })
         .unwrap();
-    reia.bare_node(span_node)
+    reia.bare_leaf_node()
 }
