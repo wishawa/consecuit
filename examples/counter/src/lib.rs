@@ -20,6 +20,13 @@ fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     reia.node(span, SpanProps { text: label })
 }
 
+fn splitted_div(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let reia = reia.init();
+    reia.node(div, ()).child(|reia| reia.node(div, ()).hole_here().sibling(span, SpanProps {
+        text: "this separate the two holes".to_string()
+    }).sibling(div, ()).hole_here())
+}
+
 fn count_button(
     reia: ComponentBuilder,
     (increment, decrement): (ReiaFunction, ReiaFunction),
@@ -44,9 +51,9 @@ fn count_button(
             ).sibling(span, SpanProps {
                 text: "Yay".to_string(),
             })
-            .child(|reia| reia.node(span, SpanProps {
+            /*.child(|reia| reia.node(span, SpanProps {
                 text: "Yay2".to_string(),
-            }))
+            }))*/
         })
 }
 
@@ -69,5 +76,9 @@ fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     reia.node(div, ()).child(|reia| {
         reia.node(title, count)
             .sibling(count_button, (increment.clone(), decrement.clone()))
-    })
+    }).sibling(splitted_div, ()).child(|reia| reia.node(span, SpanProps {
+        text: "First hole".to_string()
+    })).child(|reia| reia.node(span, SpanProps {
+        text: "Second hole".to_string()
+    }))
 }

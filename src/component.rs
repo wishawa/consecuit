@@ -377,19 +377,19 @@ where
     }
 }
 
-impl<ThisStore, RestStores, EntireStores, OldLastHoles, OldRetHoles>
-    ComponentStoresWithNode<StoreCons<ThisStore, RestStores>, EntireStores, OldLastHoles, OldRetHoles>
+impl<ThisStore, RestStores, EntireStores, RestLastHoles, OldRetHoles>
+    ComponentStoresWithNode<StoreCons<ThisStore, RestStores>, EntireStores, RestLastHoles, OldRetHoles>
 where
     ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    OldLastHoles: HolesList,
+    RestLastHoles: HolesList,
     OldRetHoles: HolesList
 {
     pub fn child<Builder, ChildLastHoles, NewRetHoles>(
         self,
         builder: Builder,
-    ) -> ComponentStoresWithNode<RestStores, EntireStores, OldLastHoles::Tail, NewRetHoles>
+    ) -> ComponentStoresWithNode<RestStores, EntireStores, RestLastHoles::Tail, NewRetHoles>
     where
         ChildLastHoles: HolesList,
         NewRetHoles: HolesList,
@@ -422,6 +422,26 @@ where
             parent_node,
             last_holes: rest_holes,
             ret_holes: built.ret_holes
+        }
+    }
+}
+
+impl<Stores, EntireStores, OldLastHoles, OldRetHoles> ComponentStoresWithNode<Stores, EntireStores, OldLastHoles, OldRetHoles>
+where
+    Stores: StoresList,
+    EntireStores: StoresList,
+    OldLastHoles: HolesList,
+    OldRetHoles: HolesList
+{
+    pub fn hole_here(self) -> ComponentStoresWithNode<Stores, EntireStores, OldLastHoles::Tail, HoleCons<OldRetHoles>> {
+        let ComponentStoresWithNode { hook_stores, parent_node, last_holes, ret_holes } = self;
+        let (old_last_head, new_last) = last_holes.split_head();
+        let new_ret = ret_holes.append(old_last_head);
+        ComponentStoresWithNode {
+            hook_stores,
+            parent_node,
+            last_holes: new_last,
+            ret_holes: new_ret
         }
     }
 }
