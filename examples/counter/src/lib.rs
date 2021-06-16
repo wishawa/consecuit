@@ -1,5 +1,5 @@
 use reia::{
-    components::{button, div, span, ButtonProps, SpanProps},
+    components::{button, div, span, ButtonProps, DivProps, SpanProps},
     hooks::{use_function, use_state, ReiaFunction},
     ComponentBuilder, ContainerReturn, HookBuilder, HookReturn, LeafReturn,
 };
@@ -22,7 +22,7 @@ fn title(reia: ComponentBuilder, props: i32) -> impl LeafReturn {
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.node(div, ()).hole_here()
+    reia.node(div, DivProps {}).hole_here()
 }
 
 fn count_button(
@@ -53,9 +53,6 @@ fn count_button(
                     text: "Yay".to_string(),
                 },
             )
-            /*.child(|reia| reia.node(span, SpanProps {
-                text: "Yay2".to_string(),
-            }))*/
         })
 }
 
@@ -75,15 +72,8 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, 
 fn app(reia: ComponentBuilder, _: ()) -> impl LeafReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
-    reia.node(container, ())
-        .child(|reia| {
-            reia.node(title, count)
-                .sibling(count_button, (increment.clone(), decrement.clone()))
-        })
-        .sibling(
-            span,
-            SpanProps {
-                text: "Yay2".to_string(),
-            },
-        )
+    reia.node(container, ()).child(|reia| {
+        reia.node(title, count)
+            .sibling(count_button, (increment.clone(), decrement.clone()))
+    })
 }

@@ -1,29 +1,29 @@
-use web_sys::{window, Node};
+use web_sys::{window, HtmlDivElement};
 
 use crate::{
     component::ComponentBuilder,
     hooks::{use_ref, ReiaRef},
     ContainerReturn,
 };
+use wasm_bindgen::JsCast;
 
-pub fn div(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
+#[derive(PartialEq, Clone)]
+pub struct DivProps {}
+
+pub fn div(reia: ComponentBuilder, props: DivProps) -> impl ContainerReturn {
     let reia = reia.init();
-    let (reia, comp): (_, ReiaRef<Option<Node>>) = reia.hook(use_ref, ());
-    let node = comp
+    let (reia, comp): (_, ReiaRef<Option<HtmlDivElement>>) = reia.hook(use_ref, ());
+    let div = comp
         .visit_mut_with(|opt| {
-            let node = opt.get_or_insert_with(|| {
-                let node: Node = window()
-                    .unwrap()
-                    .document()
-                    .unwrap()
-                    .create_element("div")
-                    .unwrap()
-                    .into();
-                reia.parent_node.append_child(&node).unwrap();
-                node
+            let div = opt.get_or_insert_with(|| {
+                let document = window().unwrap().document().unwrap();
+                let div: HtmlDivElement =
+                    document.create_element("div").unwrap().dyn_into().unwrap();
+                reia.parent_node.append_child(&div).unwrap();
+                div
             });
-            node.clone()
+            div.clone()
         })
         .unwrap();
-    reia.bare_container_node(node)
+    reia.bare_container_node(div.into())
 }
