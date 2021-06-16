@@ -30,5 +30,5 @@ pub fn button(reia: ComponentBuilder, props: ButtonProps) -> impl ComponentValue
         })
         .unwrap();
     button.set_onclick(Some(props.onclick.as_websys_function()));
-    reia.bare_container_node(button.clone().into())
+    reia.bare_node(button.clone().into())
 }

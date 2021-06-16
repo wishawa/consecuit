@@ -25,12 +25,12 @@ pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentValue {
             });
         })
         .unwrap();
-    store
+    let span_node = store
         .visit_with(|opt| {
             let (span, text) = opt.as_ref().unwrap();
             text.set_node_value(Some(&props.text));
             span.clone()
         })
         .unwrap();
-    reia.bare_leaf_node()
+    reia.bare_node(span_node)
 }
