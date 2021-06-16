@@ -5,7 +5,7 @@ pub mod hooks;
 mod stores;
 mod unmounted_lock;
 
-pub use component::{mount, ComponentBuilder, ContainerReturn, LeafReturn};
+pub use component::{mount, ComponentBuilder, ContainerReturn, ComponentReturn};
 pub use hook::{HookBuilder, HookReturn};
 
 #[cfg(test)]

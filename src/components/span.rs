@@ -1,17 +1,13 @@
 use web_sys::{window, Node};
 
-use crate::{
-    component::ComponentBuilder,
-    hooks::{use_ref, ReiaRef},
-    LeafReturn,
-};
+use crate::{component::{ComponentBuilder, ComponentReturn}, hooks::{use_ref, ReiaRef}};
 
 #[derive(Clone, PartialEq)]
 pub struct SpanProps {
     pub text: String,
 }
 
-pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl LeafReturn {
+pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Option<(Node, Node)>>) = reia.hook(use_ref, ());
     store

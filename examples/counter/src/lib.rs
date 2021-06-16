@@ -1,8 +1,4 @@
-use reia::{
-    components::{button, div, span, ButtonProps, DivProps, SpanProps},
-    hooks::{use_function, use_state, ReiaFunction},
-    ComponentBuilder, ContainerReturn, HookBuilder, HookReturn, LeafReturn,
-};
+use reia::{ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn, components::{button, div, span, ButtonProps, DivProps, SpanProps}, hooks::{use_function, use_state, ReiaFunction}};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -14,7 +10,7 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn title(reia: ComponentBuilder, props: i32) -> impl LeafReturn {
+fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
     reia.node(span, SpanProps { text: label })
@@ -28,7 +24,7 @@ fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
 fn count_button(
     reia: ComponentBuilder,
     (increment, decrement): (ReiaFunction, ReiaFunction),
-) -> impl LeafReturn {
+) -> impl ComponentReturn {
     let reia = reia.init();
     reia.node(button, ButtonProps { onclick: increment })
         .child(|reia| {
@@ -69,7 +65,7 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, 
     (reia, (count, increment, decrement))
 }
 
-fn app(reia: ComponentBuilder, _: ()) -> impl LeafReturn {
+fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
     reia.node(container, ()).child(|reia| {

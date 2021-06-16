@@ -75,9 +75,6 @@ pub trait ComponentReturn: 'static {
 pub trait ContainerReturn: ComponentReturn<Node = Node> {}
 impl<T: ComponentReturn<Node = Node>> ContainerReturn for T {}
 
-pub trait LeafReturn: ComponentReturn<Node = ()> {}
-impl<T: ComponentReturn<Node = ()>> LeafReturn for T {}
-
 impl<Stores: StoresList, LastNode: MaybeNode, RetNode: MaybeNode> ComponentReturn
     for NodeComponentStores<StoreConsEnd, Stores, LastNode, RetNode>
 {
@@ -389,15 +386,16 @@ where
     EntireStores: StoresList,
     RetNode: MaybeNode,
 {
-    pub fn child<Builder, ChildRetNode>(
+    pub fn child<Builder, ChildLastNode, ChildRetNode>(
         self,
         builder: Builder,
     ) -> NodeComponentStores<RestStores, EntireStores, (), ChildRetNode>
     where
         ChildRetNode: MaybeNode,
+        ChildLastNode: MaybeNode,
         Builder: Fn(
             NodeComponentStores<ThisStore, ThisStore, (), RetNode>,
-        ) -> NodeComponentStores<StoreConsEnd, ThisStore, (), ChildRetNode>,
+        ) -> NodeComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildRetNode>,
     {
         let NodeComponentStores {
             hook_stores,
