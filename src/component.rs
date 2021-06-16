@@ -393,7 +393,7 @@ where
     where
         ChildHole: MaybeHoleNode,
         ChildLastNode: MaybeHoleNode,
-        Builder: Fn(
+        Builder: FnOnce(
             NodeComponentStores<ThisStore, ThisStore, (), CompHole>,
         )
             -> NodeComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildHole>,

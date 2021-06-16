@@ -10,7 +10,7 @@ use wasm_bindgen::JsCast;
 #[derive(PartialEq, Clone)]
 pub struct DivProps {}
 
-pub fn div(reia: ComponentBuilder, props: DivProps) -> impl ContainerReturn {
+pub fn div(reia: ComponentBuilder, _props: DivProps) -> impl ContainerReturn {
     let reia = reia.init();
     let (reia, comp): (_, ReiaRef<Option<HtmlDivElement>>) = reia.hook(use_ref, ());
     let div = comp

@@ -80,16 +80,6 @@ where
 
         (new_rs, store)
     }
-    pub(crate) fn skip_one_store(self) -> HookStores<RestStores, EntireStores> {
-        let Self { current, .. } = self;
-        let StoreCons(_, r) = current;
-        HookStores {
-            current: r,
-            entire: PhantomData,
-            lock: self.lock,
-            rerun: self.rerun,
-        }
-    }
 }
 
 fn run_hook<Func, Arg, Out, Ret>(
