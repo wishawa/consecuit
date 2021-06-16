@@ -60,16 +60,15 @@ where
     }
 }
 
-impl<CurrentStore, RestStores, EntireStores>
-    HookStores<StoreCons<CurrentStore, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores> HookStores<StoreCons<ThisStore, RestStores>, EntireStores>
 where
-    CurrentStore: Default + 'static,
+    ThisStore: Default + 'static,
     RestStores: StoresList,
     EntireStores: StoresList,
 {
     pub(crate) fn use_one_store(
         self,
-    ) -> (HookStores<RestStores, EntireStores>, &'static CurrentStore) {
+    ) -> (HookStores<RestStores, EntireStores>, &'static ThisStore) {
         let Self { current, .. } = self;
         let StoreCons(store, rest) = current;
         let new_rs = HookStores {
@@ -93,19 +92,18 @@ where
     }
 }
 
-fn run_hook<Stores, Func, Arg, Out, Ret>(
-    store: &'static Stores,
+fn run_hook<Func, Arg, Out, Ret>(
+    store: &'static Ret::StoresList,
     lock: UnmountedLock,
     rerun: Rerunner,
     hook_func: Func,
     hook_arg: Arg,
 ) -> Out
 where
-    Stores: StoresList,
-    Ret: HookValue<Out, StoresList = Stores>,
+    Ret: HookValue<Out>,
     Func: 'static + Fn(HookBuilder, Arg) -> Ret,
 {
-    let untyped_stores = unsafe { transmute::<&'static Stores, &'static ()>(store) };
+    let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
     let reia = HookBuilder {
         untyped_stores,
         lock,

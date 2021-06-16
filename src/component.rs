@@ -14,22 +14,21 @@ impl Rerun for PanicRootRerunner {
 }
 static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
-pub fn mount<Stores, Ret, Func>(function: Func)
+pub fn mount<Ret, Func>(function: Func)
 where
-    Stores: StoresList,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
 {
-    fn mount_inner<Stores, Ret, Func>(function: Func)
+    fn mount_inner<Ret, Func>(function: Func)
     where
-        Stores: StoresList,
-        Ret: ComponentValue<StoresList = Stores> + 'static,
+        Ret: ComponentValue + 'static,
         Func: 'static + FnOnce(ComponentBuilder, ()) -> Ret,
     {
-        let s: Stores = Stores::create();
+        let s: Ret::StoresList = StoresList::create();
         let s = Box::new(s);
-        let s: &Stores = Box::leak(s);
-        let untyped_stores: &'static () = unsafe { transmute::<&'_ Stores, &'static ()>(s) };
+        let s: &Ret::StoresList = Box::leak(s);
+        let untyped_stores: &'static () =
+            unsafe { transmute::<&'_ Ret::StoresList, &'static ()>(s) };
         let lock = UnmountedLock::new_mounted();
         // let lock_1 = lock.clone();
 
@@ -106,8 +105,8 @@ pub struct ComponentStoresWithNode<CurrentStores: StoresList, EntireStores: Stor
     pub(crate) last_node: Node,
 }
 
-fn run_component<Stores, Func, Props, Ret>(
-    store: &'static Stores,
+fn run_component<Func, Props, Ret>(
+    store: &'static Ret::StoresList,
     lock: UnmountedLock,
     rerun: Rerunner,
     component_func: &Func,
@@ -115,11 +114,10 @@ fn run_component<Stores, Func, Props, Ret>(
     on_node: Node,
 ) -> Node
 where
-    Stores: StoresList,
-    Ret: ComponentValue<StoresList = Stores>,
+    Ret: ComponentValue,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    let untyped_stores = unsafe { transmute::<&'static Stores, &'static ()>(store) };
+    let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
     let reia = ComponentBuilder {
         hook_builder: HookBuilder {
             untyped_stores,
@@ -132,10 +130,10 @@ where
     node
 }
 
-impl<ThisStores, RestStores, EntireStores>
-    ComponentStores<StoreCons<ThisStores, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores>
+    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores>
 where
-    ThisStores: StoresList,
+    ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
 {
@@ -145,7 +143,7 @@ where
         hook_arg: Arg,
     ) -> (ComponentStores<RestStores, EntireStores>, Out)
     where
-        Ret: HookValue<Out, StoresList = ThisStores>,
+        Ret: HookValue<Out, StoresList = ThisStore>,
         Func: 'static + Fn(HookBuilder, Arg) -> Ret,
     {
         let ComponentStores {
@@ -161,22 +159,20 @@ where
     }
 }
 
-pub struct ComponentContainer<Stores, Func, Ret, Props>
+pub struct ComponentContainer<Func, Ret, Props>
 where
-    Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    stores: Stores,
-    initialized: RefCell<Option<InitializedComponentInfo<Stores, Func, Ret, Props>>>,
+    stores: Ret::StoresList,
+    initialized: RefCell<Option<InitializedComponentInfo<Func, Ret, Props>>>,
 }
 
-struct InitializedComponentInfo<Stores, Func, Ret, Props>
+struct InitializedComponentInfo<Func, Ret, Props>
 where
-    Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     func: Func,
@@ -186,26 +182,24 @@ where
     lock: UnmountedLock,
 }
 
-impl<Stores, Func, Ret, Props> Default for ComponentContainer<Stores, Func, Ret, Props>
+impl<Func, Ret, Props> Default for ComponentContainer<Func, Ret, Props>
 where
-    Stores: StoresList,
     Props: 'static,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn default() -> Self {
         Self {
-            stores: Stores::create(),
+            stores: Ret::StoresList::create(),
             initialized: RefCell::new(None),
         }
     }
 }
 
-impl<Stores, Func, Ret, Props> Rerun for ComponentContainer<Stores, Func, Ret, Props>
+impl<Func, Ret, Props> Rerun for ComponentContainer<Func, Ret, Props>
 where
-    Stores: StoresList,
     Props: 'static + Clone,
-    Ret: ComponentValue<StoresList = Stores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn rerun(self: &'static Self) {
@@ -230,16 +224,12 @@ where
     }
 }
 
-impl<ThisStores, RestStores, EntireStores, Func, Ret, Props>
-    ComponentStores<
-        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props>, RestStores>,
-        EntireStores,
-    >
+impl<RestStores, EntireStores, Func, Ret, Props>
+    ComponentStores<StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>, EntireStores>
 where
-    ThisStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue<StoresList = ThisStores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -317,16 +307,15 @@ where
     }
 }
 
-impl<ThisStores, RestStores, EntireStores, Func, Ret, Props>
+impl<RestStores, EntireStores, Func, Ret, Props>
     ComponentStoresWithNode<
-        StoreCons<ComponentContainer<ThisStores, Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
         EntireStores,
     >
 where
-    ThisStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue<StoresList = ThisStores> + 'static,
+    Ret: ComponentValue + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -348,10 +337,10 @@ where
     }
 }
 
-impl<ThisStores, RestStores, EntireStores>
-    ComponentStoresWithNode<StoreCons<ThisStores, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores>
+    ComponentStoresWithNode<StoreCons<ThisStore, RestStores>, EntireStores>
 where
-    ThisStores: StoresList,
+    ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
 {
@@ -361,8 +350,8 @@ where
     ) -> ComponentStoresWithNode<RestStores, EntireStores>
     where
         Builder: Fn(
-            ComponentStores<ThisStores, ThisStores>,
-        ) -> ComponentStoresWithNode<StoreConsEnd, ThisStores>,
+            ComponentStores<ThisStore, ThisStore>,
+        ) -> ComponentStoresWithNode<StoreConsEnd, ThisStore>,
     {
         let ComponentStoresWithNode {
             hook_stores,
