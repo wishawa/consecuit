@@ -1,36 +1,12 @@
-use web_sys::{window, Node};
+use web_sys::HtmlSpanElement;
 
-use crate::{
-    component::{ComponentBuilder, ComponentReturn},
-    hooks::{use_ref, ReiaRef},
-};
+use crate::{hooks::use_element, ComponentBuilder, ContainerReturn};
 
-#[derive(Clone, PartialEq)]
-pub struct SpanProps {
-    pub text: String,
-}
-
-pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentReturn {
+#[derive(PartialEq, Clone)]
+pub struct SpanProps {}
+pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ContainerReturn {
     let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Option<(Node, Node)>>) = reia.hook(use_ref, ());
-    store
-        .visit_mut_with(|opt| {
-            opt.get_or_insert_with(|| {
-                let document = window().unwrap().document().unwrap();
-                let text: Node = document.create_text_node(&props.text).into();
-                let span: Node = document.create_element("span").unwrap().into();
-                span.append_child(&text).unwrap();
-                reia.parent_node.append_child(&span).unwrap();
-                (span, text)
-            });
-        })
-        .unwrap();
-    store
-        .visit_with(|opt| {
-            let (span, text) = opt.as_ref().unwrap();
-            text.set_node_value(Some(&props.text));
-            span.clone()
-        })
-        .unwrap();
-    reia.bare_leaf_node()
+    let parent = reia.parent_node.clone();
+    let (reia, span): (_, HtmlSpanElement) = reia.hook(use_element, ("span", parent));
+    reia.bare_container_node(span.into())
 }

@@ -1,11 +1,10 @@
-use web_sys::{window, HtmlButtonElement};
+use web_sys::HtmlButtonElement;
 
 use crate::{
     component::ComponentBuilder,
-    hooks::{use_ref, ReiaFunction, ReiaRef},
+    hooks::{use_element, ReiaFunction},
     ContainerReturn,
 };
-use wasm_bindgen::JsCast;
 
 #[derive(Clone, PartialEq)]
 pub struct ButtonProps {
@@ -14,22 +13,8 @@ pub struct ButtonProps {
 
 pub fn button(reia: ComponentBuilder, props: ButtonProps) -> impl ContainerReturn {
     let reia = reia.init();
-    let (reia, comp): (_, ReiaRef<Option<HtmlButtonElement>>) = reia.hook(use_ref, ());
-    let button = comp
-        .visit_mut_with(|opt| {
-            let button = opt.get_or_insert_with(|| {
-                let document = window().unwrap().document().unwrap();
-                let button: HtmlButtonElement = document
-                    .create_element("button")
-                    .unwrap()
-                    .dyn_into()
-                    .unwrap();
-                reia.parent_node.append_child(&button).unwrap();
-                button
-            });
-            button.clone()
-        })
-        .unwrap();
+    let parent = reia.parent_node.clone();
+    let (reia, button): (_, HtmlButtonElement) = reia.hook(use_element, ("button", parent));
     button.set_onclick(Some(props.onclick.as_websys_function()));
     reia.bare_container_node(button.clone().into())
 }

@@ -14,6 +14,6 @@ impl UnmountedLock {
         self.0.load(Ordering::Acquire)
     }
     pub(crate) fn unmount(&self) {
-        self.0.store(false, Ordering::Acquire)
+        self.0.store(false, Ordering::Release)
     }
 }

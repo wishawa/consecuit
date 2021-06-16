@@ -1,5 +1,5 @@
 use reia::{
-    components::{button, div, span, ButtonProps, DivProps, SpanProps},
+    components::{basic_text_label, button, div, BasicTextLabelProps, ButtonProps, DivProps},
     hooks::{use_function, use_state, ReiaFunction},
     ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
 };
@@ -17,7 +17,7 @@ pub fn run() -> Result<(), JsValue> {
 fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
-    reia.node(span, SpanProps { text: label })
+    reia.node(basic_text_label, BasicTextLabelProps { text: label })
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
@@ -33,8 +33,8 @@ fn count_button(
     reia.node(button, ButtonProps { onclick: increment })
         .child(|reia| {
             reia.node(
-                span,
-                SpanProps {
+                basic_text_label,
+                BasicTextLabelProps {
                     text: "Increment Counter".to_string(),
                 },
             )
@@ -42,14 +42,14 @@ fn count_button(
         .sibling(button, ButtonProps { onclick: decrement })
         .child(|reia| {
             reia.node(
-                span,
-                SpanProps {
+                basic_text_label,
+                BasicTextLabelProps {
                     text: "Decrement Counter".to_string(),
                 },
             )
             .sibling(
-                span,
-                SpanProps {
+                basic_text_label,
+                BasicTextLabelProps {
                     text: "Yay".to_string(),
                 },
             )
