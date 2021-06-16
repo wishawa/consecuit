@@ -1,8 +1,4 @@
-use reia::{
-    components::{button, div, span, ButtonProps, SpanProps},
-    hooks::{use_function, use_state, ReiaFunction},
-    ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
-};
+use reia::{ComponentBuilder, ContainerReturn, HookBuilder, HookReturn, LeafReturn, components::{button, div, span, ButtonProps, SpanProps}, hooks::{use_function, use_state, ReiaFunction}};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -14,23 +10,21 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
+fn title(reia: ComponentBuilder, props: i32) -> impl LeafReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
     reia.node(span, SpanProps { text: label })
 }
 
-fn splitted_div(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
+fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.node(div, ()).child(|reia| reia.node(div, ()).hole_here().sibling(span, SpanProps {
-        text: "this separate the two holes".to_string()
-    }).sibling(div, ()).hole_here())
+    reia.node(div, ()).hole_here()
 }
 
 fn count_button(
     reia: ComponentBuilder,
     (increment, decrement): (ReiaFunction, ReiaFunction),
-) -> impl ComponentReturn {
+) -> impl LeafReturn {
     let reia = reia.init();
     reia.node(button, ButtonProps { onclick: increment })
         .child(|reia| {
@@ -70,15 +64,13 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, 
     (reia, (count, increment, decrement))
 }
 
-fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
+fn app(reia: ComponentBuilder, _: ()) -> impl LeafReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
-    reia.node(div, ()).child(|reia| {
+    reia.node(container, ()).child(|reia| {
         reia.node(title, count)
             .sibling(count_button, (increment.clone(), decrement.clone()))
-    }).sibling(splitted_div, ()).child(|reia| reia.node(span, SpanProps {
-        text: "First hole".to_string()
-    })).child(|reia| reia.node(span, SpanProps {
-        text: "Second hole".to_string()
-    }))
+    }).sibling(span, SpanProps {
+        text: "Yay2".to_string(),
+    })
 }
