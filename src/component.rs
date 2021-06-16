@@ -6,6 +6,22 @@ use crate::{
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Node};
 
+pub trait FuncComp<Props>: 'static {
+    type Ret: ComponentReturn;
+    fn run_component(&self, builder: ComponentBuilder, props: Props) -> Self::Ret;
+}
+
+impl<Func, Ret, Props> FuncComp<Props> for Func
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+{
+    type Ret = Ret;
+    fn run_component(&self, builder: ComponentBuilder, props: Props) -> Self::Ret {
+        self(builder, props)
+    }
+}
+
 struct PanicRootRerunner();
 impl Rerun for PanicRootRerunner {
     fn rerun(&'static self) {
@@ -14,12 +30,8 @@ impl Rerun for PanicRootRerunner {
 }
 static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
-pub fn mount<Ret, Func>(function: Func)
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
-{
-    let stores: StoreCons<ComponentContainer<Func, Ret, ()>, Ret::StoresList> =
+pub fn mount<F: FuncComp<()>>(function: F) {
+    let stores: StoreCons<ComponentContainer<(), F>, <F::Ret as ComponentReturn>::StoresList> =
         StoresList::create();
     let stores: &_ = Box::leak(Box::new(stores));
     let parent_node: Node = window()
@@ -100,19 +112,17 @@ pub struct NodeComponentStores<
     pub(crate) ret_node: ReturnNode,
 }
 
-fn run_component<Func, Props, Ret>(
-    store: &'static Ret::StoresList,
+fn run_component<P: 'static, F: FuncComp<P>>(
+    store: &'static <F::Ret as ComponentReturn>::StoresList,
     lock: UnmountedLock,
     rerun: Rerunner,
-    component_func: &Func,
-    props: Props,
+    component_func: &F,
+    props: P,
     on_node: Node,
-) -> Ret::Node
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-{
-    let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
+) -> <F::Ret as ComponentReturn>::Node {
+    let untyped_stores = unsafe {
+        transmute::<&'static <F::Ret as ComponentReturn>::StoresList, &'static ()>(store)
+    };
     let reia = ComponentBuilder {
         hook_builder: HookBuilder {
             untyped_stores,
@@ -121,7 +131,7 @@ where
         },
         parent_node: on_node,
     };
-    let holes = component_func(reia, props).get_node();
+    let holes = component_func.run_component(reia, props).get_node();
     holes
 }
 
@@ -154,49 +164,29 @@ where
     }
 }
 
-pub struct ComponentContainer<Func, Ret, Props>
-where
-    Props: 'static,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-{
-    stores: Ret::StoresList,
-    initialized: RefCell<Option<InitializedComponentInfo<Func, Ret, Props>>>,
+pub struct ComponentContainer<P: 'static, F: FuncComp<P>> {
+    stores: <F::Ret as ComponentReturn>::StoresList,
+    initialized: RefCell<Option<InitializedComponentInfo<P, F>>>,
 }
 
-struct InitializedComponentInfo<Func, Ret, Props>
-where
-    Props: 'static,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-{
-    func: Func,
-    props: Props,
+struct InitializedComponentInfo<P: 'static, F: FuncComp<P>> {
+    func: F,
+    props: P,
     parent_node: Node,
-    my_holes: Option<Ret::Node>,
+    my_holes: Option<<F::Ret as ComponentReturn>::Node>,
     lock: UnmountedLock,
 }
 
-impl<Func, Ret, Props> Default for ComponentContainer<Func, Ret, Props>
-where
-    Props: 'static,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-{
+impl<P: 'static, F: FuncComp<P>> Default for ComponentContainer<P, F> {
     fn default() -> Self {
         Self {
-            stores: Ret::StoresList::create(),
+            stores: <F::Ret as ComponentReturn>::StoresList::create(),
             initialized: RefCell::new(None),
         }
     }
 }
 
-impl<Func, Ret, Props> Rerun for ComponentContainer<Func, Ret, Props>
-where
-    Props: 'static + Clone,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-{
+impl<P: 'static + Clone, F: FuncComp<P>> Rerun for ComponentContainer<P, F> {
     fn rerun(self: &'static Self) {
         let mut ran_borrow = self.initialized.borrow_mut();
         let stores = &self.stores;
@@ -219,20 +209,17 @@ where
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, Props>
-    ComponentStores<StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>, EntireStores>
+impl<RestStores, EntireStores, P: 'static + PartialEq + Clone, F: FuncComp<P>>
+    ComponentStores<StoreCons<ComponentContainer<P, F>, RestStores>, EntireStores>
 where
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone,
 {
     pub fn node(
         self,
-        component_func: Func,
-        component_props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::Node, ()> {
+        component_func: F,
+        component_props: P,
+    ) -> NodeComponentStores<RestStores, EntireStores, <F::Ret as ComponentReturn>::Node, ()> {
         let ComponentStores {
             hook_stores,
             parent_node,
@@ -247,9 +234,9 @@ where
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, Props, LastNode, RetNode>
+impl<RestStores, EntireStores, P: 'static, F: FuncComp<P>, LastNode, RetNode>
     NodeComponentStores<
-        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<P, F>, RestStores>,
         EntireStores,
         LastNode,
         RetNode,
@@ -259,15 +246,14 @@ where
     EntireStores: StoresList,
     LastNode: MaybeNode,
     RetNode: MaybeNode,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone,
+    P: PartialEq + Clone,
 {
     pub fn node(
         self,
-        component_func: Func,
-        component_props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::Node, RetNode> {
+        component_func: F,
+        component_props: P,
+    ) -> NodeComponentStores<RestStores, EntireStores, <F::Ret as ComponentReturn>::Node, RetNode>
+    {
         let NodeComponentStores {
             hook_stores,
             parent_node,
@@ -353,9 +339,9 @@ where
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, Props, LastNode, RetNode>
+impl<RestStores, EntireStores, P: 'static, F: FuncComp<P>, LastNode, RetNode>
     NodeComponentStores<
-        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<P, F>, RestStores>,
         EntireStores,
         LastNode,
         RetNode,
@@ -365,15 +351,14 @@ where
     EntireStores: StoresList,
     LastNode: MaybeNode,
     RetNode: MaybeNode,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone,
+    P: PartialEq + Clone,
 {
     pub fn sibling(
         self,
-        component_func: Func,
-        props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::Node, RetNode> {
+        component_func: F,
+        props: P,
+    ) -> NodeComponentStores<RestStores, EntireStores, <F::Ret as ComponentReturn>::Node, RetNode>
+    {
         self.node(component_func, props)
     }
 }
@@ -395,13 +380,15 @@ where
         ChildLastNode: MaybeNode,
         Builder: Fn(
             NodeComponentStores<ThisStore, ThisStore, (), RetNode>,
-        ) -> NodeComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildRetNode>,
+        )
+            -> NodeComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildRetNode>,
     {
         let NodeComponentStores {
             hook_stores,
             parent_node,
             ret_node,
             last_node,
+            ..
         } = self;
         let (rest_stores, store) = hook_stores.use_one_store();
         let comp_stores = NodeComponentStores {
