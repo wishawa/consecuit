@@ -32,5 +32,6 @@ features = [
 
 [workspace]
 members = [
-	"examples/counter/"
+	"examples/minimal_counter/",
+	"examples/playground/"
 ]
