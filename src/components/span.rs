@@ -1,6 +1,9 @@
 use web_sys::{window, Node};
 
-use crate::{component::{ComponentBuilder, ComponentReturn}, hooks::{use_ref, ReiaRef}};
+use crate::{
+    component::{ComponentBuilder, ComponentReturn},
+    hooks::{use_ref, ReiaRef},
+};
 
 #[derive(Clone, PartialEq)]
 pub struct SpanProps {

@@ -1,4 +1,8 @@
-use reia::{ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn, components::{button, div, span, ButtonProps, DivProps, SpanProps}, hooks::{use_function, use_state, ReiaFunction}};
+use reia::{
+    components::{button, div, span, ButtonProps, DivProps, SpanProps},
+    hooks::{use_function, use_state, ReiaFunction},
+    ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
+};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
