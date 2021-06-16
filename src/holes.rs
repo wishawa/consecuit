@@ -1,6 +1,6 @@
 use web_sys::Node;
 
-pub trait HolesList: Sized + Clone {
+pub trait HolesList: Sized + Clone + 'static {
     type Tail: Sized + HolesList;
 	fn append(self, node: Node) -> HoleCons<Self>;
 	fn split_head(self) -> (Node, Self::Tail);

@@ -1,4 +1,4 @@
-use crate::{holes::{HoleCons, HoleConsEnd, HolesList, HolesListNotEmpty}, hook::{HookBuilder, HookStores, HookReturn, Rerun, Rerunner}, stores::{StoreCons, StoreConsEnd, StoresList}, unmounted_lock::UnmountedLock};
+use crate::{holes::{HoleCons, HoleConsEnd, HolesList}, hook::{HookBuilder, HookStores, HookReturn, Rerun, Rerunner}, stores::{StoreCons, StoreConsEnd, StoresList}, unmounted_lock::UnmountedLock};
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Node};
 
@@ -12,47 +12,30 @@ static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
 pub fn mount<Ret, Func>(function: Func)
 where
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
 {
-    fn mount_inner<Ret, Func>(function: Func)
-    where
-        Ret: ComponentReturn + 'static,
-        Func: 'static + FnOnce(ComponentBuilder, ()) -> Ret,
-    {
-        let s: Ret::StoresList = StoresList::create();
-        let s = Box::new(s);
-        let s: &Ret::StoresList = Box::leak(s);
-        let untyped_stores: &'static () =
-            unsafe { transmute::<&'_ Ret::StoresList, &'static ()>(s) };
-        let lock = UnmountedLock::new_mounted();
-        // let lock_1 = lock.clone();
-
-        let root_rerunner = Rerunner(&PANIC_RERUNNER);
-        let reia = ComponentBuilder {
-            hook_builder: HookBuilder {
-                untyped_stores: untyped_stores,
-                lock,
-                rerun: root_rerunner,
-            },
-            parent_node: window()
-                .unwrap()
-                .document()
-                .unwrap()
-                .get_element_by_id("reia-app-root")
-                .unwrap()
-                .into(),
-        };
-        function(reia, ());
-        // Do something
-        // lock_1.unmount();
-    }
-
-    let wrapped = |reia: ComponentBuilder, _: ()| {
-        let reia = reia.init();
-        reia.node(function, ())
+    let stores: StoreCons<ComponentContainer<Func, Ret, ()>, Ret::StoresList> = StoresList::create();
+    let stores: &_ = Box::leak(Box::new(stores));
+    let parent_node: Node = window()
+        .unwrap()
+        .document()
+        .unwrap()
+        .get_element_by_id("reia-app-root")
+        .unwrap()
+        .into();
+    let lock = UnmountedLock::new_mounted();
+    type StillFullComponentStore<T> = ComponentStores<T, T>;
+    let component_store: StillFullComponentStore<_> = ComponentStores {
+        hook_stores: HookStores {
+            current: stores,
+            entire: PhantomData,
+            lock: lock.clone(),
+            rerun: Rerunner(&PANIC_RERUNNER)
+        },
+        parent_node,
     };
-    mount_inner(wrapped);
+    component_store.node(function, ());
 }
 
 pub struct ComponentBuilder {
@@ -78,7 +61,7 @@ impl ComponentBuilder {
     }
 }
 
-pub trait ComponentReturn {
+pub trait ComponentReturn: 'static {
     type StoresList: StoresList;
     type HolesList: HolesList;
     fn get_holes(self) -> Self::HolesList;
@@ -163,7 +146,7 @@ where
 pub struct ComponentContainer<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     stores: Ret::StoresList,
@@ -173,7 +156,7 @@ where
 struct InitializedComponentInfo<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     func: Func,
@@ -186,7 +169,7 @@ where
 impl<Func, Ret, Props> Default for ComponentContainer<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn default() -> Self {
@@ -200,7 +183,7 @@ where
 impl<Func, Ret, Props> Rerun for ComponentContainer<Func, Ret, Props>
 where
     Props: 'static + Clone,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn rerun(self: &'static Self) {
@@ -230,7 +213,7 @@ impl<RestStores, EntireStores, Func, Ret, Props>
     where
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -256,7 +239,7 @@ where
     EntireStores: StoresList,
     LastHoles: HolesList,
     RetHoles: HolesList,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -364,7 +347,7 @@ where
     EntireStores: StoresList,
     OldLastHoles: HolesList,
     RetHoles: HolesList,
-    Ret: ComponentReturn + 'static,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
