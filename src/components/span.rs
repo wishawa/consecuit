@@ -1,7 +1,7 @@
 use web_sys::{window, Node};
 
 use crate::{
-    component::{ComponentBuilder, ComponentValue},
+    component::{ComponentBuilder, ComponentReturn},
     hooks::{use_ref, ReiaRef},
 };
 
@@ -10,7 +10,7 @@ pub struct SpanProps {
     pub text: String,
 }
 
-pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentValue {
+pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Option<(Node, Node)>>) = reia.hook(use_ref, ());
     store

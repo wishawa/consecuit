@@ -1,11 +1,11 @@
 use web_sys::{window, Node};
 
 use crate::{
-    component::{ComponentBuilder, ComponentValue},
+    component::{ComponentBuilder, ComponentReturn},
     hooks::{use_ref, ReiaRef},
 };
 
-pub fn div(reia: ComponentBuilder, _: ()) -> impl ComponentValue {
+pub fn div(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, comp): (_, ReiaRef<Option<Node>>) = reia.hook(use_ref, ());
     let node = comp

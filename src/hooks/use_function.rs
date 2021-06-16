@@ -4,7 +4,7 @@ use js_sys::Function;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::console;
 
-use crate::hook::{HookBuilder, HookValue};
+use crate::hook::{HookBuilder, HookReturn};
 
 use super::{use_ref, ReiaRef};
 
@@ -30,7 +30,7 @@ impl ReiaFunction {
 pub fn use_function<F: Fn() + 'static>(
     reia: HookBuilder,
     function: F,
-) -> impl HookValue<ReiaFunction> {
+) -> impl HookReturn<ReiaFunction> {
     let reia = reia.init();
     let lock = reia.lock.clone();
     let closure = Closure::wrap(Box::new(move || {

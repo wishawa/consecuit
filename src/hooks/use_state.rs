@@ -1,4 +1,4 @@
-use crate::hook::{HookBuilder, HookValue, Rerunner};
+use crate::hook::{HookBuilder, HookReturn, Rerunner};
 
 use super::use_ref::{use_ref, ReiaRef};
 
@@ -25,7 +25,7 @@ impl<T: Clone> StateSetter<T> {
     }
 }
 
-pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookValue<(T, StateSetter<T>)>
+pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, StateSetter<T>)>
 where
     T: Copy + 'static,
 {

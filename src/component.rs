@@ -1,5 +1,5 @@
 use crate::{
-    hook::{HookBuilder, HookStores, HookValue, Rerun, Rerunner},
+    hook::{HookBuilder, HookStores, HookReturn, Rerun, Rerunner},
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
@@ -16,12 +16,12 @@ static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
 pub fn mount<Ret, Func>(function: Func)
 where
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
 {
     fn mount_inner<Ret, Func>(function: Func)
     where
-        Ret: ComponentValue + 'static,
+        Ret: ComponentReturn + 'static,
         Func: 'static + FnOnce(ComponentBuilder, ()) -> Ret,
     {
         let s: Ret::StoresList = StoresList::create();
@@ -82,14 +82,14 @@ impl ComponentBuilder {
     }
 }
 
-pub trait ComponentValue {
+pub trait ComponentReturn {
     type StoresList: StoresList;
     fn get_node(self) -> Node;
 }
 
 type EmptyComponentStores<Entire> = ComponentStores<StoreConsEnd, Entire>;
 
-impl<UsedStores> ComponentValue for ComponentStoresWithNode<StoreConsEnd, UsedStores>
+impl<UsedStores> ComponentReturn for ComponentStoresWithNode<StoreConsEnd, UsedStores>
 where
     UsedStores: StoresList,
 {
@@ -114,7 +114,7 @@ fn run_component<Func, Props, Ret>(
     on_node: Node,
 ) -> Node
 where
-    Ret: ComponentValue,
+    Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
@@ -143,7 +143,7 @@ where
         hook_arg: Arg,
     ) -> (ComponentStores<RestStores, EntireStores>, Out)
     where
-        Ret: HookValue<Out, StoresList = ThisStore>,
+        Ret: HookReturn<Out, StoresList = ThisStore>,
         Func: 'static + Fn(HookBuilder, Arg) -> Ret,
     {
         let ComponentStores {
@@ -162,7 +162,7 @@ where
 pub struct ComponentContainer<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     stores: Ret::StoresList,
@@ -172,7 +172,7 @@ where
 struct InitializedComponentInfo<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     func: Func,
@@ -185,7 +185,7 @@ where
 impl<Func, Ret, Props> Default for ComponentContainer<Func, Ret, Props>
 where
     Props: 'static,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn default() -> Self {
@@ -199,7 +199,7 @@ where
 impl<Func, Ret, Props> Rerun for ComponentContainer<Func, Ret, Props>
 where
     Props: 'static + Clone,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn rerun(self: &'static Self) {
@@ -229,7 +229,7 @@ impl<RestStores, EntireStores, Func, Ret, Props>
 where
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
@@ -315,7 +315,7 @@ impl<RestStores, EntireStores, Func, Ret, Props>
 where
     RestStores: StoresList,
     EntireStores: StoresList,
-    Ret: ComponentValue + 'static,
+    Ret: ComponentReturn + 'static,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {

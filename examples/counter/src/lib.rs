@@ -1,7 +1,7 @@
 use reia::{
     components::{button, div, span, ButtonProps, SpanProps},
     hooks::{use_function, use_state, ReiaFunction},
-    ComponentBuilder, ComponentValue, HookBuilder, HookValue,
+    ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
 };
 use wasm_bindgen::prelude::*;
 
@@ -14,7 +14,7 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn title(reia: ComponentBuilder, props: i32) -> impl ComponentValue {
+fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
     reia.node(span, SpanProps { text: label })
@@ -23,7 +23,7 @@ fn title(reia: ComponentBuilder, props: i32) -> impl ComponentValue {
 fn count_button(
     reia: ComponentBuilder,
     (increment, decrement): (ReiaFunction, ReiaFunction),
-) -> impl ComponentValue {
+) -> impl ComponentReturn {
     let reia = reia.init();
     reia.node(button, ButtonProps { onclick: increment })
         .child(|reia| {
@@ -45,7 +45,7 @@ fn count_button(
         })
 }
 
-fn use_counter(reia: HookBuilder, _: ()) -> impl HookValue<(i32, ReiaFunction, ReiaFunction)> {
+fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, ReiaFunction)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 1);
     let count_setter_1 = count_setter.clone();
@@ -58,7 +58,7 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookValue<(i32, ReiaFunction, R
     (reia, (count, increment, decrement))
 }
 
-fn app(reia: ComponentBuilder, _: ()) -> impl ComponentValue {
+fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
     reia.node(div, ()).child(|reia| {

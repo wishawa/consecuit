@@ -45,12 +45,12 @@ pub struct HookStores<CurrentStores: StoresList, EntireStores: StoresList> {
 
 type EmptyHookStores<Entire> = HookStores<StoreConsEnd, Entire>;
 
-pub trait HookValue<Value> {
+pub trait HookReturn<Value> {
     type StoresList: StoresList;
     fn get_val(self) -> Value;
 }
 
-impl<UsedStores, Value> HookValue<Value> for (EmptyHookStores<UsedStores>, Value)
+impl<UsedStores, Value> HookReturn<Value> for (EmptyHookStores<UsedStores>, Value)
 where
     UsedStores: StoresList,
 {
@@ -100,7 +100,7 @@ fn run_hook<Func, Arg, Out, Ret>(
     hook_arg: Arg,
 ) -> Out
 where
-    Ret: HookValue<Out>,
+    Ret: HookReturn<Out>,
     Func: 'static + Fn(HookBuilder, Arg) -> Ret,
 {
     let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
@@ -126,7 +126,7 @@ where
         hook_arg: Arg,
     ) -> (HookStores<RestStores, EntireStores>, Out)
     where
-        Ret: HookValue<Out, StoresList = NextStores>,
+        Ret: HookReturn<Out, StoresList = NextStores>,
         Func: 'static + Fn(HookBuilder, Arg) -> Ret,
     {
         let (rest_stores, store) = self.use_one_store();

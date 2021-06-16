@@ -1,7 +1,7 @@
 use web_sys::{window, HtmlButtonElement};
 
 use crate::{
-    component::{ComponentBuilder, ComponentValue},
+    component::{ComponentBuilder, ComponentReturn},
     hooks::{use_ref, ReiaFunction, ReiaRef},
 };
 use wasm_bindgen::JsCast;
@@ -11,7 +11,7 @@ pub struct ButtonProps {
     pub onclick: ReiaFunction,
 }
 
-pub fn button(reia: ComponentBuilder, props: ButtonProps) -> impl ComponentValue {
+pub fn button(reia: ComponentBuilder, props: ButtonProps) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, comp): (_, ReiaRef<Option<HtmlButtonElement>>) = reia.hook(use_ref, ());
     let button = comp

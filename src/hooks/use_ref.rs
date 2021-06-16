@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::{
-    hook::{HookBuilder, HookValue},
+    hook::{HookBuilder, HookReturn},
     unmounted_lock::UnmountedLock,
 };
 
@@ -34,7 +34,7 @@ impl<T: Default + 'static> ReiaRef<T> {
     }
 }
 
-pub fn use_ref<T>(reia: HookBuilder, _: ()) -> impl HookValue<ReiaRef<T>>
+pub fn use_ref<T>(reia: HookBuilder, _: ()) -> impl HookReturn<ReiaRef<T>>
 where
     T: Default + 'static,
 {
