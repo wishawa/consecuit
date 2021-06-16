@@ -1,6 +1,10 @@
 use web_sys::{window, Node};
 
-use crate::{ContainerReturn, component::{ComponentBuilder, ComponentReturn}, hooks::{use_ref, ReiaRef}};
+use crate::{
+    component::ComponentBuilder,
+    hooks::{use_ref, ReiaRef},
+    ContainerReturn,
+};
 
 pub fn div(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();

@@ -1,6 +1,10 @@
-use web_sys::{HtmlButtonElement, Node, window};
+use web_sys::{window, HtmlButtonElement};
 
-use crate::{ContainerReturn, component::{ComponentBuilder, ComponentReturn}, hooks::{use_ref, ReiaFunction, ReiaRef}};
+use crate::{
+    component::ComponentBuilder,
+    hooks::{use_ref, ReiaFunction, ReiaRef},
+    ContainerReturn,
+};
 use wasm_bindgen::JsCast;
 
 #[derive(Clone, PartialEq)]

@@ -1,4 +1,8 @@
-use crate::{hook::{HookBuilder, HookStores, HookReturn, Rerun, Rerunner}, stores::{StoreCons, StoreConsEnd, StoresList}, unmounted_lock::UnmountedLock};
+use crate::{
+    hook::{HookBuilder, HookReturn, HookStores, Rerun, Rerunner},
+    stores::{StoreCons, StoreConsEnd, StoresList},
+    unmounted_lock::UnmountedLock,
+};
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Node};
 
@@ -15,7 +19,8 @@ where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
 {
-    let stores: StoreCons<ComponentContainer<Func, Ret, ()>, Ret::StoresList> = StoresList::create();
+    let stores: StoreCons<ComponentContainer<Func, Ret, ()>, Ret::StoresList> =
+        StoresList::create();
     let stores: &_ = Box::leak(Box::new(stores));
     let parent_node: Node = window()
         .unwrap()
@@ -31,7 +36,7 @@ where
             current: stores,
             entire: PhantomData,
             lock: lock.clone(),
-            rerun: Rerunner(&PANIC_RERUNNER)
+            rerun: Rerunner(&PANIC_RERUNNER),
         },
         parent_node,
     };
@@ -73,7 +78,8 @@ impl<T: ComponentReturn<Node = Node>> ContainerReturn for T {}
 pub trait LeafReturn: ComponentReturn<Node = ()> {}
 impl<T: ComponentReturn<Node = ()>> LeafReturn for T {}
 
-impl<Stores: StoresList, LastNode: MaybeNode, RetNode: MaybeNode> ComponentReturn for NodeComponentStores<StoreConsEnd, Stores, LastNode, RetNode>
+impl<Stores: StoresList, LastNode: MaybeNode, RetNode: MaybeNode> ComponentReturn
+    for NodeComponentStores<StoreConsEnd, Stores, LastNode, RetNode>
 {
     type StoresList = Stores;
     type Node = RetNode;
@@ -82,15 +88,19 @@ impl<Stores: StoresList, LastNode: MaybeNode, RetNode: MaybeNode> ComponentRetur
     }
 }
 
-
 pub trait MaybeNode: 'static + Clone {}
 impl MaybeNode for Node {}
 impl MaybeNode for () {}
-pub struct NodeComponentStores<CurrentStores: StoresList, EntireStores: StoresList, LastNode: MaybeNode, ReturnNode: MaybeNode> {
+pub struct NodeComponentStores<
+    CurrentStores: StoresList,
+    EntireStores: StoresList,
+    LastNode: MaybeNode,
+    ReturnNode: MaybeNode,
+> {
     pub(crate) hook_stores: HookStores<CurrentStores, EntireStores>,
     pub(crate) parent_node: Node,
     pub(crate) last_node: LastNode,
-    pub(crate) ret_node: ReturnNode
+    pub(crate) ret_node: ReturnNode,
 }
 
 fn run_component<Func, Props, Ret>(
@@ -214,7 +224,7 @@ where
 
 impl<RestStores, EntireStores, Func, Ret, Props>
     ComponentStores<StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>, EntireStores>
-    where
+where
     RestStores: StoresList,
     EntireStores: StoresList,
     Ret: ComponentReturn,
@@ -222,22 +232,31 @@ impl<RestStores, EntireStores, Func, Ret, Props>
     Props: PartialEq + Clone,
 {
     pub fn node(
-        self, component_func: Func, component_props: Props
+        self,
+        component_func: Func,
+        component_props: Props,
     ) -> NodeComponentStores<RestStores, EntireStores, Ret::Node, ()> {
-        let ComponentStores { hook_stores, parent_node } = self;
+        let ComponentStores {
+            hook_stores,
+            parent_node,
+        } = self;
         let with_node: NodeComponentStores<_, _, (), ()> = NodeComponentStores {
             hook_stores,
             parent_node,
             last_node: (),
-            ret_node: ()
+            ret_node: (),
         };
         with_node.node(component_func, component_props)
     }
 }
 
-
 impl<RestStores, EntireStores, Func, Ret, Props, LastNode, RetNode>
-    NodeComponentStores<StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>, EntireStores, LastNode, RetNode>
+    NodeComponentStores<
+        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
+        EntireStores,
+        LastNode,
+        RetNode,
+    >
 where
     RestStores: StoresList,
     EntireStores: StoresList,
@@ -320,12 +339,10 @@ where
             hook_stores,
             parent_node,
             last_node: (),
-            ret_node: node
+            ret_node: node,
         }
     }
-    pub(crate) fn bare_leaf_node(
-        self
-    ) -> NodeComponentStores<StoreConsEnd, EntireStores, (), ()> {
+    pub(crate) fn bare_leaf_node(self) -> NodeComponentStores<StoreConsEnd, EntireStores, (), ()> {
         let ComponentStores {
             hook_stores,
             parent_node,
@@ -334,7 +351,7 @@ where
             hook_stores,
             parent_node,
             last_node: (),
-            ret_node: ()
+            ret_node: (),
         }
     }
 }
@@ -344,7 +361,7 @@ impl<RestStores, EntireStores, Func, Ret, Props, LastNode, RetNode>
         StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
         EntireStores,
         LastNode,
-        RetNode
+        RetNode,
     >
 where
     RestStores: StoresList,
@@ -370,7 +387,7 @@ where
     ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
-    RetNode: MaybeNode
+    RetNode: MaybeNode,
 {
     pub fn child<Builder, ChildRetNode>(
         self,
@@ -386,7 +403,7 @@ where
             hook_stores,
             parent_node,
             ret_node,
-            last_node
+            last_node,
         } = self;
         let (rest_stores, store) = hook_stores.use_one_store();
         let comp_stores = NodeComponentStores {
@@ -405,7 +422,7 @@ where
             hook_stores: rest_stores,
             parent_node,
             last_node: (),
-            ret_node: built.ret_node
+            ret_node: built.ret_node,
         }
     }
 }
@@ -416,12 +433,17 @@ where
     EntireStores: StoresList,
 {
     pub fn hole_here(self) -> NodeComponentStores<Stores, EntireStores, (), Node> {
-        let NodeComponentStores { hook_stores, parent_node, last_node, ret_node } = self;
+        let NodeComponentStores {
+            hook_stores,
+            parent_node,
+            last_node,
+            ret_node,
+        } = self;
         NodeComponentStores {
             hook_stores,
             parent_node,
             last_node: ret_node,
-            ret_node: last_node
+            ret_node: last_node,
         }
     }
 }

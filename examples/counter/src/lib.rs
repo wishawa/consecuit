@@ -1,4 +1,8 @@
-use reia::{ComponentBuilder, ContainerReturn, HookBuilder, HookReturn, LeafReturn, components::{button, div, span, ButtonProps, SpanProps}, hooks::{use_function, use_state, ReiaFunction}};
+use reia::{
+    components::{button, div, span, ButtonProps, SpanProps},
+    hooks::{use_function, use_state, ReiaFunction},
+    ComponentBuilder, ContainerReturn, HookBuilder, HookReturn, LeafReturn,
+};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -42,9 +46,13 @@ fn count_button(
                 SpanProps {
                     text: "Decrement Counter".to_string(),
                 },
-            ).sibling(span, SpanProps {
-                text: "Yay".to_string(),
-            })
+            )
+            .sibling(
+                span,
+                SpanProps {
+                    text: "Yay".to_string(),
+                },
+            )
             /*.child(|reia| reia.node(span, SpanProps {
                 text: "Yay2".to_string(),
             }))*/
@@ -67,10 +75,15 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, 
 fn app(reia: ComponentBuilder, _: ()) -> impl LeafReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
-    reia.node(container, ()).child(|reia| {
-        reia.node(title, count)
-            .sibling(count_button, (increment.clone(), decrement.clone()))
-    }).sibling(span, SpanProps {
-        text: "Yay2".to_string(),
-    })
+    reia.node(container, ())
+        .child(|reia| {
+            reia.node(title, count)
+                .sibling(count_button, (increment.clone(), decrement.clone()))
+        })
+        .sibling(
+            span,
+            SpanProps {
+                text: "Yay2".to_string(),
+            },
+        )
 }

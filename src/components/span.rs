@@ -1,6 +1,10 @@
 use web_sys::{window, Node};
 
-use crate::{LeafReturn, component::{ComponentBuilder, ComponentReturn}, hooks::{use_ref, ReiaRef}};
+use crate::{
+    component::ComponentBuilder,
+    hooks::{use_ref, ReiaRef},
+    LeafReturn,
+};
 
 #[derive(Clone, PartialEq)]
 pub struct SpanProps {
@@ -22,7 +26,7 @@ pub fn span(reia: ComponentBuilder, props: SpanProps) -> impl LeafReturn {
             });
         })
         .unwrap();
-    let span_node = store
+    store
         .visit_with(|opt| {
             let (span, text) = opt.as_ref().unwrap();
             text.set_node_value(Some(&props.text));
