@@ -43,12 +43,12 @@ fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, 0);
     reia.node(div, DivProps {}).child(move |reia| {
         reia.node(button_with_text, ("-".into(), decrement))
-            .sibling(
+            .node(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: format!("{}", count),
                 },
             )
-            .sibling(button_with_text, ("+".into(), increment))
+            .node(button_with_text, ("+".into(), increment))
     })
 }

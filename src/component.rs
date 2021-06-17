@@ -8,18 +8,6 @@ use std::{
 };
 use web_sys::{window, Element};
 
-struct PanicRootRerunner();
-impl Rerun for PanicRootRerunner {
-    fn rerun(&'static self) {
-        unreachable!("impossible for parent of the root component to rerun")
-    }
-}
-static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
-
-type TreeStores<Func, Ret, Props> =
-    StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
-type StillFullComponentStore<T> = ComponentStores<T, T>;
-
 pub fn mount<Func, Ret>(function: Func)
 where
     Ret: ComponentReturn,
@@ -27,7 +15,9 @@ where
 {
     let document = window().unwrap().document().unwrap();
 
-    let parent_node: Element = document.get_element_by_id("reia-app-root").unwrap();
+    let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
+    let parent_node: Element = document.create_element("div").unwrap();
+    app_root.append_child(&parent_node).unwrap();
 
     let root_tree = mount_subtree(function, parent_node.into(), ());
     Box::leak(Box::new(root_tree));
@@ -56,34 +46,47 @@ where
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone + 'static,
 {
+    type TreeStores<Func, Ret, Props> =
+        StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
+    type StillFullNodeComponentStore<T> = ComponentStores<T, T, NoHoleNode, NoHoleNode>;
+
     let stores: TreeStores<Func, Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
     let stores_borrow = unsafe {
+        // This unsafe is really unsafe.
+        // The stores list is NOT really &'static.
+        // Always check the UnmountedLock before accessing it.
         transmute::<&'_ TreeStores<Func, Ret, Props>, &'static TreeStores<Func, Ret, Props>>(
             stores.borrow(),
         )
     };
 
-    let document = window().unwrap().document().unwrap();
-    let containing_node: Element = document.create_element("div").unwrap();
-    parent_node.append_child(&containing_node).unwrap();
+    struct PanicRootRerunner();
+    impl Rerun for PanicRootRerunner {
+        fn rerun(&'static self) {
+            unreachable!("this dummy is never directly called")
+        }
+    }
+    static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
-    let component_store: StillFullComponentStore<_> = ComponentStores {
+    let component_store: StillFullNodeComponentStore<_> = ComponentStores {
         hook_stores: HookStores {
             current: stores_borrow,
             entire: PhantomData,
             lock: lock.clone(),
             rerun: Rerunner(&PANIC_RERUNNER),
         },
-        parent_node: containing_node.clone(),
+        parent_node: parent_node.clone(),
+        last_node: NoHoleNode,
+        ret_node: NoHoleNode,
     };
     component_store.node(function, props);
 
     ReiaSubtree {
         _stores: stores,
         lock,
-        elem: containing_node,
+        elem: parent_node,
     }
 }
 
@@ -92,13 +95,8 @@ pub struct ComponentBuilder {
     pub(crate) parent_node: Element,
 }
 
-pub struct ComponentStores<CurrentStores: StoresList, EntireStores: StoresList> {
-    pub(crate) hook_stores: HookStores<CurrentStores, EntireStores>,
-    pub(crate) parent_node: Element,
-}
-
 impl ComponentBuilder {
-    pub fn init<T: StoresList>(self) -> ComponentStores<T, T> {
+    pub fn init<T: StoresList>(self) -> ComponentStores<T, T, NoHoleNode, NoHoleNode> {
         let Self {
             hook_builder,
             parent_node,
@@ -106,6 +104,8 @@ impl ComponentBuilder {
         ComponentStores {
             hook_stores: hook_builder.init::<T>(),
             parent_node,
+            last_node: NoHoleNode,
+            ret_node: NoHoleNode,
         }
     }
 }
@@ -120,7 +120,7 @@ pub trait ContainerReturn: ComponentReturn<HoleNode = Element> {}
 impl<T: ComponentReturn<HoleNode = Element>> ContainerReturn for T {}
 
 impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> ComponentReturn
-    for NodeComponentStores<StoreConsEnd, Stores, LastNode, HoleNode>
+    for ComponentStores<StoreConsEnd, Stores, LastNode, HoleNode>
 {
     type StoresList = Stores;
     type HoleNode = HoleNode;
@@ -131,8 +131,10 @@ impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> Compo
 
 pub trait MaybeHoleNode: 'static + Clone {}
 impl MaybeHoleNode for Element {}
-impl MaybeHoleNode for () {}
-pub struct NodeComponentStores<
+#[derive(Clone)]
+pub struct NoHoleNode;
+impl MaybeHoleNode for NoHoleNode {}
+pub struct ComponentStores<
     CurrentStores: StoresList,
     EntireStores: StoresList,
     LastNode: MaybeHoleNode,
@@ -169,18 +171,23 @@ where
     holes
 }
 
-impl<ThisStore, RestStores, EntireStores>
-    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores, LastNode, CompHole>
+    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, LastNode, CompHole>
 where
     ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
+    LastNode: MaybeHoleNode,
+    CompHole: MaybeHoleNode,
 {
     pub fn hook<Func, Arg, Out, Ret>(
         self,
         hook_func: Func,
         hook_arg: Arg,
-    ) -> (ComponentStores<RestStores, EntireStores>, Out)
+    ) -> (
+        ComponentStores<RestStores, EntireStores, LastNode, CompHole>,
+        Out,
+    )
     where
         Ret: HookReturn<Out, StoresList = ThisStore>,
         Func: 'static + Fn(HookBuilder, Arg) -> Ret,
@@ -188,11 +195,15 @@ where
         let ComponentStores {
             hook_stores,
             parent_node: node,
+            last_node,
+            ret_node,
         } = self;
         let (hook_stores, out) = hook_stores.hook(hook_func, hook_arg);
         let comp_stores = ComponentStores {
             hook_stores,
             parent_node: node,
+            last_node,
+            ret_node,
         };
         (comp_stores, out)
     }
@@ -263,36 +274,8 @@ where
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, Props>
-    ComponentStores<StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>, EntireStores>
-where
-    RestStores: StoresList,
-    EntireStores: StoresList,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone,
-{
-    pub fn node(
-        self,
-        component_func: Func,
-        component_props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::HoleNode, ()> {
-        let ComponentStores {
-            hook_stores,
-            parent_node,
-        } = self;
-        let with_node: NodeComponentStores<_, _, (), ()> = NodeComponentStores {
-            hook_stores,
-            parent_node,
-            last_node: (),
-            ret_node: (),
-        };
-        with_node.node(component_func, component_props)
-    }
-}
-
 impl<RestStores, EntireStores, Func, Ret, Props, LastNode, CompHole>
-    NodeComponentStores<
+    ComponentStores<
         StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
         EntireStores,
         LastNode,
@@ -311,8 +294,8 @@ where
         self,
         component_func: Func,
         component_props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole> {
-        let NodeComponentStores {
+    ) -> ComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole> {
+        let ComponentStores {
             hook_stores,
             parent_node,
             ret_node,
@@ -355,7 +338,7 @@ where
             .my_holes
             .clone()
             .unwrap();
-        NodeComponentStores {
+        ComponentStores {
             hook_stores: rests,
             parent_node,
             ret_node,
@@ -364,66 +347,45 @@ where
     }
 }
 
-impl<EntireStores> ComponentStores<StoreConsEnd, EntireStores>
+impl<EntireStores> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode>
 where
     EntireStores: StoresList,
 {
     pub(crate) fn bare_container_node(
         self,
         node: Element,
-    ) -> NodeComponentStores<StoreConsEnd, EntireStores, (), Element> {
+    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, Element> {
         let ComponentStores {
             hook_stores,
             parent_node,
+            ..
         } = self;
-        NodeComponentStores {
+        ComponentStores {
             hook_stores,
             parent_node,
-            last_node: (),
+            last_node: NoHoleNode,
             ret_node: node,
         }
     }
-    pub(crate) fn bare_leaf_node(self) -> NodeComponentStores<StoreConsEnd, EntireStores, (), ()> {
+    pub(crate) fn bare_leaf_node(
+        self,
+    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
         let ComponentStores {
             hook_stores,
             parent_node,
+            ..
         } = self;
-        NodeComponentStores {
+        ComponentStores {
             hook_stores,
             parent_node,
-            last_node: (),
-            ret_node: (),
+            last_node: NoHoleNode,
+            ret_node: NoHoleNode,
         }
-    }
-}
-
-impl<RestStores, EntireStores, Func, Ret, Props, LastNode, CompHole>
-    NodeComponentStores<
-        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
-        EntireStores,
-        LastNode,
-        CompHole,
-    >
-where
-    RestStores: StoresList,
-    EntireStores: StoresList,
-    LastNode: MaybeHoleNode,
-    CompHole: MaybeHoleNode,
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone,
-{
-    pub fn sibling(
-        self,
-        component_func: Func,
-        props: Props,
-    ) -> NodeComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole> {
-        self.node(component_func, props)
     }
 }
 
 impl<ThisStore, RestStores, EntireStores, CompHole>
-    NodeComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, Element, CompHole>
+    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, Element, CompHole>
 where
     ThisStore: StoresList,
     RestStores: StoresList,
@@ -433,23 +395,23 @@ where
     pub fn child<Builder, ChildLastNode, ChildHole>(
         self,
         builder: Builder,
-    ) -> NodeComponentStores<RestStores, EntireStores, (), ChildHole>
+    ) -> ComponentStores<RestStores, EntireStores, NoHoleNode, ChildHole>
     where
         ChildHole: MaybeHoleNode,
         ChildLastNode: MaybeHoleNode,
         Builder: FnOnce(
-            NodeComponentStores<ThisStore, ThisStore, (), CompHole>,
+            ComponentStores<ThisStore, ThisStore, NoHoleNode, CompHole>,
         )
-            -> NodeComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildHole>,
+            -> ComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildHole>,
     {
-        let NodeComponentStores {
+        let ComponentStores {
             hook_stores,
             parent_node,
             ret_node,
             last_node,
         } = self;
         let (rest_stores, store) = hook_stores.use_one_store();
-        let comp_stores = NodeComponentStores {
+        let comp_stores = ComponentStores {
             hook_stores: HookStores {
                 current: store,
                 entire: PhantomData,
@@ -458,31 +420,31 @@ where
             },
             parent_node: last_node,
             ret_node,
-            last_node: (),
+            last_node: NoHoleNode,
         };
         let built = builder(comp_stores);
-        NodeComponentStores {
+        ComponentStores {
             hook_stores: rest_stores,
             parent_node,
-            last_node: (),
+            last_node: NoHoleNode,
             ret_node: built.ret_node,
         }
     }
 }
 
-impl<Stores, EntireStores> NodeComponentStores<Stores, EntireStores, Element, ()>
+impl<Stores, EntireStores> ComponentStores<Stores, EntireStores, Element, NoHoleNode>
 where
     Stores: StoresList,
     EntireStores: StoresList,
 {
-    pub fn hole_here(self) -> NodeComponentStores<Stores, EntireStores, (), Element> {
-        let NodeComponentStores {
+    pub fn hole_here(self) -> ComponentStores<Stores, EntireStores, NoHoleNode, Element> {
+        let ComponentStores {
             hook_stores,
             parent_node,
             last_node,
             ret_node,
         } = self;
-        NodeComponentStores {
+        ComponentStores {
             hook_stores,
             parent_node,
             last_node: ret_node,

@@ -39,7 +39,7 @@ fn count_button(
                 },
             )
         })
-        .sibling(button, ButtonProps { onclick: decrement })
+        .node(button, ButtonProps { onclick: decrement })
         .child(|reia| {
             reia.node(
                 basic_text_label,
@@ -47,7 +47,7 @@ fn count_button(
                     text: "Decrement Counter".to_string(),
                 },
             )
-            .sibling(
+            .node(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: "Yay".to_string(),
@@ -74,6 +74,6 @@ fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
     reia.node(container, ()).child(|reia| {
         reia.node(title, count)
-            .sibling(count_button, (increment.clone(), decrement.clone()))
+            .node(count_button, (increment.clone(), decrement.clone()))
     })
 }
