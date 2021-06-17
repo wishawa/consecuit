@@ -1,4 +1,5 @@
 use crate::{
+    component_utils::{ComponentFunc, ComponentProps},
     executor::{Renderable, RerenderTask},
     hook::{HookBuilder, HookReturn, HookStores},
     stores::{StoreCons, StoreConsEnd, StoresList},
@@ -7,43 +8,41 @@ use crate::{
 use std::{borrow::Borrow, cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Element};
 
-pub fn mount<Func, Ret>(function: Func)
+pub fn mount<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, ()) -> Ret,
 {
     let document = window().unwrap().document().unwrap();
 
     let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
     let parent_node: Element = document.create_element("div").unwrap();
 
-    let root_tree = create_subtree(parent_node.clone());
-    root_tree.run(function, ());
+    let root_tree = create_subtree(function, parent_node.clone());
+    root_tree.run(());
 
     app_root.append_child(&parent_node).unwrap();
 
     Box::leak(Box::new(root_tree));
 }
 
-type TreeStores<Func, Ret, Props> =
-    StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
+type TreeStores<Ret, Props> =
+    StoreCons<ComponentContainer<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
-pub(crate) struct ReiaSubtree<Func, Ret, Props>
+pub(crate) struct ReiaSubtree<Ret, Props>
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
-    stores: Box<TreeStores<Func, Ret, Props>>,
+    stores: Box<TreeStores<Ret, Props>>,
     lock: UnmountedLock,
     container: Element,
+    func: ComponentFunc<Props, Ret>,
 }
 
-impl<Func, Ret, Props> Drop for ReiaSubtree<Func, Ret, Props>
+impl<Ret, Props> Drop for ReiaSubtree<Ret, Props>
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
     fn drop(&mut self) {
         self.lock.unmount();
@@ -51,13 +50,28 @@ where
     }
 }
 
-impl<Func, Ret, Props> ReiaSubtree<Func, Ret, Props>
+pub(crate) trait Subtree {
+    type Props;
+    fn run(&self, props: Self::Props);
+}
+
+impl<Ret, Props> Subtree for ReiaSubtree<Ret, Props>
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
-    pub(crate) fn run(&self, function: Func, props: Props) {
+    type Props = Props;
+    fn run(&self, props: Self::Props) {
+        self.run(props)
+    }
+}
+
+impl<Ret, Props> ReiaSubtree<Ret, Props>
+where
+    Ret: ComponentReturn,
+    Props: ComponentProps,
+{
+    pub(crate) fn run(&self, props: Props) {
         struct PanicRootRerunner();
         impl Renderable for PanicRootRerunner {
             fn render(&'static self) {
@@ -70,7 +84,7 @@ where
             // This unsafe is really unsafe.
             // The stores list is NOT really &'static.
             // Always check the UnmountedLock before accessing it.
-            transmute::<&'_ TreeStores<Func, Ret, Props>, &'static TreeStores<Func, Ret, Props>>(
+            transmute::<&'_ TreeStores<Ret, Props>, &'static TreeStores<Ret, Props>>(
                 self.stores.borrow(),
             )
         };
@@ -90,23 +104,26 @@ where
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         };
-        component_store.node(function, props);
+        component_store.node(self.func.clone(), props);
     }
 }
 
-pub(crate) fn create_subtree<Func, Ret, Props>(container: Element) -> ReiaSubtree<Func, Ret, Props>
+pub(crate) fn create_subtree<Ret, Props>(
+    func: ComponentFunc<Props, Ret>,
+    container: Element,
+) -> ReiaSubtree<Ret, Props>
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
-    let stores: TreeStores<Func, Ret, Props> = StoresList::create();
+    let stores: TreeStores<Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
     ReiaSubtree {
         stores,
         lock,
         container,
+        func,
     }
 }
 
@@ -166,17 +183,16 @@ pub struct ComponentStores<
     pub(crate) ret_node: ReturnNode,
 }
 
-fn run_component<Func, Props, Ret>(
+fn run_component<Props, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
     rerender: RerenderTask,
-    component_func: &Func,
+    component_func: ComponentFunc<Props, Ret>,
     props: Props,
     on_node: Element,
 ) -> Ret::HoleNode
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
     let reia = ComponentBuilder {
@@ -200,9 +216,9 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
 {
-    pub fn hook<Func, Arg, Out, Ret>(
+    pub fn hook<Arg, Ret, Out>(
         self,
-        hook_func: Func,
+        hook_func: fn(HookBuilder, Arg) -> Ret,
         hook_arg: Arg,
     ) -> (
         ComponentStores<RestStores, EntireStores, LastNode, CompHole>,
@@ -210,7 +226,6 @@ where
     )
     where
         Ret: HookReturn<Out, StoresList = ThisStore>,
-        Func: 'static + Fn(HookBuilder, Arg) -> Ret,
     {
         let ComponentStores {
             hook_stores,
@@ -229,34 +244,31 @@ where
     }
 }
 
-pub struct ComponentContainer<Func, Ret, Props>
+pub struct ComponentContainer<Ret, Props>
 where
     Props: 'static,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     stores: Ret::StoresList,
-    initialized: RefCell<Option<InitializedComponentInfo<Func, Ret, Props>>>,
+    initialized: RefCell<Option<InitializedComponentInfo<Ret, Props>>>,
 }
 
-struct InitializedComponentInfo<Func, Ret, Props>
+struct InitializedComponentInfo<Ret, Props>
 where
     Props: 'static,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    func: Func,
+    func: ComponentFunc<Props, Ret>,
     props: Props,
     parent_node: Element,
     my_hole: Option<Ret::HoleNode>,
     lock: UnmountedLock,
 }
 
-impl<Func, Ret, Props> Default for ComponentContainer<Func, Ret, Props>
+impl<Ret, Props> Default for ComponentContainer<Ret, Props>
 where
     Props: 'static,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn default() -> Self {
         Self {
@@ -266,11 +278,10 @@ where
     }
 }
 
-impl<Func, Ret, Props> Renderable for ComponentContainer<Func, Ret, Props>
+impl<Ret, Props> Renderable for ComponentContainer<Ret, Props>
 where
     Props: 'static + Clone,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
     fn render(self: &'static Self) {
         let mut ran_borrow = self.initialized.borrow_mut();
@@ -290,16 +301,16 @@ where
             stores,
             lock.clone(),
             rerender,
-            func,
+            func.clone(),
             props.clone(),
             parent_node.clone(),
         ));
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, Props, LastNode, CompHole>
+impl<RestStores, EntireStores, Ret, Props, LastNode, CompHole>
     ComponentStores<
-        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
+        StoreCons<ComponentContainer<Ret, Props>, RestStores>,
         EntireStores,
         LastNode,
         CompHole,
@@ -310,12 +321,11 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone,
 {
     pub fn node(
         self,
-        component_func: Func,
+        component_func: ComponentFunc<Props, Ret>,
         component_props: Props,
     ) -> ComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole> {
         let ComponentStores {

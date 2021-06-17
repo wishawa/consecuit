@@ -70,16 +70,15 @@ where
     }
 }
 
-fn run_hook<Func, Arg, Out, Ret>(
+fn run_hook<Arg, Out, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
     rerender_parent: RerenderTask,
-    hook_func: Func,
+    hook_func: fn(HookBuilder, Arg) -> Ret,
     hook_arg: Arg,
 ) -> Out
 where
     Ret: HookReturn<Out>,
-    Func: 'static + Fn(HookBuilder, Arg) -> Ret,
 {
     let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
     let reia = HookBuilder {
@@ -98,14 +97,13 @@ where
     RestStores: StoresList,
     EntireStores: StoresList,
 {
-    pub fn hook<Func, Arg, Out, Ret>(
+    pub fn hook<Arg, Out, Ret>(
         self,
-        hook_func: Func,
+        hook_func: fn(HookBuilder, Arg) -> Ret,
         hook_arg: Arg,
     ) -> (HookStores<RestStores, EntireStores>, Out)
     where
         Ret: HookReturn<Out, StoresList = NextStores>,
-        Func: 'static + Fn(HookBuilder, Arg) -> Ret,
     {
         let (rest_stores, store) = self.use_one_store();
         let out = run_hook(

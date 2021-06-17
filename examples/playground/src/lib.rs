@@ -1,7 +1,7 @@
 use reia::{
     components::{
         basic_text_label, button, div, dyn_vec_comps, text_node, BasicTextLabelProps, ButtonProps,
-        DivProps, DynVecCompProps,
+        DivProps,
     },
     hooks::{use_effect, use_function, use_state, ReiaFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
@@ -99,10 +99,7 @@ fn level_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
 fn levels_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
     let reia = reia.init();
     reia.node(text_node, format!("Current level: {}\nHistory:", level))
-        .node(
-            dyn_vec_comps,
-            DynVecCompProps(level_history, (1..=level.max(0)).collect()),
-        )
+        .node(dyn_vec_comps, (level_history, (1..=level.max(0)).collect()))
 }
 
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {

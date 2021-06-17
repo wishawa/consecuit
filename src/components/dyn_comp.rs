@@ -1,28 +1,22 @@
 use web_sys::window;
 
 use crate::{
-    component::{create_subtree, ReiaSubtree},
+    component::{create_subtree, ReiaSubtree, Subtree},
+    component_utils::{ComponentFunc, ComponentProps},
     hooks::{use_ref, ReiaRef},
     ComponentBuilder, ComponentReturn,
 };
 
-pub struct DynOptCompProps<Func, Ret, Props>(pub Func, pub Option<Props>)
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static;
-
-pub fn dyn_opt_comp<Func, Ret, Props>(
+pub fn opt_comp<Ret, Props>(
     reia: ComponentBuilder,
-    DynOptCompProps(func, props): DynOptCompProps<Func, Ret, Props>,
+    (func, props): (ComponentFunc<Props, Ret>, Option<Props>),
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
     let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Option<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());
+    let (reia, store): (_, ReiaRef<Option<ReiaSubtree<Ret, Props>>>) = reia.hook(use_ref, ());
     store
         .visit_mut_with(|opt| {
             if let Some(props) = props {
@@ -30,9 +24,9 @@ where
                     let document = window().unwrap().document().unwrap();
                     let parent_node = document.create_element("div").unwrap();
                     reia.parent_node.append_child(&parent_node).unwrap();
-                    create_subtree(parent_node)
+                    create_subtree(func, parent_node)
                 });
-                subtree.run(func, props);
+                subtree.run(props);
             } else {
                 *opt = None;
             }
@@ -41,23 +35,45 @@ where
     reia.bare_leaf_node()
 }
 
-pub struct DynVecCompProps<Func, Ret, Props>(pub Func, pub Vec<Props>)
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static;
-
-pub fn dyn_vec_comps<Func, Ret, Props>(
+pub fn dyn_opt_comp<Ret, Props>(
     reia: ComponentBuilder,
-    DynVecCompProps(func, props): DynVecCompProps<Func, Ret, Props>,
+    (func, props): (ComponentFunc<Props, Ret>, Option<Props>),
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
-    Func: Clone + 'static + Clone + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
+    Props: ComponentProps,
 {
     let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Vec<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());
+    let (reia, store): (_, ReiaRef<Option<Box<dyn Subtree<Props = Props>>>>) =
+        reia.hook(use_ref, ());
+    store
+        .visit_mut_with(|opt| {
+            if let Some(props) = props {
+                let subtree = opt.get_or_insert_with(|| {
+                    let document = window().unwrap().document().unwrap();
+                    let parent_node = document.create_element("div").unwrap();
+                    reia.parent_node.append_child(&parent_node).unwrap();
+                    Box::new(create_subtree(func, parent_node)) as Box<dyn Subtree<Props = Props>>
+                });
+                subtree.run(props);
+            } else {
+                *opt = None;
+            }
+        })
+        .unwrap();
+    reia.bare_leaf_node()
+}
+
+pub fn dyn_vec_comps<Ret, Props>(
+    reia: ComponentBuilder,
+    (func, props): (ComponentFunc<Props, Ret>, Vec<Props>),
+) -> impl ComponentReturn
+where
+    Ret: ComponentReturn,
+    Props: ComponentProps,
+{
+    let reia = reia.init();
+    let (reia, store): (_, ReiaRef<Vec<Box<dyn Subtree<Props = Props>>>>) = reia.hook(use_ref, ());
     store
         .visit_mut_with(|subtrees| {
             let current_length = subtrees.len();
@@ -67,59 +83,15 @@ where
                 subtrees.extend((current_length..new_length).map(|_| {
                     let parent_node = document.create_element("div").unwrap();
                     reia.parent_node.append_child(&parent_node).unwrap();
-                    create_subtree(parent_node)
+                    Box::new(create_subtree(func, parent_node)) as Box<dyn Subtree<Props = Props>>
                 }))
             } else if new_length < current_length {
                 subtrees.truncate(new_length);
             }
             for (subtree, props) in subtrees.iter().zip(props.into_iter()) {
-                subtree.run(func.clone(), props);
+                subtree.run(props);
             }
         })
         .unwrap();
     reia.bare_leaf_node()
-}
-
-impl<Func, Ret, Props> PartialEq for DynOptCompProps<Func, Ret, Props>
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
-{
-    fn eq(&self, other: &Self) -> bool {
-        self.1 == other.1
-    }
-}
-
-impl<Func, Ret, Props> PartialEq for DynVecCompProps<Func, Ret, Props>
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
-{
-    fn eq(&self, other: &Self) -> bool {
-        self.1 == other.1
-    }
-}
-
-impl<Func, Ret, Props> Clone for DynOptCompProps<Func, Ret, Props>
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
-{
-    fn clone(&self) -> Self {
-        Self(self.0.clone(), self.1.clone())
-    }
-}
-
-impl<Func, Ret, Props> Clone for DynVecCompProps<Func, Ret, Props>
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
-    Props: PartialEq + Clone + 'static,
-{
-    fn clone(&self) -> Self {
-        Self(self.0.clone(), self.1.clone())
-    }
 }
