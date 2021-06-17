@@ -5,7 +5,7 @@ use crate::{
     unmounted_lock::UnmountedLock,
 };
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
-use web_sys::{window, Element};
+use web_sys::Element;
 pub mod utils;
 use utils::{ComponentFunc, ComponentProps};
 
@@ -14,23 +14,7 @@ mod hole;
 
 pub mod bare;
 pub mod subtree;
-
-pub fn mount<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
-where
-    Ret: ComponentReturn,
-{
-    let document = window().unwrap().document().unwrap();
-
-    let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
-    let parent_node: Element = document.create_element("div").unwrap();
-
-    let root_tree = subtree::create_subtree(function, parent_node.clone());
-    root_tree.run(());
-
-    app_root.append_child(&parent_node).unwrap();
-
-    Box::leak(Box::new(root_tree));
-}
+pub use subtree::mount;
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,

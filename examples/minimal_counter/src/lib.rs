@@ -22,10 +22,7 @@ fn button_with_text(
         .child(|reia| reia.node(basic_text_label, BasicTextLabelProps { text }))
 }
 
-fn use_counter(
-    reia: HookBuilder,
-    initial: i32,
-) -> impl HookReturn<(i32, JsFunction, JsFunction)> {
+fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, JsFunction, JsFunction)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, initial);
     let count_setter_1 = count_setter.clone();

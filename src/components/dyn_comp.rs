@@ -1,8 +1,6 @@
-use web_sys::window;
-
 use crate::{
     component::{
-        subtree::{create_subtree, ReiaSubtree, Subtree},
+        subtree::{mount_subtree, ReiaSubtree, Subtree},
         utils::{ComponentFunc, ComponentProps},
     },
     hooks::{use_ref, ReiaRef},
@@ -22,13 +20,14 @@ where
     store
         .visit_mut_with(|opt| {
             if let Some(props) = props {
-                let subtree = opt.get_or_insert_with(|| {
-                    let document = window().unwrap().document().unwrap();
-                    let parent_node = document.create_element("div").unwrap();
-                    reia.parent_node.append_child(&parent_node).unwrap();
-                    create_subtree(func, parent_node)
-                });
-                subtree.run(props);
+                match opt {
+                    Some(subtree) => {
+                        subtree.run(props);
+                    }
+                    opt_none => {
+                        *opt_none = Some(mount_subtree(func, props, reia.parent_node.clone()));
+                    }
+                }
             } else {
                 *opt = None;
             }
@@ -51,13 +50,18 @@ where
     store
         .visit_mut_with(|opt| {
             if let Some(props) = props {
-                let subtree = opt.get_or_insert_with(|| {
-                    let document = window().unwrap().document().unwrap();
-                    let parent_node = document.create_element("div").unwrap();
-                    reia.parent_node.append_child(&parent_node).unwrap();
-                    Box::new(create_subtree(func, parent_node)) as Box<dyn Subtree<Props = Props>>
-                });
-                subtree.run(props);
+                match opt {
+                    Some(subtree) => {
+                        subtree.run(props);
+                    }
+                    opt_none => {
+                        *opt_none = Some(Box::new(mount_subtree(
+                            func,
+                            props,
+                            reia.parent_node.clone(),
+                        )));
+                    }
+                }
             } else {
                 *opt = None;
             }
@@ -68,7 +72,7 @@ where
 
 pub fn dyn_vec_comps<Ret, Props>(
     reia: ComponentBuilder,
-    (func, props): (ComponentFunc<Props, Ret>, Vec<Props>),
+    (func, mut props): (ComponentFunc<Props, Ret>, Vec<Props>),
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
@@ -80,14 +84,14 @@ where
         .visit_mut_with(|subtrees| {
             let current_length = subtrees.len();
             let new_length = props.len();
+
             if new_length > current_length {
-                let document = window().unwrap().document().unwrap();
-                subtrees.extend((current_length..new_length).map(|_| {
-                    let parent_node = document.create_element("div").unwrap();
-                    reia.parent_node.append_child(&parent_node).unwrap();
-                    Box::new(create_subtree(func, parent_node)) as Box<dyn Subtree<Props = Props>>
+                let new_props = props.split_off(current_length);
+                subtrees.extend(new_props.into_iter().map(|prop| {
+                    Box::new(mount_subtree(func, prop, reia.parent_node.clone()))
+                        as Box<dyn Subtree<Props = Props>>
                 }))
-            } else if new_length < current_length {
+            } else {
                 subtrees.truncate(new_length);
             }
             for (subtree, props) in subtrees.iter().zip(props.into_iter()) {

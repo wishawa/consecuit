@@ -1,4 +1,4 @@
-use web_sys::Element;
+use web_sys::{window, Element};
 
 use crate::{
     component::{ComponentStores, NoHoleNode},
@@ -6,7 +6,7 @@ use crate::{
     hook::HookStores,
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
-    ComponentReturn,
+    ComponentBuilder, ComponentReturn,
 };
 
 use super::{ComponentContainer, ComponentFunc, ComponentProps};
@@ -95,8 +95,23 @@ where
     }
 }
 
-pub(crate) fn create_subtree<Ret, Props>(
+pub fn mount<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
+where
+    Ret: ComponentReturn,
+{
+    let document = window().unwrap().document().unwrap();
+
+    let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
+
+    let root_tree = mount_subtree(function, (), app_root);
+    root_tree.run(());
+
+    Box::leak(Box::new(root_tree));
+}
+
+pub(crate) fn mount_subtree<Ret, Props>(
     func: ComponentFunc<Props, Ret>,
+    props: Props,
     container: Element,
 ) -> ReiaSubtree<Ret, Props>
 where
@@ -106,10 +121,15 @@ where
     let stores: TreeStores<Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
-    ReiaSubtree {
+    let document = window().unwrap().document().unwrap();
+    let parent_node: Element = document.create_element("div").unwrap();
+    let subtree = ReiaSubtree {
         stores,
         lock,
-        container,
+        container: parent_node.clone(),
         func,
-    }
+    };
+    subtree.run(props);
+    container.append_child(&parent_node).unwrap();
+    subtree
 }
