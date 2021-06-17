@@ -1,11 +1,14 @@
-use crate::hook::{HookBuilder, HookReturn, Rerunner};
+use crate::{
+    executor::RerenderTask,
+    hook::{HookBuilder, HookReturn},
+};
 
 use super::use_ref::{use_ref, ReiaRef};
 
 #[derive(Clone, PartialEq)]
 pub struct StateSetter<T: 'static> {
     state: ReiaRef<Option<T>>,
-    rerun: Rerunner,
+    rerender: RerenderTask,
 }
 
 impl<T> StateSetter<T> {
@@ -13,7 +16,7 @@ impl<T> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(value))
             .unwrap();
-        self.rerun.rerun();
+        self.rerender.enqueue_self();
     }
 }
 impl<T: Clone> StateSetter<T> {
@@ -21,7 +24,7 @@ impl<T: Clone> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(func(state.clone().unwrap())))
             .unwrap();
-        self.rerun.rerun();
+        self.rerender.enqueue_self();
     }
 }
 
@@ -36,7 +39,7 @@ where
         .unwrap();
     let setter = StateSetter {
         state,
-        rerun: reia.rerun.clone(),
+        rerender: reia.rerender_parent.clone(),
     };
     (reia, (value, setter))
 }

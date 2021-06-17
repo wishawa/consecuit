@@ -4,7 +4,10 @@ use js_sys::Function;
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::console;
 
-use crate::hook::{HookBuilder, HookReturn};
+use crate::{
+    executor::EXECUTOR,
+    hook::{HookBuilder, HookReturn},
+};
 
 use super::{use_ref, ReiaRef};
 
@@ -39,6 +42,7 @@ pub fn use_function<F: Fn() + 'static>(
         } else {
             console::warn_1(&"Trying to call a function whose component tree had been unmounted. This is a no-op.".into());
         }
+        EXECUTOR.execute();
     }) as Box<dyn Fn()>);
     let rf = ReiaFunction {
         closure: Rc::new(closure),

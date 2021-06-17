@@ -1,5 +1,6 @@
 use crate::{
-    hook::{HookBuilder, HookReturn, HookStores, Rerun, Rerunner},
+    executor::{Renderable, RerenderTask},
+    hook::{HookBuilder, HookReturn, HookStores},
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
@@ -58,8 +59,8 @@ where
 {
     pub(crate) fn run(&self, function: Func, props: Props) {
         struct PanicRootRerunner();
-        impl Rerun for PanicRootRerunner {
-            fn rerun(&'static self) {
+        impl Renderable for PanicRootRerunner {
+            fn render(&'static self) {
                 unreachable!("this dummy is never directly called")
             }
         }
@@ -80,7 +81,10 @@ where
                 current: stores_borrow,
                 entire: PhantomData,
                 lock: self.lock.clone(),
-                rerun: Rerunner(&PANIC_RERUNNER),
+                rerender_parent: RerenderTask {
+                    obj: &PANIC_RERUNNER,
+                    lock: self.lock.clone(),
+                },
             },
             parent_node: self.container.clone(),
             last_node: NoHoleNode,
@@ -165,7 +169,7 @@ pub struct ComponentStores<
 fn run_component<Func, Props, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
-    rerun: Rerunner,
+    rerender: RerenderTask,
     component_func: &Func,
     props: Props,
     on_node: Element,
@@ -179,7 +183,7 @@ where
         hook_builder: HookBuilder {
             untyped_stores,
             lock,
-            rerun,
+            rerender_parent: rerender,
         },
         parent_node: on_node,
     };
@@ -244,7 +248,7 @@ where
     func: Func,
     props: Props,
     parent_node: Element,
-    my_holes: Option<Ret::HoleNode>,
+    my_hole: Option<Ret::HoleNode>,
     lock: UnmountedLock,
 }
 
@@ -262,27 +266,30 @@ where
     }
 }
 
-impl<Func, Ret, Props> Rerun for ComponentContainer<Func, Ret, Props>
+impl<Func, Ret, Props> Renderable for ComponentContainer<Func, Ret, Props>
 where
     Props: 'static + Clone,
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    fn rerun(self: &'static Self) {
+    fn render(self: &'static Self) {
         let mut ran_borrow = self.initialized.borrow_mut();
         let stores = &self.stores;
         let InitializedComponentInfo {
             func,
             props,
-            my_holes,
+            my_hole,
             lock,
             parent_node,
         } = ran_borrow.deref_mut().as_mut().unwrap();
-        let rerun = Rerunner(self);
-        *my_holes = Some(run_component(
+        let rerender = RerenderTask {
+            obj: self,
+            lock: lock.clone(),
+        };
+        *my_hole = Some(run_component(
             stores,
             lock.clone(),
-            rerun,
+            rerender,
             func,
             props.clone(),
             parent_node.clone(),
@@ -318,7 +325,7 @@ where
             ..
         } = self;
         let (rests, container_store) = hook_stores.use_one_store();
-        let should_rerun = {
+        let should_render = {
             let mut ran_borrow = container_store.initialized.borrow_mut();
             match ran_borrow.deref_mut() {
                 Some(ran_info) => {
@@ -334,7 +341,7 @@ where
                     *opt_none = Some(InitializedComponentInfo {
                         func: component_func,
                         props: component_props,
-                        my_holes: None,
+                        my_hole: None,
                         lock: rests.lock.clone(),
                         parent_node: parent_node.clone(),
                     });
@@ -342,16 +349,15 @@ where
                 }
             }
         };
-        let rerunner = Rerunner(container_store);
-        if should_rerun {
-            rerunner.rerun();
+        if should_render {
+            container_store.render();
         }
         let last_node = container_store
             .initialized
             .borrow()
             .as_ref()
             .unwrap()
-            .my_holes
+            .my_hole
             .clone()
             .unwrap();
         ComponentStores {
@@ -432,7 +438,7 @@ where
                 current: store,
                 entire: PhantomData,
                 lock: rest_stores.lock.clone(),
-                rerun: rest_stores.rerun.clone(),
+                rerender_parent: rest_stores.rerender_parent.clone(),
             },
             parent_node: last_node,
             ret_node,

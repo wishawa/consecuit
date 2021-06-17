@@ -1,33 +1,15 @@
 use std::{marker::PhantomData, mem::transmute};
 
 use crate::{
+    executor::RerenderTask,
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
 
-#[derive(Clone)]
-pub(crate) struct Rerunner(pub(crate) &'static dyn Rerun);
-
-impl Rerunner {
-    pub fn rerun(&self) {
-        self.0.rerun();
-    }
-}
-
-impl PartialEq for Rerunner {
-    fn eq(&self, other: &Rerunner) -> bool {
-        self.0 as *const _ == other.0 as *const _
-    }
-}
-
-pub(crate) trait Rerun {
-    fn rerun(&'static self);
-}
-
 pub struct HookBuilder {
     pub(crate) untyped_stores: &'static (),
     pub(crate) lock: UnmountedLock,
-    pub(crate) rerun: Rerunner,
+    pub(crate) rerender_parent: RerenderTask,
 }
 
 impl HookBuilder {
@@ -37,7 +19,7 @@ impl HookBuilder {
             current,
             entire: PhantomData,
             lock: self.lock,
-            rerun: self.rerun,
+            rerender_parent: self.rerender_parent,
         }
     }
 }
@@ -46,7 +28,7 @@ pub struct HookStores<CurrentStores: StoresList, EntireStores: StoresList> {
     pub(crate) current: &'static CurrentStores,
     pub(crate) entire: PhantomData<EntireStores>,
     pub(crate) lock: UnmountedLock,
-    pub(crate) rerun: Rerunner,
+    pub(crate) rerender_parent: RerenderTask,
 }
 
 type EmptyHookStores<Entire> = HookStores<StoreConsEnd, Entire>;
@@ -81,7 +63,7 @@ where
             current: rest,
             entire: PhantomData,
             lock: self.lock,
-            rerun: self.rerun,
+            rerender_parent: self.rerender_parent,
         };
 
         (new_rs, store)
@@ -91,7 +73,7 @@ where
 fn run_hook<Func, Arg, Out, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
-    rerun: Rerunner,
+    rerender_parent: RerenderTask,
     hook_func: Func,
     hook_arg: Arg,
 ) -> Out
@@ -103,7 +85,7 @@ where
     let reia = HookBuilder {
         untyped_stores,
         lock,
-        rerun,
+        rerender_parent,
     };
     let out: Out = hook_func(reia, hook_arg).get_val();
     out
@@ -129,7 +111,7 @@ where
         let out = run_hook(
             store,
             rest_stores.lock.clone(),
-            rest_stores.rerun.clone(),
+            rest_stores.rerender_parent.clone(),
             hook_func,
             hook_arg,
         );
