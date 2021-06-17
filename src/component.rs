@@ -1,18 +1,11 @@
-use crate::{executor::{Renderable, RerenderTask}, hook::{HookBuilder, HookReturn, HookStores}, props::ComponentProps, stores::{StoreCons, StoreConsEnd, StoresList}, unmounted_lock::UnmountedLock};
+use crate::{
+    executor::{Renderable, RerenderTask},
+    hook::{HookBuilder, HookReturn, HookStores},
+    stores::{StoreCons, StoreConsEnd, StoresList},
+    unmounted_lock::UnmountedLock,
+};
 use std::{borrow::Borrow, cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Element};
-
-pub(crate) trait FuncComp {
-    type Ret;
-}
-
-impl<Func, Ret> FuncComp for Func
-where
-    Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Ret::Props) -> Ret
-{
-    type Ret = Ret;
-}
 
 pub fn mount<Func, Ret>(function: Func)
 where
@@ -33,13 +26,13 @@ where
 }
 
 type TreeStores<Func, Ret, Props> =
-    StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::Stores>;
+    StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
 pub(crate) struct ReiaSubtree<Func, Ret, Props>
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: ComponentProps,
+    Props: PartialEq + Clone + 'static,
 {
     stores: Box<TreeStores<Func, Ret, Props>>,
     lock: UnmountedLock,
@@ -50,7 +43,7 @@ impl<Func, Ret, Props> Drop for ReiaSubtree<Func, Ret, Props>
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: ComponentProps,
+    Props: PartialEq + Clone + 'static,
 {
     fn drop(&mut self) {
         self.lock.unmount();
@@ -62,7 +55,7 @@ impl<Func, Ret, Props> ReiaSubtree<Func, Ret, Props>
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: ComponentProps,
+    Props: PartialEq + Clone + 'static,
 {
     pub(crate) fn run(&self, function: Func, props: Props) {
         struct PanicRootRerunner();
@@ -82,8 +75,8 @@ where
             )
         };
 
-        type StillFullNodeComponentStore<T, P> = ComponentStores<T, T, NoHoleNode, NoHoleNode, P>;
-        let component_store: StillFullNodeComponentStore<_, Props> = ComponentStores {
+        type StillFullNodeComponentStore<T> = ComponentStores<T, T, NoHoleNode, NoHoleNode>;
+        let component_store: StillFullNodeComponentStore<_> = ComponentStores {
             hook_stores: HookStores {
                 current: stores_borrow,
                 entire: PhantomData,
@@ -96,7 +89,6 @@ where
             parent_node: self.container.clone(),
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
-            props_phantom: PhantomData
         };
         component_store.node(function, props);
     }
@@ -106,7 +98,7 @@ pub(crate) fn create_subtree<Func, Ret, Props>(container: Element) -> ReiaSubtre
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: ComponentProps,
+    Props: PartialEq + Clone + 'static,
 {
     let stores: TreeStores<Func, Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
@@ -124,7 +116,7 @@ pub struct ComponentBuilder {
 }
 
 impl ComponentBuilder {
-    pub fn init<T: StoresList, P: ComponentProps>(self) -> ComponentStores<T, T, NoHoleNode, NoHoleNode, P> {
+    pub fn init<T: StoresList>(self) -> ComponentStores<T, T, NoHoleNode, NoHoleNode> {
         let Self {
             hook_builder,
             parent_node,
@@ -134,14 +126,12 @@ impl ComponentBuilder {
             parent_node,
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
-            props_phantom: PhantomData
         }
     }
 }
 
 pub trait ComponentReturn: 'static {
-    type Stores: StoresList;
-    type Props: ComponentProps;
+    type StoresList: StoresList;
     type HoleNode: MaybeHoleNode;
     fn get_node(self) -> Self::HoleNode;
 }
@@ -149,12 +139,11 @@ pub trait ComponentReturn: 'static {
 pub trait ContainerReturn: ComponentReturn<HoleNode = Element> {}
 impl<T: ComponentReturn<HoleNode = Element>> ContainerReturn for T {}
 
-impl<Stores, LastNode, HoleNode, Props> ComponentReturn
-    for ComponentStores<StoreConsEnd, Stores, LastNode, HoleNode, Props>
-where Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode, Props: ComponentProps {
-    type Stores = Stores;
+impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> ComponentReturn
+    for ComponentStores<StoreConsEnd, Stores, LastNode, HoleNode>
+{
+    type StoresList = Stores;
     type HoleNode = HoleNode;
-    type Props = Props;
     fn get_node(self) -> Self::HoleNode {
         self.ret_node
     }
@@ -170,17 +159,15 @@ pub struct ComponentStores<
     EntireStores: StoresList,
     LastNode: MaybeHoleNode,
     ReturnNode: MaybeHoleNode,
-    Props: ComponentProps
 > {
     pub(crate) hook_stores: HookStores<CurrentStores, EntireStores>,
     pub(crate) parent_node: Element,
     pub(crate) last_node: LastNode,
     pub(crate) ret_node: ReturnNode,
-    pub(crate) props_phantom: PhantomData<Props>
 }
 
 fn run_component<Func, Props, Ret>(
-    store: &'static Ret::Stores,
+    store: &'static Ret::StoresList,
     lock: UnmountedLock,
     rerender: RerenderTask,
     component_func: &Func,
@@ -191,7 +178,7 @@ where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    let untyped_stores = unsafe { transmute::<&'static Ret::Stores, &'static ()>(store) };
+    let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
     let reia = ComponentBuilder {
         hook_builder: HookBuilder {
             untyped_stores,
@@ -204,22 +191,21 @@ where
     holes
 }
 
-impl<ThisStore, RestStores, EntireStores, LastNode, CompHole, Props>
-    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, LastNode, CompHole, Props>
+impl<ThisStore, RestStores, EntireStores, LastNode, CompHole>
+    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, LastNode, CompHole>
 where
     ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
-    Props: ComponentProps
 {
     pub fn hook<Func, Arg, Out, Ret>(
         self,
         hook_func: Func,
         hook_arg: Arg,
     ) -> (
-        ComponentStores<RestStores, EntireStores, LastNode, CompHole, Props>,
+        ComponentStores<RestStores, EntireStores, LastNode, CompHole>,
         Out,
     )
     where
@@ -231,7 +217,6 @@ where
             parent_node: node,
             last_node,
             ret_node,
-            props_phantom
         } = self;
         let (hook_stores, out) = hook_stores.hook(hook_func, hook_arg);
         let comp_stores = ComponentStores {
@@ -239,7 +224,6 @@ where
             parent_node: node,
             last_node,
             ret_node,
-            props_phantom
         };
         (comp_stores, out)
     }
@@ -251,7 +235,7 @@ where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
 {
-    stores: Ret::Stores,
+    stores: Ret::StoresList,
     initialized: RefCell<Option<InitializedComponentInfo<Func, Ret, Props>>>,
 }
 
@@ -313,13 +297,12 @@ where
     }
 }
 
-impl<RestStores, EntireStores, Func, Ret, NodeProps, LastNode, CompHole, CompProps>
+impl<RestStores, EntireStores, Func, Ret, Props, LastNode, CompHole>
     ComponentStores<
-        StoreCons<ComponentContainer<Func, Ret, NodeProps>, RestStores>,
+        StoreCons<ComponentContainer<Func, Ret, Props>, RestStores>,
         EntireStores,
         LastNode,
         CompHole,
-        CompProps
     >
 where
     RestStores: StoresList,
@@ -327,20 +310,18 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, NodeProps) -> Ret,
-    NodeProps: ComponentProps,
-    CompProps: ComponentProps,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+    Props: PartialEq + Clone,
 {
     pub fn node(
         self,
         component_func: Func,
-        component_props: NodeProps,
-    ) -> ComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole, CompProps> {
+        component_props: Props,
+    ) -> ComponentStores<RestStores, EntireStores, Ret::HoleNode, CompHole> {
         let ComponentStores {
             hook_stores,
             parent_node,
             ret_node,
-            props_phantom,
             ..
         } = self;
         let (rests, container_store) = hook_stores.use_one_store();
@@ -349,10 +330,9 @@ where
             match ran_borrow.deref_mut() {
                 Some(ran_info) => {
                     let props = &mut ran_info.props;
-                    if component_props.props_eq(props) {
+                    if component_props == *props {
                         false
-                    }
-                    else {
+                    } else {
                         *props = component_props.clone();
                         true
                     }
@@ -385,24 +365,21 @@ where
             parent_node,
             ret_node,
             last_node,
-            props_phantom
         }
     }
 }
 
-impl<EntireStores, Props> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode, Props>
+impl<EntireStores> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode>
 where
     EntireStores: StoresList,
-    Props: ComponentProps
 {
     pub(crate) fn bare_container_node(
         self,
         node: Element,
-    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, Element, Props> {
+    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, Element> {
         let ComponentStores {
             hook_stores,
             parent_node,
-            props_phantom,
             ..
         } = self;
         ComponentStores {
@@ -410,16 +387,14 @@ where
             parent_node,
             last_node: NoHoleNode,
             ret_node: node,
-            props_phantom
         }
     }
     pub(crate) fn bare_leaf_node(
         self,
-    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode, Props> {
+    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
         let ComponentStores {
             hook_stores,
             parent_node,
-            props_phantom,
             ..
         } = self;
         ComponentStores {
@@ -427,38 +402,35 @@ where
             parent_node,
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
-            props_phantom
         }
     }
 }
 
-impl<ThisStore, RestStores, EntireStores, CompHole, Props>
-    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, Element, CompHole, Props>
+impl<ThisStore, RestStores, EntireStores, CompHole>
+    ComponentStores<StoreCons<ThisStore, RestStores>, EntireStores, Element, CompHole>
 where
     ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
     CompHole: MaybeHoleNode,
-    Props: ComponentProps
 {
     pub fn child<Builder, ChildLastNode, ChildHole>(
         self,
         builder: Builder,
-    ) -> ComponentStores<RestStores, EntireStores, NoHoleNode, ChildHole, Props>
+    ) -> ComponentStores<RestStores, EntireStores, NoHoleNode, ChildHole>
     where
         ChildHole: MaybeHoleNode,
         ChildLastNode: MaybeHoleNode,
         Builder: FnOnce(
-            ComponentStores<ThisStore, ThisStore, NoHoleNode, CompHole, ()>,
+            ComponentStores<ThisStore, ThisStore, NoHoleNode, CompHole>,
         )
-            -> ComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildHole, ()>,
+            -> ComponentStores<StoreConsEnd, ThisStore, ChildLastNode, ChildHole>,
     {
         let ComponentStores {
             hook_stores,
             parent_node,
             ret_node,
             last_node,
-            props_phantom
         } = self;
         let (rest_stores, store) = hook_stores.use_one_store();
         let comp_stores = ComponentStores {
@@ -471,7 +443,6 @@ where
             parent_node: last_node,
             ret_node,
             last_node: NoHoleNode,
-            props_phantom: PhantomData
         };
         let built = builder(comp_stores);
         ComponentStores {
@@ -479,31 +450,27 @@ where
             parent_node,
             last_node: NoHoleNode,
             ret_node: built.ret_node,
-            props_phantom
         }
     }
 }
 
-impl<Stores, EntireStores, Props> ComponentStores<Stores, EntireStores, Element, NoHoleNode, Props>
+impl<Stores, EntireStores> ComponentStores<Stores, EntireStores, Element, NoHoleNode>
 where
     Stores: StoresList,
     EntireStores: StoresList,
-    Props: ComponentProps
 {
-    pub fn hole_here(self) -> ComponentStores<Stores, EntireStores, NoHoleNode, Element, Props> {
+    pub fn hole_here(self) -> ComponentStores<Stores, EntireStores, NoHoleNode, Element> {
         let ComponentStores {
             hook_stores,
             parent_node,
             last_node,
             ret_node,
-            props_phantom
         } = self;
         ComponentStores {
             hook_stores,
             parent_node,
             last_node: ret_node,
             ret_node: last_node,
-            props_phantom
         }
     }
 }

@@ -1,15 +1,25 @@
 use web_sys::window;
 
-use crate::{ComponentBuilder, ComponentReturn, component::{create_subtree, ReiaSubtree}, hooks::{use_ref, ReiaRef}, props::PropsPartialEq};
+use crate::{
+    component::{create_subtree, ReiaSubtree},
+    hooks::{use_ref, ReiaRef},
+    ComponentBuilder, ComponentReturn,
+};
+
+pub struct DynOptCompProps<Func, Ret, Props>(pub Func, pub Option<Props>)
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static;
 
 pub fn dyn_opt_comp<Func, Ret, Props>(
     reia: ComponentBuilder,
-    (func, props): (Func, Option<Props>),
+    DynOptCompProps(func, props): DynOptCompProps<Func, Ret, Props>,
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
-    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PropsPartialEq + Clone + 'static,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
 {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Option<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());
@@ -31,14 +41,20 @@ where
     reia.bare_leaf_node()
 }
 
+pub struct DynVecCompProps<Func, Ret, Props>(pub Func, pub Vec<Props>)
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+    Props: PartialEq + Clone + 'static;
+
 pub fn dyn_vec_comps<Func, Ret, Props>(
     reia: ComponentBuilder,
-    (func, props): (Func, Vec<Props>),
+    DynVecCompProps(func, props): DynVecCompProps<Func, Ret, Props>,
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
-    Func: Clone + 'static + Clone + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PropsPartialEq + Clone + 'static,
+    Func: Clone + 'static + Clone + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
 {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Vec<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());
@@ -62,4 +78,48 @@ where
         })
         .unwrap();
     reia.bare_leaf_node()
+}
+
+impl<Func, Ret, Props> PartialEq for DynOptCompProps<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.1 == other.1
+    }
+}
+
+impl<Func, Ret, Props> PartialEq for DynVecCompProps<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
+{
+    fn eq(&self, other: &Self) -> bool {
+        self.1 == other.1
+    }
+}
+
+impl<Func, Ret, Props> Clone for DynOptCompProps<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
+{
+    fn clone(&self) -> Self {
+        Self(self.0.clone(), self.1.clone())
+    }
+}
+
+impl<Func, Ret, Props> Clone for DynVecCompProps<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret + Clone,
+    Props: PartialEq + Clone + 'static,
+{
+    fn clone(&self) -> Self {
+        Self(self.0.clone(), self.1.clone())
+    }
 }

@@ -11,4 +11,4 @@ pub use span::{span, SpanProps};
 mod text_node;
 pub use text_node::text_node;
 mod dyn_comp;
-pub use dyn_comp::{dyn_opt_comp, dyn_vec_comps};
+pub use dyn_comp::{dyn_opt_comp, dyn_vec_comps, DynOptCompProps, DynVecCompProps};
