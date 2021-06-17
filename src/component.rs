@@ -3,9 +3,7 @@ use crate::{
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
-use std::{
-    any::Any, borrow::Borrow, cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut,
-};
+use std::{borrow::Borrow, cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::{window, Element};
 
 pub fn mount<Func, Ret>(function: Func)
@@ -19,72 +17,90 @@ where
     let parent_node: Element = document.create_element("div").unwrap();
     app_root.append_child(&parent_node).unwrap();
 
-    let root_tree = mount_subtree(function, parent_node.into(), ());
+    let root_tree = create_subtree(parent_node.into());
+    root_tree.run(function, ());
     Box::leak(Box::new(root_tree));
 }
 
-struct ReiaSubtree {
-    _stores: Box<dyn Any>,
+type TreeStores<Func, Ret, Props> =
+    StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
+
+pub(crate) struct ReiaSubtree<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+    Props: PartialEq + Clone + 'static,
+{
+    stores: Box<TreeStores<Func, Ret, Props>>,
     lock: UnmountedLock,
     elem: Element,
 }
 
-impl Drop for ReiaSubtree {
+impl<Func, Ret, Props> Drop for ReiaSubtree<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+    Props: PartialEq + Clone + 'static,
+{
     fn drop(&mut self) {
         self.lock.unmount();
         self.elem.remove();
     }
 }
 
-fn mount_subtree<Func, Ret, Props>(
-    function: Func,
-    parent_node: Element,
-    props: Props,
-) -> ReiaSubtree
+impl<Func, Ret, Props> ReiaSubtree<Func, Ret, Props>
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
     Props: PartialEq + Clone + 'static,
 {
-    type TreeStores<Func, Ret, Props> =
-        StoreCons<ComponentContainer<Func, Ret, Props>, <Ret as ComponentReturn>::StoresList>;
-    type StillFullNodeComponentStore<T> = ComponentStores<T, T, NoHoleNode, NoHoleNode>;
+    pub(crate) fn run(&self, function: Func, props: Props) {
+        struct PanicRootRerunner();
+        impl Rerun for PanicRootRerunner {
+            fn rerun(&'static self) {
+                unreachable!("this dummy is never directly called")
+            }
+        }
+        static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
 
+        let stores_borrow = unsafe {
+            // This unsafe is really unsafe.
+            // The stores list is NOT really &'static.
+            // Always check the UnmountedLock before accessing it.
+            transmute::<&'_ TreeStores<Func, Ret, Props>, &'static TreeStores<Func, Ret, Props>>(
+                self.stores.borrow(),
+            )
+        };
+
+        type StillFullNodeComponentStore<T> = ComponentStores<T, T, NoHoleNode, NoHoleNode>;
+        let component_store: StillFullNodeComponentStore<_> = ComponentStores {
+            hook_stores: HookStores {
+                current: stores_borrow,
+                entire: PhantomData,
+                lock: self.lock.clone(),
+                rerun: Rerunner(&PANIC_RERUNNER),
+            },
+            parent_node: self.elem.clone(),
+            last_node: NoHoleNode,
+            ret_node: NoHoleNode,
+        };
+        component_store.node(function, props);
+    }
+}
+
+pub(crate) fn create_subtree<Func, Ret, Props>(
+    parent_node: Element,
+) -> ReiaSubtree<Func, Ret, Props>
+where
+    Ret: ComponentReturn,
+    Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
+    Props: PartialEq + Clone + 'static,
+{
     let stores: TreeStores<Func, Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
-    let stores_borrow = unsafe {
-        // This unsafe is really unsafe.
-        // The stores list is NOT really &'static.
-        // Always check the UnmountedLock before accessing it.
-        transmute::<&'_ TreeStores<Func, Ret, Props>, &'static TreeStores<Func, Ret, Props>>(
-            stores.borrow(),
-        )
-    };
-
-    struct PanicRootRerunner();
-    impl Rerun for PanicRootRerunner {
-        fn rerun(&'static self) {
-            unreachable!("this dummy is never directly called")
-        }
-    }
-    static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
-
-    let component_store: StillFullNodeComponentStore<_> = ComponentStores {
-        hook_stores: HookStores {
-            current: stores_borrow,
-            entire: PhantomData,
-            lock: lock.clone(),
-            rerun: Rerunner(&PANIC_RERUNNER),
-        },
-        parent_node: parent_node.clone(),
-        last_node: NoHoleNode,
-        ret_node: NoHoleNode,
-    };
-    component_store.node(function, props);
-
     ReiaSubtree {
-        _stores: stores,
+        stores: stores,
         lock,
         elem: parent_node,
     }
@@ -314,8 +330,8 @@ where
                         false
                     }
                 }
-                opt => {
-                    *opt = Some(InitializedComponentInfo {
+                opt_none => {
+                    *opt_none = Some(InitializedComponentInfo {
                         func: component_func,
                         props: component_props,
                         my_holes: None,

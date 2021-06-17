@@ -1,10 +1,6 @@
 use web_sys::HtmlDivElement;
 
-use crate::{
-    component::ComponentBuilder,
-    hooks::use_element,
-    ContainerReturn,
-};
+use crate::{component::ComponentBuilder, hooks::use_element, ContainerReturn};
 
 #[derive(PartialEq, Clone)]
 pub struct DivProps {}

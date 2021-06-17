@@ -4,5 +4,7 @@ mod use_state;
 pub use use_state::{use_state, StateSetter};
 mod use_function;
 pub use use_function::{use_function, ReiaFunction};
+mod use_effect;
+pub use use_effect::use_effect;
 mod use_element;
 pub(crate) use use_element::use_element;
