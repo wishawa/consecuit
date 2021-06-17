@@ -16,7 +16,7 @@ pub(crate) struct RerenderTask {
 
 impl RerenderTask {
     pub(crate) fn enqueue_self(&self) {
-        EXECUTOR.enqueue(self.clone());
+        LOCAL_EXECUTOR.with(|l| l.enqueue(self.clone()))
     }
     pub(crate) fn render(&self) {
         if self.lock.is_mounted() {
@@ -43,52 +43,60 @@ pub(crate) trait Renderable {
 struct Executor {
     queue: RefCell<VecDeque<RerenderTask>>,
     queue_set: RefCell<HashSet<*const dyn Renderable>>,
-    lock: AtomicBool,
+    active: AtomicBool,
 }
 
 impl Executor {
     fn enqueue(&self, task: RerenderTask) {
         if self.queue_set.borrow_mut().insert(task.obj) {
             self.queue.borrow_mut().push_back(task);
+            if !self.is_active() {
+                self.execute();
+            }
+        }
+    }
+    fn execute_loop(&self) {
+        loop {
+            let task_opt = { self.queue.borrow_mut().pop_front() };
+            if let Some(task) = task_opt {
+                {
+                    self.queue_set
+                        .borrow_mut()
+                        .remove(&(task.obj as *const dyn Renderable))
+                };
+                task.render();
+            } else {
+                break;
+            }
         }
     }
     fn execute(&self) {
-        if !self.lock.swap(true, Ordering::Acquire) {
-            loop {
-                let task_opt = { self.queue.borrow_mut().pop_front() };
-                if let Some(task) = task_opt {
-                    {
-                        self.queue_set
-                            .borrow_mut()
-                            .remove(&(task.obj as *const dyn Renderable))
-                    };
-                    task.render();
-                } else {
-                    break;
-                }
-            }
-            self.lock.store(false, Ordering::Release);
+        if !self.active.swap(true, Ordering::Acquire) {
+            self.execute_loop();
+            self.active.store(false, Ordering::Release);
+        }
+    }
+    fn is_active(&self) -> bool {
+        self.active.load(Ordering::Acquire)
+    }
+    fn batched_updates(&self, f: impl FnOnce()) {
+        let already_running = self.active.swap(true, Ordering::Acquire);
+        f();
+        if !already_running {
+            self.execute_loop();
+            self.active.store(false, Ordering::Release);
         }
     }
 }
 
 thread_local! {
     static LOCAL_EXECUTOR: Executor = Executor {
+        active: AtomicBool::new(false),
         queue: RefCell::new(VecDeque::new()),
-        queue_set: RefCell::new(HashSet::new()),
-        lock: AtomicBool::new(false)
+        queue_set: RefCell::new(HashSet::new())
     };
 }
 
-pub(crate) struct GlobalExecutor;
-
-impl GlobalExecutor {
-    pub(crate) fn execute(&self) {
-        LOCAL_EXECUTOR.with(|l| l.execute());
-    }
-    pub(crate) fn enqueue(&self, task: RerenderTask) {
-        LOCAL_EXECUTOR.with(|l| l.enqueue(task));
-    }
+pub fn batched_updates(f: impl FnOnce()) {
+    LOCAL_EXECUTOR.with(|l| l.batched_updates(f))
 }
-
-pub(crate) static EXECUTOR: GlobalExecutor = GlobalExecutor;

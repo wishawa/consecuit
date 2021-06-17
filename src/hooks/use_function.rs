@@ -5,7 +5,7 @@ use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::console;
 
 use crate::{
-    executor::EXECUTOR,
+    batched_updates,
     hook::{HookBuilder, HookReturn},
 };
 
@@ -38,11 +38,12 @@ pub fn use_function<F: Fn() + 'static>(
     let lock = reia.lock.clone();
     let closure = Closure::wrap(Box::new(move || {
         if lock.is_mounted() {
-            function();
+            batched_updates(|| {
+                function();
+            });
         } else {
             console::warn_1(&"Trying to call a function whose component tree had been unmounted. This is a no-op.".into());
         }
-        EXECUTOR.execute();
     }) as Box<dyn Fn()>);
     let rf = ReiaFunction {
         closure: Rc::new(closure),

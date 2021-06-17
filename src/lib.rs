@@ -7,6 +7,7 @@ mod stores;
 mod unmounted_lock;
 
 pub use component::{mount, ComponentBuilder, ComponentReturn, ContainerReturn};
+pub use executor::batched_updates;
 pub use hook::{HookBuilder, HookReturn};
 
 #[cfg(test)]
