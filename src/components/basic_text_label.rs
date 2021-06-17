@@ -1,5 +1,3 @@
-use web_sys::{window, Node};
-
 use crate::component::{ComponentBuilder, ComponentReturn};
 
 use super::{span, text_node, SpanProps};

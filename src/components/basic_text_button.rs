@@ -1,11 +1,9 @@
-use web_sys::{window, Node};
-
 use crate::{
     component::{ComponentBuilder, ComponentReturn},
     hooks::ReiaFunction,
 };
 
-use super::{button, span, text_node, ButtonProps, SpanProps};
+use super::{button, text_node, ButtonProps};
 
 #[derive(Clone, PartialEq)]
 pub struct BasicTextButtonProps {

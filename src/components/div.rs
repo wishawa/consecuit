@@ -1,11 +1,10 @@
-use web_sys::{window, HtmlDivElement};
+use web_sys::HtmlDivElement;
 
 use crate::{
     component::ComponentBuilder,
-    hooks::{use_element, use_ref, ReiaRef},
+    hooks::use_element,
     ContainerReturn,
 };
-use wasm_bindgen::JsCast;
 
 #[derive(PartialEq, Clone)]
 pub struct DivProps {}
