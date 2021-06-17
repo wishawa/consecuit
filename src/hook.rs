@@ -14,6 +14,12 @@ impl Rerunner {
     }
 }
 
+impl PartialEq for Rerunner {
+    fn eq(&self, other: &Rerunner) -> bool {
+        self.0 as *const _ == other.0 as *const _
+    }
+}
+
 pub(crate) trait Rerun {
     fn rerun(&'static self);
 }

@@ -2,7 +2,7 @@ use crate::hook::{HookBuilder, HookReturn, Rerunner};
 
 use super::use_ref::{use_ref, ReiaRef};
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub struct StateSetter<T: 'static> {
     state: ReiaRef<Option<T>>,
     rerun: Rerunner,

@@ -6,6 +6,12 @@ use std::{
 #[derive(Clone)]
 pub(crate) struct UnmountedLock(Rc<AtomicBool>);
 
+impl PartialEq for UnmountedLock {
+    fn eq(&self, other: &UnmountedLock) -> bool {
+        Rc::ptr_eq(&self.0, &other.0)
+    }
+}
+
 impl UnmountedLock {
     pub(crate) fn new_mounted() -> Self {
         Self(Rc::new(AtomicBool::new(true)))

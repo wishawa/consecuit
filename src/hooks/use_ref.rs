@@ -14,6 +14,12 @@ pub struct ReiaRef<T: Default + 'static> {
     lock: UnmountedLock,
 }
 
+impl<T: Default + 'static> PartialEq for ReiaRef<T> {
+    fn eq(&self, other: &ReiaRef<T>) -> bool {
+        self.inside.as_ptr() == other.inside.as_ptr()
+    }
+}
+
 impl<T: Default + 'static> ReiaRef<T> {
     pub fn visit_with<Ret: 'static, F: FnOnce(&T) -> Ret>(&self, func: F) -> Result<Ret, ()> {
         if self.lock.is_mounted() {

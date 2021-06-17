@@ -1,6 +1,6 @@
 use reia::{
     components::{basic_text_label, button, div, BasicTextLabelProps, ButtonProps, DivProps},
-    hooks::{use_function, use_state, ReiaFunction},
+    hooks::{use_effect, use_function, use_state, ReiaFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
 };
 use wasm_bindgen::prelude::*;
@@ -58,14 +58,26 @@ fn count_button(
 
 fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, ReiaFunction)> {
     let reia = reia.init();
-    let (reia, (count, count_setter)) = reia.hook(use_state, 1);
+    let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let count_setter_1 = count_setter.clone();
     let (reia, increment) = reia.hook(use_function, move || {
         count_setter_1.update_with(|value| value + 1);
     });
+    let count_setter_2 = count_setter.clone();
     let (reia, decrement) = reia.hook(use_function, move || {
-        count_setter.update_with(|value| value - 1);
+        count_setter_2.update_with(|value| value - 1);
     });
+    let (reia, _) = reia.hook(
+        use_effect,
+        (
+            &|(count, count_setter): (i32, StateSetter<i32>)| {
+                if count.abs() > 15 {
+                    count_setter.set(0);
+                }
+            },
+            (count, count_setter),
+        ),
+    );
     (reia, (count, increment, decrement))
 }
 

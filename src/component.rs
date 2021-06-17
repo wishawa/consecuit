@@ -15,10 +15,12 @@ where
 
     let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
     let parent_node: Element = document.create_element("div").unwrap();
+
+    let root_tree = create_subtree(parent_node.clone());
+    root_tree.run(function, ());
+
     app_root.append_child(&parent_node).unwrap();
 
-    let root_tree = create_subtree(parent_node.into());
-    root_tree.run(function, ());
     Box::leak(Box::new(root_tree));
 }
 
@@ -33,7 +35,7 @@ where
 {
     stores: Box<TreeStores<Func, Ret, Props>>,
     lock: UnmountedLock,
-    elem: Element,
+    container: Element,
 }
 
 impl<Func, Ret, Props> Drop for ReiaSubtree<Func, Ret, Props>
@@ -44,7 +46,7 @@ where
 {
     fn drop(&mut self) {
         self.lock.unmount();
-        self.elem.remove();
+        self.container.remove();
     }
 }
 
@@ -80,7 +82,7 @@ where
                 lock: self.lock.clone(),
                 rerun: Rerunner(&PANIC_RERUNNER),
             },
-            parent_node: self.elem.clone(),
+            parent_node: self.container.clone(),
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         };
@@ -88,9 +90,7 @@ where
     }
 }
 
-pub(crate) fn create_subtree<Func, Ret, Props>(
-    parent_node: Element,
-) -> ReiaSubtree<Func, Ret, Props>
+pub(crate) fn create_subtree<Func, Ret, Props>(container: Element) -> ReiaSubtree<Func, Ret, Props>
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
@@ -100,9 +100,9 @@ where
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
     ReiaSubtree {
-        stores: stores,
+        stores,
         lock,
-        elem: parent_node,
+        container,
     }
 }
 
