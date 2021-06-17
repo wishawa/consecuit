@@ -3,7 +3,7 @@ pub use use_ref::{use_ref, ReiaRef};
 mod use_state;
 pub use use_state::{use_state, StateSetter};
 mod use_function;
-pub use use_function::{use_function, ReiaFunction};
+pub use use_function::{use_function, JsFunction};
 mod use_effect;
 pub use use_effect::use_effect;
 mod use_element;

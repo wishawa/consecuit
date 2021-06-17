@@ -2,13 +2,13 @@ use web_sys::HtmlButtonElement;
 
 use crate::{
     component::ComponentBuilder,
-    hooks::{use_element, ReiaFunction},
+    hooks::{use_element, JsFunction},
     ContainerReturn,
 };
 
 #[derive(Clone, PartialEq)]
 pub struct ButtonProps {
-    pub onclick: ReiaFunction,
+    pub onclick: JsFunction,
 }
 
 pub fn button(reia: ComponentBuilder, props: ButtonProps) -> impl ContainerReturn {

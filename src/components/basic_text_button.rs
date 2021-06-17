@@ -1,6 +1,6 @@
 use crate::{
     component::{ComponentBuilder, ComponentReturn},
-    hooks::ReiaFunction,
+    hooks::JsFunction,
 };
 
 use super::{button, text_node, ButtonProps};
@@ -8,7 +8,7 @@ use super::{button, text_node, ButtonProps};
 #[derive(Clone, PartialEq)]
 pub struct BasicTextButtonProps {
     pub text: String,
-    pub onclick: ReiaFunction,
+    pub onclick: JsFunction,
 }
 
 pub fn basic_text_button(

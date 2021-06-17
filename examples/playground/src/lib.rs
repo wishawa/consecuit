@@ -3,7 +3,7 @@ use reia::{
         basic_text_label, button, div, dyn_vec_comps, text_node, BasicTextLabelProps, ButtonProps,
         DivProps,
     },
-    hooks::{use_effect, use_function, use_state, ReiaFunction, StateSetter},
+    hooks::{use_effect, use_function, use_state, JsFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
 };
 use wasm_bindgen::prelude::*;
@@ -30,7 +30,7 @@ fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
 
 fn count_button(
     reia: ComponentBuilder,
-    (increment, decrement): (ReiaFunction, ReiaFunction),
+    (increment, decrement): (JsFunction, JsFunction),
 ) -> impl ComponentReturn {
     let reia = reia.init();
     reia.node(button, ButtonProps { onclick: increment })
@@ -62,7 +62,7 @@ fn count_button(
 fn use_counter(
     reia: HookBuilder,
     level_setter: StateSetter<i32>,
-) -> impl HookReturn<(i32, ReiaFunction, ReiaFunction)> {
+) -> impl HookReturn<(i32, JsFunction, JsFunction)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let count_setter_1 = count_setter.clone();
