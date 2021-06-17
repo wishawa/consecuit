@@ -5,6 +5,7 @@ mod hook;
 pub mod hooks;
 mod stores;
 mod unmounted_lock;
+mod props;
 
 pub use component::{mount, ComponentBuilder, ComponentReturn, ContainerReturn};
 pub use hook::{HookBuilder, HookReturn};

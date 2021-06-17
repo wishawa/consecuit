@@ -1,10 +1,6 @@
 use web_sys::window;
 
-use crate::{
-    component::{create_subtree, ReiaSubtree},
-    hooks::{use_ref, ReiaRef},
-    ComponentBuilder, ComponentReturn,
-};
+use crate::{ComponentBuilder, ComponentReturn, component::{create_subtree, ReiaSubtree}, hooks::{use_ref, ReiaRef}, props::PropsPartialEq};
 
 pub fn dyn_opt_comp<Func, Ret, Props>(
     reia: ComponentBuilder,
@@ -13,7 +9,7 @@ pub fn dyn_opt_comp<Func, Ret, Props>(
 where
     Ret: ComponentReturn,
     Func: 'static + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: PropsPartialEq + Clone + 'static,
 {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Option<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());
@@ -42,7 +38,7 @@ pub fn dyn_vec_comps<Func, Ret, Props>(
 where
     Ret: ComponentReturn,
     Func: Clone + 'static + Clone + Fn(ComponentBuilder, Props) -> Ret,
-    Props: PartialEq + Clone + 'static,
+    Props: PropsPartialEq + Clone + 'static,
 {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Vec<ReiaSubtree<Func, Ret, Props>>>) = reia.hook(use_ref, ());

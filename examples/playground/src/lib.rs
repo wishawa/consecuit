@@ -1,8 +1,4 @@
-use reia::{
-    components::{basic_text_label, button, div, BasicTextLabelProps, ButtonProps, DivProps},
-    hooks::{use_effect, use_function, use_state, ReiaFunction, StateSetter},
-    ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
-};
+use reia::{ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn, components::{BasicTextLabelProps, ButtonProps, DivProps, basic_text_label, button, div, dyn_vec_comps, text_node}, hooks::{use_effect, use_function, use_state, ReiaFunction, StateSetter}};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -56,7 +52,7 @@ fn count_button(
         })
 }
 
-fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, ReiaFunction)> {
+fn use_counter(reia: HookBuilder, level_setter: StateSetter<u32>) -> impl HookReturn<(i32, ReiaFunction, ReiaFunction)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let count_setter_1 = count_setter.clone();
@@ -70,22 +66,35 @@ fn use_counter(reia: HookBuilder, _: ()) -> impl HookReturn<(i32, ReiaFunction, 
     let (reia, _) = reia.hook(
         use_effect,
         (
-            &|(count, count_setter): (i32, StateSetter<i32>)| {
+            &|(count, count_setter, level_setter): (i32, StateSetter<i32>, StateSetter<u32>)| {
                 if count.abs() > 15 {
                     count_setter.set(0);
+                    level_setter.update_with(|lvl| lvl + 1);
                 }
             },
-            (count, count_setter),
+            (count, count_setter, level_setter),
         ),
     );
     (reia, (count, increment, decrement))
 }
 
+fn level_history(reia: ComponentBuilder, level: u32) -> impl ComponentReturn {
+    let reia = reia.init();
+    reia.node(text_node, format!("{}", level))
+}
+
+fn levels_history(reia: ComponentBuilder, level: u32) -> impl ComponentReturn {
+    let reia = reia.init();
+    reia.node(dyn_vec_comps, (level_history, (0..level).collect()))
+}
+
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
-    let (reia, (count, increment, decrement)) = reia.hook(use_counter, ());
+    let (reia, (level, level_setter)) = reia.hook(use_state, 1);
+    let (reia, (count, increment, decrement)) = reia.hook(use_counter, level_setter);
     reia.node(container, ()).child(|reia| {
         reia.node(title, count)
             .node(count_button, (increment.clone(), decrement.clone()))
+            .node(levels_history, level)
     })
 }
