@@ -1,8 +1,10 @@
 use web_sys::window;
 
 use crate::{
-    component::{create_subtree, ReiaSubtree, Subtree},
-    component_utils::{ComponentFunc, ComponentProps},
+    component::{
+        subtree::{create_subtree, ReiaSubtree, Subtree},
+        utils::{ComponentFunc, ComponentProps},
+    },
     hooks::{use_ref, ReiaRef},
     ComponentBuilder, ComponentReturn,
 };
