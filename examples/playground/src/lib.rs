@@ -3,7 +3,8 @@ use reia::{
         basic_text_label, button, div, text_node, BasicTextLabelProps, ButtonProps, DivProps,
     },
     hooks::{use_effect, use_function, use_state, JsFunction, StateSetter},
-    ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
+    ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
+    HookReturn,
 };
 use wasm_bindgen::prelude::*;
 
@@ -101,6 +102,16 @@ fn levels_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
         .vec_comps(level_history, (1..=level.max(0)).collect())
 }
 
+fn dyn_example(reia: ComponentBuilder, props: Vec<i32>) -> DynComponentReturn<Vec<i32>> {
+    reia.init().dyn_comp(
+        |reia: ComponentBuilder, props: Vec<i32>| {
+            reia.init()
+                .comp(text_node, format!("I'm dyn. My props: {:?}", props))
+        },
+        props,
+    )
+}
+
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (level, level_setter)) = reia.hook(use_state, 0);
@@ -109,5 +120,6 @@ fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         reia.comp(title, count)
             .comp(count_button, (increment.clone(), decrement.clone()))
             .comp(levels_history, level)
+            .comp(dyn_example, vec![3, 4, 5])
     })
 }

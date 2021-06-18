@@ -36,7 +36,7 @@ where
     }
 }
 
-pub(crate) trait Subtree {
+pub trait Subtree {
     type Props;
     fn run(&self, props: Self::Props);
 }

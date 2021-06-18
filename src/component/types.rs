@@ -1,10 +1,13 @@
+use std::cell::RefCell;
+
 use crate::{
-    stores::{StoreConsEnd, StoresList},
+    stores::{StoreCons, StoreConsEnd, StoresList},
     ComponentBuilder,
 };
 
 use super::{
-    hole::{MaybeHoleNode, YesHoleNode},
+    hole::{MaybeHoleNode, NoHoleNode, YesHoleNode},
+    subtree::Subtree,
     ComponentConstruction,
 };
 
@@ -26,6 +29,13 @@ impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> Compo
         self.ret_node
     }
 }
+
+pub type DynComponentReturn<P> = ComponentConstruction<
+    StoreConsEnd,
+    StoreCons<RefCell<Option<Box<dyn Subtree<Props = P>>>>, StoreConsEnd>,
+    NoHoleNode,
+    NoHoleNode,
+>;
 
 pub trait ComponentProps: PartialEq + Clone + 'static {}
 impl<T: PartialEq + Clone + 'static> ComponentProps for T {}

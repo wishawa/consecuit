@@ -13,7 +13,9 @@ pub mod subtree;
 pub use subtree::mount;
 mod subtrees;
 mod types;
-pub use types::{ComponentFunc, ComponentProps, ComponentReturn, ContainerReturn};
+pub use types::{
+    ComponentFunc, ComponentProps, ComponentReturn, ContainerReturn, DynComponentReturn,
+};
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,
