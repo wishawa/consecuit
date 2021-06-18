@@ -41,7 +41,7 @@ where
         let mut store_borrow = store.borrow_mut();
         let subtree_opt = store_borrow.deref_mut();
         match subtree_opt {
-            Some(subtree) => subtree.run(props),
+            Some(subtree) => subtree.re_render(props),
             opt_none => {
                 *opt_none = Some(Box::new(mount_subtree(func, props, parent_node.clone())));
             }
@@ -86,7 +86,7 @@ where
         let subtree_opt = store_borrow.deref_mut();
         if let Some(props) = props {
             match subtree_opt {
-                Some(subtree) => subtree.run(props),
+                Some(subtree) => subtree.re_render(props),
                 opt_none => {
                     *opt_none = Some(mount_subtree(func, props, parent_node.clone()));
                 }
@@ -146,7 +146,7 @@ where
             subtrees.truncate(new_length);
         }
         for (subtree, props) in subtrees.iter().zip(props.into_iter()) {
-            subtree.run(props);
+            subtree.re_render(props);
         }
         ComponentConstruction {
             hook_stores: rest_hooks,

@@ -38,7 +38,7 @@ where
 
 pub trait Subtree {
     type Props;
-    fn run(&self, props: Self::Props);
+    fn re_render(&self, props: Self::Props);
 }
 
 impl<Ret, Props> Subtree for SubtreeInstance<Ret, Props>
@@ -47,17 +47,7 @@ where
     Props: ComponentProps,
 {
     type Props = Props;
-    fn run(&self, props: Self::Props) {
-        self.run(props)
-    }
-}
-
-impl<Ret, Props> SubtreeInstance<Ret, Props>
-where
-    Ret: ComponentReturn,
-    Props: ComponentProps,
-{
-    pub(crate) fn run(&self, props: Props) {
+    fn re_render(&self, props: Self::Props) {
         struct DummyTreeRoot;
         impl ComponentStore for DummyTreeRoot {
             fn render(&'static self) {
@@ -100,7 +90,7 @@ where
     let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
 
     let root_tree = mount_subtree(function, (), app_root);
-    root_tree.run(());
+    root_tree.re_render(());
 
     Box::leak(Box::new(root_tree));
 }
@@ -125,7 +115,7 @@ where
         container: parent_node.clone(),
         func,
     };
-    subtree.run(props);
+    subtree.re_render(props);
     container.append_child(&parent_node).unwrap();
     subtree
 }
