@@ -95,7 +95,7 @@ where
     }
 }
 
-pub struct ComponentStore<Ret, Props>
+pub struct ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
@@ -104,7 +104,7 @@ where
     initialized: RefCell<Option<InitializedComponentInfo<Ret, Props>>>,
 }
 
-pub(crate) trait ComponentInstance {
+pub(crate) trait ComponentStore {
     fn render(self: &'static Self);
 }
 
@@ -120,7 +120,7 @@ where
     lock: UnmountedLock,
 }
 
-impl<Ret, Props> Default for ComponentStore<Ret, Props>
+impl<Ret, Props> Default for ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
@@ -133,7 +133,7 @@ where
     }
 }
 
-impl<Ret, Props> ComponentInstance for ComponentStore<Ret, Props>
+impl<Ret, Props> ComponentStore for ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
@@ -166,7 +166,7 @@ where
 
 impl<RestStores, EntireStores, Ret, Props, LastNode, CompHole>
     ComponentConstruction<
-        StoreCons<ComponentStore<Ret, Props>, RestStores>,
+        StoreCons<ComponentStoreInstance<Ret, Props>, RestStores>,
         EntireStores,
         LastNode,
         CompHole,

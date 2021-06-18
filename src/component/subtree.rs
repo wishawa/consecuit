@@ -1,20 +1,20 @@
 use web_sys::{window, Element};
 
 use crate::{
-    component::{ComponentConstruction, ComponentInstance, NoHoleNode},
+    component::{ComponentConstruction, ComponentStore, NoHoleNode},
     hook::HookConstruction,
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
     ComponentBuilder, ComponentReturn,
 };
 
-use super::{ComponentFunc, ComponentProps, ComponentStore};
+use super::{ComponentFunc, ComponentProps, ComponentStoreInstance};
 use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
 
 type TreeStores<Ret, Props> =
-    StoreCons<ComponentStore<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
+    StoreCons<ComponentStoreInstance<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
-pub(crate) struct ReiaSubtree<Ret, Props>
+pub(crate) struct SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
@@ -25,7 +25,7 @@ where
     func: ComponentFunc<Props, Ret>,
 }
 
-impl<Ret, Props> Drop for ReiaSubtree<Ret, Props>
+impl<Ret, Props> Drop for SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
@@ -41,7 +41,7 @@ pub(crate) trait Subtree {
     fn run(&self, props: Self::Props);
 }
 
-impl<Ret, Props> Subtree for ReiaSubtree<Ret, Props>
+impl<Ret, Props> Subtree for SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
@@ -52,14 +52,14 @@ where
     }
 }
 
-impl<Ret, Props> ReiaSubtree<Ret, Props>
+impl<Ret, Props> SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
     pub(crate) fn run(&self, props: Props) {
         struct DummyTreeRoot;
-        impl ComponentInstance for DummyTreeRoot {
+        impl ComponentStore for DummyTreeRoot {
             fn render(&'static self) {
                 unreachable!("this dummy is never directly called")
             }
@@ -109,7 +109,7 @@ pub(crate) fn mount_subtree<Ret, Props>(
     func: ComponentFunc<Props, Ret>,
     props: Props,
     container: Element,
-) -> ReiaSubtree<Ret, Props>
+) -> SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
@@ -119,7 +119,7 @@ where
     let lock = UnmountedLock::new_mounted();
     let document = window().unwrap().document().unwrap();
     let parent_node: Element = document.create_element("div").unwrap();
-    let subtree = ReiaSubtree {
+    let subtree = SubtreeInstance {
         stores,
         lock,
         container: parent_node.clone(),

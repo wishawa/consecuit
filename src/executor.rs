@@ -6,16 +6,16 @@ use std::{
 
 use web_sys::console;
 
-use crate::{component::ComponentInstance, unmounted_lock::UnmountedLock};
+use crate::{component::ComponentStore, unmounted_lock::UnmountedLock};
 
 #[derive(Clone)]
 pub(crate) struct RerenderTask {
-    pub(crate) comp: &'static dyn ComponentInstance,
+    pub(crate) comp: &'static dyn ComponentStore,
     pub(crate) lock: UnmountedLock,
 }
 
 impl RerenderTask {
-    pub(crate) fn new(comp: &'static dyn ComponentInstance, lock: UnmountedLock) -> Self {
+    pub(crate) fn new(comp: &'static dyn ComponentStore, lock: UnmountedLock) -> Self {
         Self { comp, lock }
     }
     pub(crate) fn enqueue_self(&self) {
@@ -41,7 +41,7 @@ impl PartialEq for RerenderTask {
 
 struct Executor {
     queue: RefCell<VecDeque<RerenderTask>>,
-    queue_set: RefCell<HashSet<*const dyn ComponentInstance>>,
+    queue_set: RefCell<HashSet<*const dyn ComponentStore>>,
     active: AtomicBool,
 }
 
@@ -61,7 +61,7 @@ impl Executor {
                 {
                     self.queue_set
                         .borrow_mut()
-                        .remove(&(task.comp as *const dyn ComponentInstance))
+                        .remove(&(task.comp as *const dyn ComponentStore))
                 };
                 task.render();
             } else {

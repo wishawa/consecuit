@@ -1,7 +1,7 @@
 use std::{marker::PhantomData, mem::transmute};
 
 use crate::{
-    component::ComponentInstance,
+    component::ComponentStore,
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
@@ -9,7 +9,7 @@ use crate::{
 pub struct HookBuilder {
     pub(crate) untyped_stores: &'static (),
     pub(crate) lock: UnmountedLock,
-    pub(crate) current_component: &'static dyn ComponentInstance,
+    pub(crate) current_component: &'static dyn ComponentStore,
 }
 
 impl HookBuilder {
@@ -28,7 +28,7 @@ pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList>
     pub(crate) current: &'static CurrentStores,
     pub(crate) entire: PhantomData<EntireStores>,
     pub(crate) lock: UnmountedLock,
-    pub(crate) current_component: &'static dyn ComponentInstance,
+    pub(crate) current_component: &'static dyn ComponentStore,
 }
 
 type EmptyHookStores<Entire> = HookConstruction<StoreConsEnd, Entire>;
@@ -77,7 +77,7 @@ where
 fn run_hook<Arg, Out, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
-    current_component: &'static dyn ComponentInstance,
+    current_component: &'static dyn ComponentStore,
     hook_func: fn(HookBuilder, Arg) -> Ret,
     hook_arg: Arg,
 ) -> Out

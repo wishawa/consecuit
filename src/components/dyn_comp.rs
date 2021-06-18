@@ -1,6 +1,6 @@
 use crate::{
     component::{
-        subtree::{mount_subtree, ReiaSubtree, Subtree},
+        subtree::{mount_subtree, Subtree, SubtreeInstance},
         utils::{ComponentFunc, ComponentProps},
     },
     hooks::{use_ref, ReiaRef},
@@ -16,7 +16,7 @@ where
     Props: ComponentProps,
 {
     let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Option<ReiaSubtree<Ret, Props>>>) = reia.hook(use_ref, ());
+    let (reia, store): (_, ReiaRef<Option<SubtreeInstance<Ret, Props>>>) = reia.hook(use_ref, ());
     store
         .visit_mut_with(|opt| {
             if let Some(props) = props {
