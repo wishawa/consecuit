@@ -1,16 +1,15 @@
-use std::ops::Deref;
-
+use reia::{
+    hooks::{use_ref, ReiaRef},
+    HookBuilder, HookReturn,
+};
 use web_sys::{window, Element, HtmlElement};
 
-use crate::{HookBuilder, HookReturn};
 use wasm_bindgen::JsCast;
 
-use super::{use_ref, ReiaRef};
-
 #[derive(Clone)]
-struct WrappedElement<T: Clone + Deref<Target = HtmlElement>>(T);
+struct WrappedElement<T: Clone + AsRef<HtmlElement>>(T);
 
-pub(crate) fn use_element<T: 'static + Clone + Deref<Target = HtmlElement> + JsCast>(
+pub(crate) fn use_element<T: 'static + Clone + AsRef<HtmlElement> + JsCast>(
     reia: HookBuilder,
     (tag_name, parent): (&'static str, Element),
 ) -> impl HookReturn<T> {
@@ -25,7 +24,8 @@ pub(crate) fn use_element<T: 'static + Clone + Deref<Target = HtmlElement> + JsC
                     .unwrap()
                     .dyn_into()
                     .unwrap();
-                parent.append_child(&elem).unwrap();
+                let html_element: &HtmlElement = elem.as_ref();
+                parent.append_child(html_element.as_ref()).unwrap();
                 WrappedElement(elem)
             });
             elem.0.clone()

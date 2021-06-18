@@ -49,6 +49,19 @@ pub struct ComponentConstruction<
     pub(crate) ret_node: ReturnNode,
 }
 
+impl<CurrentStores, EntireStores, LastNode, CompHole>
+    ComponentConstruction<CurrentStores, EntireStores, LastNode, CompHole>
+where
+    CurrentStores: StoresList,
+    EntireStores: StoresList,
+    LastNode: MaybeHoleNode,
+    CompHole: MaybeHoleNode,
+{
+    pub fn get_parent_node(&self) -> Element {
+        self.parent_node.clone()
+    }
+}
+
 impl<ThisStore, RestStores, EntireStores, LastNode, CompHole>
     ComponentConstruction<StoreCons<ThisStore, RestStores>, EntireStores, LastNode, CompHole>
 where

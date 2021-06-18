@@ -1,13 +1,13 @@
 use web_sys::{window, Text};
 
-use crate::{
+use reia::{
     hooks::{use_ref, ReiaRef},
     ComponentBuilder, ComponentReturn,
 };
 
 pub fn text_node(reia: ComponentBuilder, value: impl AsRef<str>) -> impl ComponentReturn {
     let reia = reia.init();
-    let parent = reia.parent_node.clone();
+    let parent = reia.get_parent_node();
     let (reia, store): (_, ReiaRef<Option<Text>>) = reia.hook(use_ref, ());
     let text = store
         .visit_mut_with(|opt| {

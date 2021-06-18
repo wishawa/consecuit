@@ -11,7 +11,7 @@ impl<EntireStores> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode,
 where
     EntireStores: StoresList,
 {
-    pub(crate) fn bare_container_node(
+    pub fn bare_container_node(
         self,
         node: Element,
     ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, YesHoleNode> {
@@ -27,7 +27,7 @@ where
             ret_node: YesHoleNode(node),
         }
     }
-    pub(crate) fn bare_leaf_node(
+    pub fn bare_leaf_node(
         self,
     ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
         let ComponentConstruction {

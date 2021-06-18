@@ -1,8 +1,8 @@
 use reia::{
-    components::{button, div, text_node, ButtonProps, DivProps},
-    hooks::{use_function, use_state, JsFunction},
+    hooks::{use_function, use_state, CallbackFunction},
     ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
 };
+use reia_html::components::{button, div, text_node, ButtonProps, DivProps};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -15,14 +15,17 @@ pub fn run() -> Result<(), JsValue> {
 
 fn button_with_text(
     reia: ComponentBuilder,
-    (text, onclick): (String, JsFunction),
+    (text, onclick): (String, CallbackFunction),
 ) -> impl ComponentReturn {
     let reia = reia.init();
     reia.comp(button, ButtonProps { onclick })
         .child(|reia| reia.comp(text_node, text))
 }
 
-fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, JsFunction, JsFunction)> {
+fn use_counter(
+    reia: HookBuilder,
+    initial: i32,
+) -> impl HookReturn<(i32, CallbackFunction, CallbackFunction)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, initial);
     let count_setter_1 = count_setter.clone();

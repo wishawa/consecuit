@@ -94,10 +94,10 @@ where
     out
 }
 
-impl<NextStores, RestStores, EntireStores>
-    HookConstruction<StoreCons<NextStores, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores>
+    HookConstruction<StoreCons<ThisStore, RestStores>, EntireStores>
 where
-    NextStores: StoresList,
+    ThisStore: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
 {
@@ -107,7 +107,7 @@ where
         hook_arg: Arg,
     ) -> (HookConstruction<RestStores, EntireStores>, Out)
     where
-        Ret: HookReturn<Out, StoresList = NextStores>,
+        Ret: HookReturn<Out, StoresList = ThisStore>,
     {
         let (rest_stores, store) = self.use_one_store();
         let out = run_hook(

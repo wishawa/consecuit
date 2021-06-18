@@ -13,3 +13,4 @@ crate-type = ["cdylib", "rlib"]
 wasm-bindgen = "0.2.74"
 console_error_panic_hook = "0.1.6"
 reia = { path = "../../", version = "0.1.0" }
+reia_html = { path = "../../html/" }

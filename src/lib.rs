@@ -1,5 +1,4 @@
 mod component;
-pub mod components;
 mod executor;
 mod hook;
 pub mod hooks;
