@@ -1,19 +1,19 @@
 use web_sys::{window, Element};
 
 use crate::{
-    component::{ComponentStores, NoHoleNode},
+    component::{ComponentConstruction, NoHoleNode},
     executor::{Renderable, RerenderTask},
-    hook::HookStores,
+    hook::HookConstruction,
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
     ComponentBuilder, ComponentReturn,
 };
 
-use super::{ComponentContainer, ComponentFunc, ComponentProps};
+use super::{ComponentFunc, ComponentProps, ComponentStore};
 use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
 
 type TreeStores<Ret, Props> =
-    StoreCons<ComponentContainer<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
+    StoreCons<ComponentStore<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
 pub(crate) struct ReiaSubtree<Ret, Props>
 where
@@ -76,9 +76,9 @@ where
             )
         };
 
-        type StillFullNodeComponentStore<T> = ComponentStores<T, T, NoHoleNode, NoHoleNode>;
-        let component_store: StillFullNodeComponentStore<_> = ComponentStores {
-            hook_stores: HookStores {
+        type StillFullNodeComponentStore<T> = ComponentConstruction<T, T, NoHoleNode, NoHoleNode>;
+        let component_store: StillFullNodeComponentStore<_> = ComponentConstruction {
+            hook_stores: HookConstruction {
                 current: stores_borrow,
                 entire: PhantomData,
                 lock: self.lock.clone(),

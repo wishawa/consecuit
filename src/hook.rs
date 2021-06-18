@@ -13,9 +13,9 @@ pub struct HookBuilder {
 }
 
 impl HookBuilder {
-    pub fn init<T: StoresList>(self) -> HookStores<T, T> {
+    pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
         let current: &T = unsafe { transmute::<&'static (), &'static T>(self.untyped_stores) };
-        HookStores {
+        HookConstruction {
             current,
             entire: PhantomData,
             lock: self.lock,
@@ -24,14 +24,14 @@ impl HookBuilder {
     }
 }
 
-pub struct HookStores<CurrentStores: StoresList, EntireStores: StoresList> {
+pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList> {
     pub(crate) current: &'static CurrentStores,
     pub(crate) entire: PhantomData<EntireStores>,
     pub(crate) lock: UnmountedLock,
     pub(crate) rerender_parent: RerenderTask,
 }
 
-type EmptyHookStores<Entire> = HookStores<StoreConsEnd, Entire>;
+type EmptyHookStores<Entire> = HookConstruction<StoreConsEnd, Entire>;
 
 pub trait HookReturn<Value> {
     type StoresList: StoresList;
@@ -48,7 +48,8 @@ where
     }
 }
 
-impl<ThisStore, RestStores, EntireStores> HookStores<StoreCons<ThisStore, RestStores>, EntireStores>
+impl<ThisStore, RestStores, EntireStores>
+    HookConstruction<StoreCons<ThisStore, RestStores>, EntireStores>
 where
     ThisStore: Default + 'static,
     RestStores: StoresList,
@@ -56,10 +57,13 @@ where
 {
     pub(crate) fn use_one_store(
         self,
-    ) -> (HookStores<RestStores, EntireStores>, &'static ThisStore) {
+    ) -> (
+        HookConstruction<RestStores, EntireStores>,
+        &'static ThisStore,
+    ) {
         let Self { current, .. } = self;
         let StoreCons(store, rest) = current;
-        let new_rs = HookStores {
+        let new_rs = HookConstruction {
             current: rest,
             entire: PhantomData,
             lock: self.lock,
@@ -91,7 +95,7 @@ where
 }
 
 impl<NextStores, RestStores, EntireStores>
-    HookStores<StoreCons<NextStores, RestStores>, EntireStores>
+    HookConstruction<StoreCons<NextStores, RestStores>, EntireStores>
 where
     NextStores: StoresList,
     RestStores: StoresList,
@@ -101,7 +105,7 @@ where
         self,
         hook_func: fn(HookBuilder, Arg) -> Ret,
         hook_arg: Arg,
-    ) -> (HookStores<RestStores, EntireStores>, Out)
+    ) -> (HookConstruction<RestStores, EntireStores>, Out)
     where
         Ret: HookReturn<Out, StoresList = NextStores>,
     {

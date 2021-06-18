@@ -4,23 +4,23 @@ use crate::stores::{StoreConsEnd, StoresList};
 
 use super::{
     hole::{NoHoleNode, YesHoleNode},
-    ComponentStores,
+    ComponentConstruction,
 };
 
-impl<EntireStores> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode>
+impl<EntireStores> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode>
 where
     EntireStores: StoresList,
 {
     pub(crate) fn bare_container_node(
         self,
         node: Element,
-    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, YesHoleNode> {
-        let ComponentStores {
+    ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, YesHoleNode> {
+        let ComponentConstruction {
             hook_stores,
             parent_node,
             ..
         } = self;
-        ComponentStores {
+        ComponentConstruction {
             hook_stores,
             parent_node,
             last_node: NoHoleNode,
@@ -29,13 +29,13 @@ where
     }
     pub(crate) fn bare_leaf_node(
         self,
-    ) -> ComponentStores<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
-        let ComponentStores {
+    ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
+        let ComponentConstruction {
             hook_stores,
             parent_node,
             ..
         } = self;
-        ComponentStores {
+        ComponentConstruction {
             hook_stores,
             parent_node,
             last_node: NoHoleNode,

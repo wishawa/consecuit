@@ -2,7 +2,7 @@ use web_sys::Element;
 
 use crate::stores::StoresList;
 
-use super::ComponentStores;
+use super::ComponentConstruction;
 
 pub trait MaybeHoleNode: 'static + Clone {}
 #[derive(Clone)]
@@ -12,19 +12,19 @@ impl MaybeHoleNode for NoHoleNode {}
 pub struct YesHoleNode(pub Element);
 impl MaybeHoleNode for YesHoleNode {}
 
-impl<Stores, EntireStores> ComponentStores<Stores, EntireStores, YesHoleNode, NoHoleNode>
+impl<Stores, EntireStores> ComponentConstruction<Stores, EntireStores, YesHoleNode, NoHoleNode>
 where
     Stores: StoresList,
     EntireStores: StoresList,
 {
-    pub fn hole_here(self) -> ComponentStores<Stores, EntireStores, NoHoleNode, YesHoleNode> {
-        let ComponentStores {
+    pub fn hole_here(self) -> ComponentConstruction<Stores, EntireStores, NoHoleNode, YesHoleNode> {
+        let ComponentConstruction {
             hook_stores,
             parent_node,
             last_node,
             ret_node,
         } = self;
-        ComponentStores {
+        ComponentConstruction {
             hook_stores,
             parent_node,
             last_node: ret_node,
