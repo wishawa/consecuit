@@ -7,6 +7,7 @@ use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::Element;
 pub mod utils;
 use utils::{ComponentFunc, ComponentProps};
+pub use utils::{ComponentReturn, ContainerReturn};
 
 use self::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
 mod hole;
@@ -34,15 +35,6 @@ impl ComponentBuilder {
         }
     }
 }
-
-pub trait ComponentReturn: 'static {
-    type StoresList: StoresList;
-    type HoleNode: MaybeHoleNode;
-    fn get_node(self) -> Self::HoleNode;
-}
-
-pub trait ContainerReturn: ComponentReturn<HoleNode = YesHoleNode> {}
-impl<T: ComponentReturn<HoleNode = YesHoleNode>> ContainerReturn for T {}
 
 impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> ComponentReturn
     for ComponentConstruction<StoreConsEnd, Stores, LastNode, HoleNode>
