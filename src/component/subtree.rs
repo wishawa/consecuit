@@ -1,8 +1,7 @@
 use web_sys::{window, Element};
 
 use crate::{
-    component::{ComponentConstruction, NoHoleNode},
-    executor::{Renderable, RerenderTask},
+    component::{ComponentConstruction, ComponentInstance, NoHoleNode},
     hook::HookConstruction,
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
@@ -59,13 +58,13 @@ where
     Props: ComponentProps,
 {
     pub(crate) fn run(&self, props: Props) {
-        struct PanicRootRerunner();
-        impl Renderable for PanicRootRerunner {
+        struct DummyTreeRoot;
+        impl ComponentInstance for DummyTreeRoot {
             fn render(&'static self) {
                 unreachable!("this dummy is never directly called")
             }
         }
-        static PANIC_RERUNNER: PanicRootRerunner = PanicRootRerunner();
+        static DUMMY_ROOT: DummyTreeRoot = DummyTreeRoot;
 
         let stores_borrow = unsafe {
             // This unsafe is really unsafe.
@@ -82,10 +81,7 @@ where
                 current: stores_borrow,
                 entire: PhantomData,
                 lock: self.lock.clone(),
-                rerender_parent: RerenderTask {
-                    obj: &PANIC_RERUNNER,
-                    lock: self.lock.clone(),
-                },
+                current_component: &DUMMY_ROOT,
             },
             parent_node: self.container.clone(),
             last_node: NoHoleNode,

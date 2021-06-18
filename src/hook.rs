@@ -1,7 +1,7 @@
 use std::{marker::PhantomData, mem::transmute};
 
 use crate::{
-    executor::RerenderTask,
+    component::ComponentInstance,
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
@@ -9,7 +9,7 @@ use crate::{
 pub struct HookBuilder {
     pub(crate) untyped_stores: &'static (),
     pub(crate) lock: UnmountedLock,
-    pub(crate) rerender_parent: RerenderTask,
+    pub(crate) current_component: &'static dyn ComponentInstance,
 }
 
 impl HookBuilder {
@@ -19,7 +19,7 @@ impl HookBuilder {
             current,
             entire: PhantomData,
             lock: self.lock,
-            rerender_parent: self.rerender_parent,
+            current_component: self.current_component,
         }
     }
 }
@@ -28,7 +28,7 @@ pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList>
     pub(crate) current: &'static CurrentStores,
     pub(crate) entire: PhantomData<EntireStores>,
     pub(crate) lock: UnmountedLock,
-    pub(crate) rerender_parent: RerenderTask,
+    pub(crate) current_component: &'static dyn ComponentInstance,
 }
 
 type EmptyHookStores<Entire> = HookConstruction<StoreConsEnd, Entire>;
@@ -67,7 +67,7 @@ where
             current: rest,
             entire: PhantomData,
             lock: self.lock,
-            rerender_parent: self.rerender_parent,
+            current_component: self.current_component,
         };
 
         (new_rs, store)
@@ -77,7 +77,7 @@ where
 fn run_hook<Arg, Out, Ret>(
     store: &'static Ret::StoresList,
     lock: UnmountedLock,
-    rerender_parent: RerenderTask,
+    current_component: &'static dyn ComponentInstance,
     hook_func: fn(HookBuilder, Arg) -> Ret,
     hook_arg: Arg,
 ) -> Out
@@ -88,7 +88,7 @@ where
     let reia = HookBuilder {
         untyped_stores,
         lock,
-        rerender_parent,
+        current_component,
     };
     let out: Out = hook_func(reia, hook_arg).get_val();
     out
@@ -113,7 +113,7 @@ where
         let out = run_hook(
             store,
             rest_stores.lock.clone(),
-            rest_stores.rerender_parent.clone(),
+            rest_stores.current_component,
             hook_func,
             hook_arg,
         );

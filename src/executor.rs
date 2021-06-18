@@ -6,21 +6,24 @@ use std::{
 
 use web_sys::console;
 
-use crate::unmounted_lock::UnmountedLock;
+use crate::{component::ComponentInstance, unmounted_lock::UnmountedLock};
 
 #[derive(Clone)]
 pub(crate) struct RerenderTask {
-    pub(crate) obj: &'static dyn Renderable,
+    pub(crate) comp: &'static dyn ComponentInstance,
     pub(crate) lock: UnmountedLock,
 }
 
 impl RerenderTask {
+    pub(crate) fn new(comp: &'static dyn ComponentInstance, lock: UnmountedLock) -> Self {
+        Self { comp, lock }
+    }
     pub(crate) fn enqueue_self(&self) {
         LOCAL_EXECUTOR.with(|l| l.enqueue(self.clone()))
     }
     pub(crate) fn render(&self) {
         if self.lock.is_mounted() {
-            self.obj.render();
+            self.comp.render();
         } else {
             console::warn_1(
                 &"Trying to render a component whose tree had been unmounted. This is a no-op."
@@ -32,23 +35,19 @@ impl RerenderTask {
 
 impl PartialEq for RerenderTask {
     fn eq(&self, other: &RerenderTask) -> bool {
-        self.obj as *const _ == other.obj as *const _
+        self.comp as *const _ == other.comp as *const _
     }
-}
-
-pub(crate) trait Renderable {
-    fn render(&'static self);
 }
 
 struct Executor {
     queue: RefCell<VecDeque<RerenderTask>>,
-    queue_set: RefCell<HashSet<*const dyn Renderable>>,
+    queue_set: RefCell<HashSet<*const dyn ComponentInstance>>,
     active: AtomicBool,
 }
 
 impl Executor {
     fn enqueue(&self, task: RerenderTask) {
-        if self.queue_set.borrow_mut().insert(task.obj) {
+        if self.queue_set.borrow_mut().insert(task.comp) {
             self.queue.borrow_mut().push_back(task);
             if !self.is_active() {
                 self.execute();
@@ -62,7 +61,7 @@ impl Executor {
                 {
                     self.queue_set
                         .borrow_mut()
-                        .remove(&(task.obj as *const dyn Renderable))
+                        .remove(&(task.comp as *const dyn ComponentInstance))
                 };
                 task.render();
             } else {

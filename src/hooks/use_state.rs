@@ -8,7 +8,7 @@ use super::use_ref::{use_ref, ReiaRef};
 #[derive(Clone, PartialEq)]
 pub struct StateSetter<T: 'static> {
     state: ReiaRef<Option<T>>,
-    rerender: RerenderTask,
+    rerender_task: RerenderTask,
 }
 
 impl<T> StateSetter<T> {
@@ -16,7 +16,7 @@ impl<T> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(value))
             .unwrap();
-        self.rerender.enqueue_self();
+        self.rerender_task.enqueue_self();
     }
 }
 impl<T: Clone> StateSetter<T> {
@@ -24,7 +24,7 @@ impl<T: Clone> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(func(state.clone().unwrap())))
             .unwrap();
-        self.rerender.enqueue_self();
+        self.rerender_task.enqueue_self();
     }
 }
 
@@ -39,7 +39,7 @@ where
         .unwrap();
     let setter = StateSetter {
         state,
-        rerender: reia.rerender_parent.clone(),
+        rerender_task: RerenderTask::new(reia.current_component, reia.lock.clone()),
     };
     (reia, (value, setter))
 }

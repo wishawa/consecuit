@@ -1,5 +1,4 @@
 use crate::{
-    executor::{Renderable, RerenderTask},
     hook::{HookBuilder, HookConstruction, HookReturn},
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
@@ -113,6 +112,10 @@ where
     initialized: RefCell<Option<InitializedComponentInfo<Ret, Props>>>,
 }
 
+pub(crate) trait ComponentInstance {
+    fn render(self: &'static Self);
+}
+
 struct InitializedComponentInfo<Ret, Props>
 where
     Props: ComponentProps,
@@ -138,37 +141,12 @@ where
     }
 }
 
-impl<Ret, Props> Renderable for ComponentStore<Ret, Props>
+impl<Ret, Props> ComponentInstance for ComponentStore<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
     fn render(self: &'static Self) {
-        fn run_component<Props, Ret>(
-            store: &'static Ret::StoresList,
-            lock: UnmountedLock,
-            rerender: RerenderTask,
-            component_func: ComponentFunc<Props, Ret>,
-            props: Props,
-            on_node: Element,
-        ) -> Ret::HoleNode
-        where
-            Ret: ComponentReturn,
-        {
-            let untyped_stores =
-                unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
-            let reia = ComponentBuilder {
-                hook_builder: HookBuilder {
-                    untyped_stores,
-                    lock,
-                    rerender_parent: rerender,
-                },
-                parent_node: on_node,
-            };
-            let holes = component_func(reia, props).get_node();
-            holes
-        }
-
         let mut ran_borrow = self.initialized.borrow_mut();
         let stores = &self.stores;
         let InitializedComponentInfo {
@@ -178,18 +156,19 @@ where
             lock,
             parent_node,
         } = ran_borrow.deref_mut().as_mut().unwrap();
-        let rerender = RerenderTask {
-            obj: self,
-            lock: lock.clone(),
+
+        let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(stores) };
+        let reia = ComponentBuilder {
+            hook_builder: HookBuilder {
+                untyped_stores,
+                lock: lock.clone(),
+                current_component: self,
+            },
+            parent_node: parent_node.clone(),
         };
-        *my_hole = Some(run_component(
-            stores,
-            lock.clone(),
-            rerender,
-            func.clone(),
-            props.clone(),
-            parent_node.clone(),
-        ));
+        let hole = func(reia, props.clone()).get_node();
+
+        *my_hole = Some(hole);
     }
 }
 
@@ -296,7 +275,7 @@ where
                 current: store,
                 entire: PhantomData,
                 lock: rest_stores.lock.clone(),
-                rerender_parent: rest_stores.rerender_parent.clone(),
+                current_component: rest_stores.current_component.clone(),
             },
             parent_node: last_node.0,
             ret_node,
