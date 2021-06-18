@@ -1,4 +1,4 @@
-use web_sys::{window, Element};
+use web_sys::{window, Element, HtmlElement};
 
 use crate::{
     component::{ComponentConstruction, ComponentStore, NoHoleNode},
@@ -95,6 +95,14 @@ where
     Box::leak(Box::new(root_tree));
 }
 
+pub(crate) fn create_wrapper_div() -> Element {
+    use wasm_bindgen::JsCast;
+    let document = window().unwrap().document().unwrap();
+    let wrapper: HtmlElement = document.create_element("div").unwrap().dyn_into().unwrap();
+    wrapper.style().set_property("display", "contents").unwrap();
+    wrapper.into()
+}
+
 pub(crate) fn mount_subtree<Ret, Props>(
     func: ComponentFunc<Ret, Props>,
     props: Props,
@@ -107,15 +115,14 @@ where
     let stores: TreeStores<Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
-    let document = window().unwrap().document().unwrap();
-    let parent_node: Element = document.create_element("div").unwrap();
+    let subtree_root = create_wrapper_div();
     let subtree = SubtreeInstance {
         stores,
         lock,
-        container: parent_node.clone(),
+        container: subtree_root.clone(),
         func,
     };
     subtree.re_render(props);
-    container.append_child(&parent_node).unwrap();
+    container.append_child(&subtree_root).unwrap();
     subtree
 }

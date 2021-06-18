@@ -30,6 +30,7 @@ features = [
 	'HtmlButtonElement',
 	'HtmlSpanElement',
 	'HtmlParagraphElement',
+	'CssStyleDeclaration',
 	'console',
 ]
 
