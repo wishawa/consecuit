@@ -1,7 +1,6 @@
 use reia::{
     components::{
-        basic_text_label, button, div, dyn_vec_comps, text_node, BasicTextLabelProps, ButtonProps,
-        DivProps,
+        basic_text_label, button, div, text_node, BasicTextLabelProps, ButtonProps, DivProps,
     },
     hooks::{use_effect, use_function, use_state, JsFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, HookBuilder, HookReturn,
@@ -20,12 +19,12 @@ pub fn run() -> Result<(), JsValue> {
 fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
-    reia.node(basic_text_label, BasicTextLabelProps { text: label })
+    reia.comp(basic_text_label, BasicTextLabelProps { text: label })
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.node(div, DivProps {}).hole_here()
+    reia.comp(div, DivProps {}).hole_here()
 }
 
 fn count_button(
@@ -33,24 +32,24 @@ fn count_button(
     (increment, decrement): (JsFunction, JsFunction),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.node(button, ButtonProps { onclick: increment })
+    reia.comp(button, ButtonProps { onclick: increment })
         .child(|reia| {
-            reia.node(
+            reia.comp(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: "Increment Counter".to_string(),
                 },
             )
         })
-        .node(button, ButtonProps { onclick: decrement })
+        .comp(button, ButtonProps { onclick: decrement })
         .child(|reia| {
-            reia.node(
+            reia.comp(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: "Decrement Counter".to_string(),
                 },
             )
-            .node(
+            .comp(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: "Yay".to_string(),
@@ -93,22 +92,22 @@ fn use_counter(
 
 fn level_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.node(text_node, format!("You Reached Level: {}", level))
+    reia.comp(text_node, format!("You Reached Level: {}", level))
 }
 
 fn levels_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.node(text_node, format!("Current level: {}\nHistory:", level))
-        .node(dyn_vec_comps, (level_history, (1..=level.max(0)).collect()))
+    reia.comp(text_node, format!("Current level: {}\nHistory:", level))
+        .vec_comps(level_history, (1..=level.max(0)).collect())
 }
 
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (level, level_setter)) = reia.hook(use_state, 0);
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, level_setter);
-    reia.node(container, ()).child(|reia| {
-        reia.node(title, count)
-            .node(count_button, (increment.clone(), decrement.clone()))
-            .node(levels_history, level)
+    reia.comp(container, ()).child(|reia| {
+        reia.comp(title, count)
+            .comp(count_button, (increment.clone(), decrement.clone()))
+            .comp(levels_history, level)
     })
 }

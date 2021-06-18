@@ -14,7 +14,7 @@ use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
 type TreeStores<Ret, Props> =
     StoreCons<ComponentStoreInstance<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
-pub(crate) struct SubtreeInstance<Ret, Props>
+pub struct SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
@@ -87,7 +87,7 @@ where
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         };
-        component_store.node(self.func.clone(), props);
+        component_store.comp(self.func.clone(), props);
     }
 }
 

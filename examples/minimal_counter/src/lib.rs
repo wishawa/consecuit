@@ -18,8 +18,8 @@ fn button_with_text(
     (text, onclick): (String, JsFunction),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.node(button, ButtonProps { onclick })
-        .child(|reia| reia.node(basic_text_label, BasicTextLabelProps { text }))
+    reia.comp(button, ButtonProps { onclick })
+        .child(|reia| reia.comp(basic_text_label, BasicTextLabelProps { text }))
 }
 
 fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, JsFunction, JsFunction)> {
@@ -38,14 +38,14 @@ fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, JsFunct
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, 0);
-    reia.node(div, DivProps {}).child(move |reia| {
-        reia.node(button_with_text, ("-".into(), decrement))
-            .node(
+    reia.comp(div, DivProps {}).child(move |reia| {
+        reia.comp(button_with_text, ("-".into(), decrement))
+            .comp(
                 basic_text_label,
                 BasicTextLabelProps {
                     text: format!("{}", count),
                 },
             )
-            .node(button_with_text, ("+".into(), increment))
+            .comp(button_with_text, ("+".into(), increment))
     })
 }

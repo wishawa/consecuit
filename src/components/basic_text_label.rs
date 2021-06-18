@@ -12,6 +12,6 @@ pub fn basic_text_label(
     props: BasicTextLabelProps,
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.node(span, SpanProps {})
-        .child(|reia| reia.node(text_node, props.text))
+    reia.comp(span, SpanProps {})
+        .child(|reia| reia.comp(text_node, props.text))
 }

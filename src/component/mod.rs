@@ -15,6 +15,7 @@ mod hole;
 pub mod bare;
 pub mod subtree;
 pub use subtree::mount;
+mod subtrees;
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,
@@ -179,7 +180,7 @@ where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
-    pub fn node(
+    pub fn comp(
         self,
         component_func: ComponentFunc<Props, Ret>,
         component_props: Props,

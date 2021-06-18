@@ -17,6 +17,6 @@ pub fn basic_text_button(
 ) -> impl ComponentReturn {
     let reia = reia.init();
     let BasicTextButtonProps { text, onclick } = props;
-    reia.node(button, ButtonProps { onclick })
-        .child(|reia| reia.node(text_node, text))
+    reia.comp(button, ButtonProps { onclick })
+        .child(|reia| reia.comp(text_node, text))
 }
