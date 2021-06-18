@@ -8,7 +8,7 @@ use crate::{
 use super::{
     hole::{MaybeHoleNode, NoHoleNode},
     subtree::{mount_subtree, Subtree, SubtreeInstance},
-    utils::{ComponentFunc, ComponentProps},
+    types::{ComponentFunc, ComponentProps},
     ComponentConstruction,
 };
 
@@ -28,7 +28,7 @@ where
 {
     pub fn dyn_comp<Ret: ComponentReturn>(
         self,
-        func: ComponentFunc<Props, Ret>,
+        func: ComponentFunc<Ret, Props>,
         props: Props,
     ) -> ComponentConstruction<RestStores, EntireStores, NoHoleNode, CompHole> {
         let ComponentConstruction {
@@ -72,7 +72,7 @@ where
 {
     pub fn opt_comp(
         self,
-        func: ComponentFunc<Props, Ret>,
+        func: ComponentFunc<Ret, Props>,
         props: Option<Props>,
     ) -> ComponentConstruction<RestStores, EntireStores, NoHoleNode, CompHole> {
         let ComponentConstruction {
@@ -120,7 +120,7 @@ where
 {
     pub fn vec_comps(
         self,
-        func: ComponentFunc<Props, Ret>,
+        func: ComponentFunc<Ret, Props>,
         mut props: Vec<Props>,
     ) -> ComponentConstruction<RestStores, EntireStores, NoHoleNode, CompHole> {
         let ComponentConstruction {

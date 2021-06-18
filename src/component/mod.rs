@@ -5,17 +5,15 @@ use crate::{
 };
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::Element;
-pub mod utils;
-use utils::{ComponentFunc, ComponentProps};
-pub use utils::{ComponentReturn, ContainerReturn};
 
 use self::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
-mod hole;
-
 pub mod bare;
+mod hole;
 pub mod subtree;
 pub use subtree::mount;
 mod subtrees;
+mod types;
+pub use types::{ComponentFunc, ComponentProps, ComponentReturn, ContainerReturn};
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,
@@ -34,16 +32,6 @@ impl ComponentBuilder {
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         }
-    }
-}
-
-impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> ComponentReturn
-    for ComponentConstruction<StoreConsEnd, Stores, LastNode, HoleNode>
-{
-    type StoresList = Stores;
-    type HoleNode = HoleNode;
-    fn get_node(self) -> Self::HoleNode {
-        self.ret_node
     }
 }
 
@@ -114,7 +102,7 @@ where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
-    func: ComponentFunc<Props, Ret>,
+    func: ComponentFunc<Ret, Props>,
     props: Props,
     parent_node: Element,
     my_hole: Option<Ret::HoleNode>,
@@ -182,7 +170,7 @@ where
 {
     pub fn comp(
         self,
-        component_func: ComponentFunc<Props, Ret>,
+        component_func: ComponentFunc<Ret, Props>,
         component_props: Props,
     ) -> ComponentConstruction<RestStores, EntireStores, Ret::HoleNode, CompHole> {
         let ComponentConstruction {

@@ -22,7 +22,7 @@ where
     stores: Box<TreeStores<Ret, Props>>,
     lock: UnmountedLock,
     container: Element,
-    func: ComponentFunc<Props, Ret>,
+    func: ComponentFunc<Ret, Props>,
 }
 
 impl<Ret, Props> Drop for SubtreeInstance<Ret, Props>
@@ -106,7 +106,7 @@ where
 }
 
 pub(crate) fn mount_subtree<Ret, Props>(
-    func: ComponentFunc<Props, Ret>,
+    func: ComponentFunc<Ret, Props>,
     props: Props,
     container: Element,
 ) -> SubtreeInstance<Ret, Props>
