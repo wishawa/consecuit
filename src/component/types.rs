@@ -30,14 +30,14 @@ impl<Stores: StoresList, LastNode: MaybeHoleNode, HoleNode: MaybeHoleNode> Compo
     }
 }
 
-pub type DynComponentReturn<P> = ComponentConstruction<
-    StoreConsEnd,
-    StoreCons<RefCell<Option<Box<dyn Subtree<Props = P>>>>, StoreConsEnd>,
-    NoHoleNode,
-    NoHoleNode,
->;
-
 pub trait ComponentProps: PartialEq + Clone + 'static {}
 impl<T: PartialEq + Clone + 'static> ComponentProps for T {}
 
 pub type ComponentFunc<Ret, Props> = fn(ComponentBuilder, Props) -> Ret;
+
+pub type DynComponentReturn<Props> = ComponentConstruction<
+    StoreConsEnd,
+    StoreCons<RefCell<Option<Box<dyn Subtree<Props = Props>>>>, StoreConsEnd>,
+    NoHoleNode,
+    NoHoleNode,
+>;

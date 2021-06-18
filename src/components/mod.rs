@@ -1,9 +1,5 @@
 mod div;
 pub use div::{div, DivProps};
-mod basic_text_label;
-pub use basic_text_label::{basic_text_label, BasicTextLabelProps};
-mod basic_text_button;
-pub use basic_text_button::{basic_text_button, BasicTextButtonProps};
 mod button;
 pub use button::{button, ButtonProps};
 mod span;

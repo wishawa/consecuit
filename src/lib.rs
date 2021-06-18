@@ -11,11 +11,3 @@ pub use component::{
 };
 pub use executor::batched_updates;
 pub use hook::{HookBuilder, HookReturn};
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}

@@ -1,7 +1,5 @@
 use reia::{
-    components::{
-        basic_text_label, button, div, text_node, BasicTextLabelProps, ButtonProps, DivProps,
-    },
+    components::{button, div, text_node, ButtonProps, DivProps},
     hooks::{use_effect, use_function, use_state, JsFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
     HookReturn,
@@ -20,7 +18,7 @@ pub fn run() -> Result<(), JsValue> {
 fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
-    reia.comp(basic_text_label, BasicTextLabelProps { text: label })
+    reia.comp(text_node, label)
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
@@ -34,29 +32,9 @@ fn count_button(
 ) -> impl ComponentReturn {
     let reia = reia.init();
     reia.comp(button, ButtonProps { onclick: increment })
-        .child(|reia| {
-            reia.comp(
-                basic_text_label,
-                BasicTextLabelProps {
-                    text: "Increment Counter".to_string(),
-                },
-            )
-        })
+        .child(|reia| reia.comp(text_node, "Increment Counter"))
         .comp(button, ButtonProps { onclick: decrement })
-        .child(|reia| {
-            reia.comp(
-                basic_text_label,
-                BasicTextLabelProps {
-                    text: "Decrement Counter".to_string(),
-                },
-            )
-            .comp(
-                basic_text_label,
-                BasicTextLabelProps {
-                    text: "Yay".to_string(),
-                },
-            )
-        })
+        .child(|reia| reia.comp(text_node, "Decrement Counter"))
 }
 
 fn use_counter(
