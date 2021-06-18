@@ -27,13 +27,12 @@ where
     on_drop: Option<OnDrop>,
 }
 
-pub fn use_effect<Effect, Args, OnDrop>(
+pub fn use_effect<Args, OnDrop>(
     reia: HookBuilder,
-    (func, args): (&Effect, Args),
+    (func, args): (fn(Args) -> OnDrop, Args),
 ) -> impl HookReturn<()>
 where
     OnDrop: RunOnDrop,
-    Effect: Fn(Args) -> OnDrop + 'static,
     Args: PartialEq + Clone + 'static,
 {
     let reia = reia.init();

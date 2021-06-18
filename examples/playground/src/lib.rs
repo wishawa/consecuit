@@ -54,7 +54,7 @@ fn use_counter(
     let (reia, _) = reia.hook(
         use_effect,
         (
-            &|(count, count_setter, level_setter): (i32, StateSetter<i32>, StateSetter<i32>)| {
+            |(count, count_setter, level_setter): (i32, StateSetter<i32>, StateSetter<i32>)| {
                 if count > 15 {
                     count_setter.set(0);
                     level_setter.update_with(|lvl| lvl + 1);
