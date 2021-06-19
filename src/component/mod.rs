@@ -62,10 +62,10 @@ where
     }
 }
 
-impl<ThisStore, RestStores, EntireStores, LastNode, CompHole>
-    ComponentConstruction<StoreCons<ThisStore, RestStores>, EntireStores, LastNode, CompHole>
+impl<CurrentStores, RestStores, EntireStores, LastNode, CompHole>
+    ComponentConstruction<StoreCons<CurrentStores, RestStores>, EntireStores, LastNode, CompHole>
 where
-    ThisStore: StoresList,
+    CurrentStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
     LastNode: MaybeHoleNode,
@@ -80,7 +80,7 @@ where
         Out,
     )
     where
-        Ret: HookReturn<Out, StoresList = ThisStore>,
+        Ret: HookReturn<Out, StoresList = CurrentStores>,
     {
         let ComponentConstruction {
             hook_stores,
@@ -239,10 +239,10 @@ where
     }
 }
 
-impl<ThisStore, RestStores, EntireStores, CompHole>
-    ComponentConstruction<StoreCons<ThisStore, RestStores>, EntireStores, YesHoleNode, CompHole>
+impl<CurrentStores, RestStores, EntireStores, CompHole>
+    ComponentConstruction<StoreCons<CurrentStores, RestStores>, EntireStores, YesHoleNode, CompHole>
 where
-    ThisStore: StoresList,
+    CurrentStores: StoresList,
     RestStores: StoresList,
     EntireStores: StoresList,
     CompHole: MaybeHoleNode,
@@ -254,10 +254,11 @@ where
     where
         ChildHole: MaybeHoleNode,
         ChildLastNode: MaybeHoleNode,
-        Builder: FnOnce(
-            ComponentConstruction<ThisStore, ThisStore, NoHoleNode, CompHole>,
-        )
-            -> ComponentConstruction<StoreConsEnd, ThisStore, ChildLastNode, ChildHole>,
+        Builder:
+            FnOnce(
+                ComponentConstruction<CurrentStores, CurrentStores, NoHoleNode, CompHole>,
+            )
+                -> ComponentConstruction<StoreConsEnd, CurrentStores, ChildLastNode, ChildHole>,
     {
         let ComponentConstruction {
             hook_stores,
