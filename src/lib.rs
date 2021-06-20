@@ -8,5 +8,5 @@ mod unmounted_lock;
 pub use component::{
     mount, ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn,
 };
-pub use executor::batched_updates;
+pub use executor::batch_updates;
 pub use hook::{HookBuilder, HookReturn};

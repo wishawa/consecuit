@@ -4,7 +4,8 @@ use std::{
     sync::atomic::{AtomicBool, Ordering},
 };
 
-use web_sys::console;
+use wasm_bindgen::{prelude::Closure, JsCast};
+use web_sys::{console, window};
 
 use crate::{component::ComponentStore, unmounted_lock::UnmountedLock};
 
@@ -43,15 +44,14 @@ struct Executor {
     queue: RefCell<VecDeque<RerenderTask>>,
     queue_set: RefCell<HashSet<*const dyn ComponentStore>>,
     active: AtomicBool,
+    timeout_closure: Closure<dyn Fn()>,
 }
 
 impl Executor {
     fn enqueue(&self, task: RerenderTask) {
         if self.queue_set.borrow_mut().insert(task.comp) {
             self.queue.borrow_mut().push_back(task);
-            if !self.is_active() {
-                self.execute();
-            }
+            self.maybe_batch_updates_with_timeout();
         }
     }
     fn execute_loop(&self) {
@@ -70,20 +70,25 @@ impl Executor {
         }
     }
     fn execute(&self) {
-        if !self.active.swap(true, Ordering::Acquire) {
+        if !self.active.swap(true, Ordering::SeqCst) {
             self.execute_loop();
-            self.active.store(false, Ordering::Release);
+            self.active.store(false, Ordering::SeqCst);
         }
     }
-    fn is_active(&self) -> bool {
-        self.active.load(Ordering::Acquire)
-    }
-    fn batched_updates(&self, f: impl FnOnce()) {
-        let already_running = self.active.swap(true, Ordering::Acquire);
+    fn batch_updates(&self, f: impl FnOnce()) {
+        let already_running = self.active.swap(true, Ordering::SeqCst);
         f();
         if !already_running {
-            self.execute_loop();
-            self.active.store(false, Ordering::Release);
+            self.active.store(false, Ordering::SeqCst);
+            self.execute();
+        }
+    }
+    fn maybe_batch_updates_with_timeout(&self) {
+        if !self.active.swap(true, Ordering::SeqCst) {
+            window()
+                .unwrap()
+                .set_timeout_with_callback(self.timeout_closure.as_ref().unchecked_ref())
+                .unwrap();
         }
     }
 }
@@ -92,10 +97,16 @@ thread_local! {
     static LOCAL_EXECUTOR: Executor = Executor {
         active: AtomicBool::new(false),
         queue: RefCell::new(VecDeque::new()),
-        queue_set: RefCell::new(HashSet::new())
+        queue_set: RefCell::new(HashSet::new()),
+        timeout_closure: Closure::wrap(Box::new(|| {
+            LOCAL_EXECUTOR.with(|l| {
+                l.active.store(false, Ordering::SeqCst);
+                l.execute();
+            });
+        }))
     };
 }
 
-pub fn batched_updates(f: impl FnOnce()) {
-    LOCAL_EXECUTOR.with(|l| l.batched_updates(f))
+pub fn batch_updates(f: impl FnOnce()) {
+    LOCAL_EXECUTOR.with(|l| l.batch_updates(f))
 }
