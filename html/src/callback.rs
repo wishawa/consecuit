@@ -1,6 +1,7 @@
 use std::{ops::Deref, rc::Rc};
 
 use js_sys::Function;
+use reia::batched_updates;
 use wasm_bindgen::{prelude::Closure, JsCast};
 
 #[derive(Clone)]
@@ -13,6 +14,13 @@ impl PartialEq for Callback {
 }
 
 impl Callback {
+    pub fn new<F: Fn() + 'static>(f: F) -> Self {
+        Self(Rc::new(Closure::wrap(Box::new(move || {
+            batched_updates(|| {
+                f();
+            })
+        }))))
+    }
     pub fn as_websys_function(&self) -> &Function {
         self.0.deref().as_ref().unchecked_ref()
     }

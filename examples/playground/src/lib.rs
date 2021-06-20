@@ -1,9 +1,13 @@
 use reia::{
-    hooks::{use_callback, use_effect, use_state, CallbackFunction, StateSetter},
+    hooks::{use_effect, use_memo, use_state, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
     HookReturn,
 };
-use reia_html::components::{button, div, text_node, ButtonProps, DivProps};
+use reia_html::{
+    callback::Callback,
+    components::{button, div, text_node},
+    ElementProps,
+};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -23,34 +27,48 @@ fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.comp(div, DivProps {}).hole_here()
+    reia.comp(div, ElementProps::new()).hole_here()
 }
 
 fn count_button(
     reia: ComponentBuilder,
-    (increment, decrement): (CallbackFunction, CallbackFunction),
+    (increment, decrement): (Callback, Callback),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.comp(button, ButtonProps { onclick: increment })
+    reia.comp(button, ElementProps::new().onclick(increment))
         .child(|reia| reia.comp(text_node, "Increment Counter"))
-        .comp(button, ButtonProps { onclick: decrement })
+        .comp(button, ElementProps::new().onclick(decrement))
         .child(|reia| reia.comp(text_node, "Decrement Counter"))
 }
 
 fn use_counter(
     reia: HookBuilder,
     level_setter: StateSetter<i32>,
-) -> impl HookReturn<(i32, CallbackFunction, CallbackFunction)> {
+) -> impl HookReturn<(i32, Callback, Callback)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
-    let count_setter_1 = count_setter.clone();
-    let (reia, increment) = reia.hook(use_callback, move || {
-        count_setter_1.update_with(|value| value + 1);
-    });
-    let count_setter_2 = count_setter.clone();
-    let (reia, decrement) = reia.hook(use_callback, move || {
-        count_setter_2.update_with(|value| value - 1);
-    });
+    let (reia, increment) = reia.hook(
+        use_memo,
+        (
+            |count_setter: StateSetter<i32>| {
+                Callback::new(move || {
+                    count_setter.update_with(|value| value + 1);
+                })
+            },
+            count_setter.clone(),
+        ),
+    );
+    let (reia, decrement) = reia.hook(
+        use_memo,
+        (
+            |count_setter: StateSetter<i32>| {
+                Callback::new(move || {
+                    count_setter.update_with(|value| value - 1);
+                })
+            },
+            count_setter.clone(),
+        ),
+    );
     let (reia, _) = reia.hook(
         use_effect,
         (
@@ -62,6 +80,7 @@ fn use_counter(
                     count_setter.set(0);
                     level_setter.update_with(|lvl| lvl.max(1) - 1);
                 }
+                || {}
             },
             (count, count_setter, level_setter),
         ),

@@ -1,8 +1,12 @@
 use reia::{
-    hooks::{use_callback, use_state, CallbackFunction},
+    hooks::{use_memo, use_state, StateSetter},
     ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
 };
-use reia_html::components::{button, div, text_node, ButtonProps, DivProps};
+use reia_html::{
+    callback::Callback,
+    components::{button, div, text_node},
+    ElementProps,
+};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -15,33 +19,45 @@ pub fn run() -> Result<(), JsValue> {
 
 fn button_with_text(
     reia: ComponentBuilder,
-    (text, onclick): (String, CallbackFunction),
+    (text, onclick): (String, Callback),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.comp(button, ButtonProps { onclick })
+    reia.comp(button, ElementProps::new().onclick(onclick))
         .child(|reia| reia.comp(text_node, text))
 }
 
-fn use_counter(
-    reia: HookBuilder,
-    initial: i32,
-) -> impl HookReturn<(i32, CallbackFunction, CallbackFunction)> {
+fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, Callback, Callback)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, initial);
-    let count_setter_1 = count_setter.clone();
-    let (reia, increment) = reia.hook(use_callback, move || {
-        count_setter_1.update_with(|value| value + 1);
-    });
-    let (reia, decrement) = reia.hook(use_callback, move || {
-        count_setter.update_with(|value| value - 1);
-    });
+    let (reia, increment) = reia.hook(
+        use_memo,
+        (
+            |count_setter: StateSetter<i32>| {
+                Callback::new(move || {
+                    count_setter.update_with(|value| value + 1);
+                })
+            },
+            count_setter.clone(),
+        ),
+    );
+    let (reia, decrement) = reia.hook(
+        use_memo,
+        (
+            |count_setter: StateSetter<i32>| {
+                Callback::new(move || {
+                    count_setter.update_with(|value| value - 1);
+                })
+            },
+            count_setter.clone(),
+        ),
+    );
     (reia, (count, increment, decrement))
 }
 
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, 0);
-    reia.comp(div, DivProps {}).child(move |reia| {
+    reia.comp(div, ElementProps::new()).child(move |reia| {
         reia.comp(button_with_text, ("-".into(), decrement))
             .comp(text_node, format!("{}", count))
             .comp(button_with_text, ("+".into(), increment))

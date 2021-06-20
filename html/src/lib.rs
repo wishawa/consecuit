@@ -44,6 +44,12 @@ impl<E: ElementComponent> PartialEq for ElementProp<E> {
     }
 }
 
+impl<E: ElementComponent> PartialEq for ElementProps<E> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
 pub(crate) struct UseElementArgs<T>
 where
     T: ElementComponent,
@@ -106,7 +112,7 @@ pub(crate) fn use_element<T: ElementComponent>(
 }
 
 impl<E: ElementComponent> ElementProps<E> {
-    pub fn props() -> Self {
+    pub fn new() -> Self {
         Self(Vector::new())
     }
 }
