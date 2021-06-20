@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlInputElement;
 
 #[allow(non_camel_case_types)]
@@ -132,206 +132,197 @@ impl PropEnum<HtmlInputElement> for InputProp {
     }
 }
 
-impl ElementProps<HtmlInputElement> {
+impl HtmlProps<HtmlInputElement> {
     pub fn accept(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::accept(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::accept(val)));
         self
     }
 
     pub fn alt(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::alt(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::alt(val)));
         self
     }
 
     pub fn autocomplete(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::autocomplete(val)));
+            .push_back(HtmlProp::Own(InputProp::autocomplete(val)));
         self
     }
 
     pub fn autofocus(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::autofocus(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::autofocus(val)));
         self
     }
 
     pub fn default_checked(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::default_checked(val)));
+            .push_back(HtmlProp::Own(InputProp::default_checked(val)));
         self
     }
 
     pub fn checked(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::checked(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::checked(val)));
         self
     }
 
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::disabled(val)));
         self
     }
 
     pub fn files(mut self, val: web_sys::FileList) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::files(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::files(val)));
         self
     }
 
     pub fn form_action(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::form_action(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::form_action(val)));
         self
     }
 
     pub fn form_enctype(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::form_enctype(val)));
+            .push_back(HtmlProp::Own(InputProp::form_enctype(val)));
         self
     }
 
     pub fn form_method(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::form_method(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::form_method(val)));
         self
     }
 
     pub fn form_no_validate(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::form_no_validate(val)));
+            .push_back(HtmlProp::Own(InputProp::form_no_validate(val)));
         self
     }
 
     pub fn form_target(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::form_target(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::form_target(val)));
         self
     }
 
     pub fn height(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::height(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::height(val)));
         self
     }
 
     pub fn indeterminate(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::indeterminate(val)));
+            .push_back(HtmlProp::Own(InputProp::indeterminate(val)));
         self
     }
 
     pub fn input_mode(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::input_mode(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::input_mode(val)));
         self
     }
 
     pub fn max(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::max(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::max(val)));
         self
     }
 
     pub fn max_length(mut self, val: i32) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::max_length(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::max_length(val)));
         self
     }
 
     pub fn min(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::min(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::min(val)));
         self
     }
 
     pub fn min_length(mut self, val: i32) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::min_length(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::min_length(val)));
         self
     }
 
     pub fn multiple(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::multiple(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::multiple(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::name(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::name(val)));
         self
     }
 
     pub fn pattern(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::pattern(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::pattern(val)));
         self
     }
 
     pub fn placeholder(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::placeholder(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::placeholder(val)));
         self
     }
 
     pub fn read_only(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(InputProp::read_only(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::read_only(val)));
         self
     }
 
     pub fn required(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::required(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::required(val)));
         self
     }
 
     pub fn size(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::size(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::size(val)));
         self
     }
 
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::src(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::src(val)));
         self
     }
 
     pub fn step(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::step(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::step(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::r#type(val)));
         self
     }
 
     pub fn default_value(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::default_value(val)));
+            .push_back(HtmlProp::Own(InputProp::default_value(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::value(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::value(val)));
         self
     }
 
     pub fn value_as_number(mut self, val: f64) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::value_as_number(val)));
+            .push_back(HtmlProp::Own(InputProp::value_as_number(val)));
         self
     }
 
     pub fn width(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::width(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::width(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::align(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::align(val)));
         self
     }
 
     pub fn use_map(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(InputProp::use_map(val)));
+        self.0.push_back(HtmlProp::Own(InputProp::use_map(val)));
         self
     }
 
     pub fn webkitdirectory(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(InputProp::webkitdirectory(val)));
+            .push_back(HtmlProp::Own(InputProp::webkitdirectory(val)));
         self
     }
 }

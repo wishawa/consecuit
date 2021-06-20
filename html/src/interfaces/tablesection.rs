@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTableSectionElement;
 
 #[allow(non_camel_case_types)]
@@ -33,28 +33,27 @@ impl PropEnum<HtmlTableSectionElement> for TableSectionProp {
     }
 }
 
-impl ElementProps<HtmlTableSectionElement> {
+impl HtmlProps<HtmlTableSectionElement> {
     pub fn align(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TableSectionProp::align(val)));
+            .push_back(HtmlProp::Own(TableSectionProp::align(val)));
         self
     }
 
     pub fn ch(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableSectionProp::ch(val)));
+        self.0.push_back(HtmlProp::Own(TableSectionProp::ch(val)));
         self
     }
 
     pub fn ch_off(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TableSectionProp::ch_off(val)));
+            .push_back(HtmlProp::Own(TableSectionProp::ch_off(val)));
         self
     }
 
     pub fn v_align(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TableSectionProp::v_align(val)));
+            .push_back(HtmlProp::Own(TableSectionProp::v_align(val)));
         self
     }
 }

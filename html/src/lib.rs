@@ -7,5 +7,5 @@ mod shared;
 pub mod prelude {
     pub use crate::callback::Callback;
     pub use crate::components::*;
-    pub use crate::elem::ElementProps;
+    pub use crate::elem::{html_props, HtmlProps};
 }

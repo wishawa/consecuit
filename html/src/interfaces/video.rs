@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlVideoElement;
 
 #[allow(non_camel_case_types)]
@@ -30,19 +30,19 @@ impl PropEnum<HtmlVideoElement> for VideoProp {
     }
 }
 
-impl ElementProps<HtmlVideoElement> {
+impl HtmlProps<HtmlVideoElement> {
     pub fn width(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(VideoProp::width(val)));
+        self.0.push_back(HtmlProp::Own(VideoProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(VideoProp::height(val)));
+        self.0.push_back(HtmlProp::Own(VideoProp::height(val)));
         self
     }
 
     pub fn poster(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(VideoProp::poster(val)));
+        self.0.push_back(HtmlProp::Own(VideoProp::poster(val)));
         self
     }
 }

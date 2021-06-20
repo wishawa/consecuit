@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlImageElement;
 
 #[allow(non_camel_case_types)]
@@ -72,92 +72,91 @@ impl PropEnum<HtmlImageElement> for ImageProp {
     }
 }
 
-impl ElementProps<HtmlImageElement> {
+impl HtmlProps<HtmlImageElement> {
     pub fn alt(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::alt(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::alt(val)));
         self
     }
 
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::src(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::src(val)));
         self
     }
 
     pub fn srcset(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::srcset(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::srcset(val)));
         self
     }
 
     pub fn cross_origin(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ImageProp::cross_origin(val)));
+            .push_back(HtmlProp::Own(ImageProp::cross_origin(val)));
         self
     }
 
     pub fn use_map(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::use_map(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::use_map(val)));
         self
     }
 
     pub fn referrer_policy(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ImageProp::referrer_policy(val)));
+            .push_back(HtmlProp::Own(ImageProp::referrer_policy(val)));
         self
     }
 
     pub fn is_map(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::is_map(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::is_map(val)));
         self
     }
 
     pub fn width(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::width(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::height(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::height(val)));
         self
     }
 
     pub fn decoding(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::decoding(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::decoding(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::name(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::name(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::align(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::align(val)));
         self
     }
 
     pub fn hspace(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::hspace(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::hspace(val)));
         self
     }
 
     pub fn vspace(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::vspace(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::vspace(val)));
         self
     }
 
     pub fn long_desc(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ImageProp::long_desc(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::long_desc(val)));
         self
     }
 
     pub fn border(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::border(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::border(val)));
         self
     }
 
     pub fn sizes(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ImageProp::sizes(val)));
+        self.0.push_back(HtmlProp::Own(ImageProp::sizes(val)));
         self
     }
 }

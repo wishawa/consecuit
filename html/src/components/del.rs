@@ -1,7 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlModElement;
-pub fn del(reia: ComponentBuilder, props: ElementProps<HtmlModElement>) -> impl ContainerReturn {
+pub fn del(reia: ComponentBuilder, props: HtmlProps<HtmlModElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

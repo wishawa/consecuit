@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlOutputElement;
 
 #[allow(non_camel_case_types)]
@@ -30,20 +30,20 @@ impl PropEnum<HtmlOutputElement> for OutputProp {
     }
 }
 
-impl ElementProps<HtmlOutputElement> {
+impl HtmlProps<HtmlOutputElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OutputProp::name(val)));
+        self.0.push_back(HtmlProp::Own(OutputProp::name(val)));
         self
     }
 
     pub fn default_value(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(OutputProp::default_value(val)));
+            .push_back(HtmlProp::Own(OutputProp::default_value(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OutputProp::value(val)));
+        self.0.push_back(HtmlProp::Own(OutputProp::value(val)));
         self
     }
 }

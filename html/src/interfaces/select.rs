@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlSelectElement;
 
 #[allow(non_camel_case_types)]
@@ -51,60 +51,56 @@ impl PropEnum<HtmlSelectElement> for SelectProp {
     }
 }
 
-impl ElementProps<HtmlSelectElement> {
+impl HtmlProps<HtmlSelectElement> {
     pub fn autofocus(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(SelectProp::autofocus(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::autofocus(val)));
         self
     }
 
     pub fn autocomplete(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(SelectProp::autocomplete(val)));
+            .push_back(HtmlProp::Own(SelectProp::autocomplete(val)));
         self
     }
 
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(SelectProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::disabled(val)));
         self
     }
 
     pub fn multiple(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(SelectProp::multiple(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::multiple(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SelectProp::name(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::name(val)));
         self
     }
 
     pub fn required(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(SelectProp::required(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::required(val)));
         self
     }
 
     pub fn size(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(SelectProp::size(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::size(val)));
         self
     }
 
     pub fn length(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(SelectProp::length(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::length(val)));
         self
     }
 
     pub fn selected_index(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Own(SelectProp::selected_index(val)));
+            .push_back(HtmlProp::Own(SelectProp::selected_index(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SelectProp::value(val)));
+        self.0.push_back(HtmlProp::Own(SelectProp::value(val)));
         self
     }
 }

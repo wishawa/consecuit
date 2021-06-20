@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlMenuItemElement;
 
 #[allow(non_camel_case_types)]
@@ -42,44 +42,41 @@ impl PropEnum<HtmlMenuItemElement> for MenuItemProp {
     }
 }
 
-impl ElementProps<HtmlMenuItemElement> {
+impl HtmlProps<HtmlMenuItemElement> {
     pub fn r#type(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MenuItemProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(MenuItemProp::r#type(val)));
         self
     }
 
     pub fn label(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MenuItemProp::label(val)));
+        self.0.push_back(HtmlProp::Own(MenuItemProp::label(val)));
         self
     }
 
     pub fn icon(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MenuItemProp::icon(val)));
+        self.0.push_back(HtmlProp::Own(MenuItemProp::icon(val)));
         self
     }
 
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MenuItemProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(MenuItemProp::disabled(val)));
         self
     }
 
     pub fn checked(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MenuItemProp::checked(val)));
+        self.0.push_back(HtmlProp::Own(MenuItemProp::checked(val)));
         self
     }
 
     pub fn radiogroup(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(MenuItemProp::radiogroup(val)));
+            .push_back(HtmlProp::Own(MenuItemProp::radiogroup(val)));
         self
     }
 
     pub fn default_checked(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(MenuItemProp::default_checked(val)));
+            .push_back(HtmlProp::Own(MenuItemProp::default_checked(val)));
         self
     }
 }

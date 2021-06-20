@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlUListElement;
 
 #[allow(non_camel_case_types)]
@@ -27,14 +27,14 @@ impl PropEnum<HtmlUListElement> for UListProp {
     }
 }
 
-impl ElementProps<HtmlUListElement> {
+impl HtmlProps<HtmlUListElement> {
     pub fn compact(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(UListProp::compact(val)));
+        self.0.push_back(HtmlProp::Own(UListProp::compact(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(UListProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(UListProp::r#type(val)));
         self
     }
 }

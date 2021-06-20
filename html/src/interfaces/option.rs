@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlOptionElement;
 
 #[allow(non_camel_case_types)]
@@ -39,37 +39,35 @@ impl PropEnum<HtmlOptionElement> for OptionProp {
     }
 }
 
-impl ElementProps<HtmlOptionElement> {
+impl HtmlProps<HtmlOptionElement> {
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(OptionProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(OptionProp::disabled(val)));
         self
     }
 
     pub fn label(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OptionProp::label(val)));
+        self.0.push_back(HtmlProp::Own(OptionProp::label(val)));
         self
     }
 
     pub fn default_selected(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(OptionProp::default_selected(val)));
+            .push_back(HtmlProp::Own(OptionProp::default_selected(val)));
         self
     }
 
     pub fn selected(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(OptionProp::selected(val)));
+        self.0.push_back(HtmlProp::Own(OptionProp::selected(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OptionProp::value(val)));
+        self.0.push_back(HtmlProp::Own(OptionProp::value(val)));
         self
     }
 
     pub fn text(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OptionProp::text(val)));
+        self.0.push_back(HtmlProp::Own(OptionProp::text(val)));
         self
     }
 }

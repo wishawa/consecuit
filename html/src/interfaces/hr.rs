@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlHrElement;
 
 #[allow(non_camel_case_types)]
@@ -36,29 +36,29 @@ impl PropEnum<HtmlHrElement> for HrProp {
     }
 }
 
-impl ElementProps<HtmlHrElement> {
+impl HtmlProps<HtmlHrElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HrProp::align(val)));
+        self.0.push_back(HtmlProp::Own(HrProp::align(val)));
         self
     }
 
     pub fn color(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HrProp::color(val)));
+        self.0.push_back(HtmlProp::Own(HrProp::color(val)));
         self
     }
 
     pub fn no_shade(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(HrProp::no_shade(val)));
+        self.0.push_back(HtmlProp::Own(HrProp::no_shade(val)));
         self
     }
 
     pub fn size(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HrProp::size(val)));
+        self.0.push_back(HtmlProp::Own(HrProp::size(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HrProp::width(val)));
+        self.0.push_back(HtmlProp::Own(HrProp::width(val)));
         self
     }
 }

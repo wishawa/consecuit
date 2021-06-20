@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTableColElement;
 
 #[allow(non_camel_case_types)]
@@ -39,36 +39,34 @@ impl PropEnum<HtmlTableColElement> for TableColProp {
     }
 }
 
-impl ElementProps<HtmlTableColElement> {
+impl HtmlProps<HtmlTableColElement> {
     pub fn span(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(TableColProp::span(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::span(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableColProp::align(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::align(val)));
         self
     }
 
     pub fn ch(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableColProp::ch(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::ch(val)));
         self
     }
 
     pub fn ch_off(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableColProp::ch_off(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::ch_off(val)));
         self
     }
 
     pub fn v_align(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableColProp::v_align(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::v_align(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableColProp::width(val)));
+        self.0.push_back(HtmlProp::Own(TableColProp::width(val)));
         self
     }
 }

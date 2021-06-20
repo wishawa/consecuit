@@ -1,7 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlSpanElement;
-pub fn span(reia: ComponentBuilder, props: ElementProps<HtmlSpanElement>) -> impl ContainerReturn {
+pub fn span(reia: ComponentBuilder, props: HtmlProps<HtmlSpanElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

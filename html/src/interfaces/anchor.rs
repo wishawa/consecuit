@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlAnchorElement;
 
 #[allow(non_camel_case_types)]
@@ -87,122 +87,115 @@ impl PropEnum<HtmlAnchorElement> for AnchorProp {
     }
 }
 
-impl ElementProps<HtmlAnchorElement> {
+impl HtmlProps<HtmlAnchorElement> {
     pub fn target(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::target(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::target(val)));
         self
     }
 
     pub fn download(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::download(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::download(val)));
         self
     }
 
     pub fn ping(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::ping(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::ping(val)));
         self
     }
 
     pub fn rel(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::rel(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::rel(val)));
         self
     }
 
     pub fn referrer_policy(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(AnchorProp::referrer_policy(val)));
+            .push_back(HtmlProp::Own(AnchorProp::referrer_policy(val)));
         self
     }
 
     pub fn hreflang(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::hreflang(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::hreflang(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::r#type(val)));
         self
     }
 
     pub fn coords(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::coords(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::coords(val)));
         self
     }
 
     pub fn charset(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::charset(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::charset(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::name(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::name(val)));
         self
     }
 
     pub fn rev(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::rev(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::rev(val)));
         self
     }
 
     pub fn shape(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::shape(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::shape(val)));
         self
     }
 
     pub fn href(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::href(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::href(val)));
         self
     }
 
     pub fn protocol(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::protocol(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::protocol(val)));
         self
     }
 
     pub fn username(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::username(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::username(val)));
         self
     }
 
     pub fn password(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::password(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::password(val)));
         self
     }
 
     pub fn host(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::host(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::host(val)));
         self
     }
 
     pub fn hostname(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::hostname(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::hostname(val)));
         self
     }
 
     pub fn port(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::port(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::port(val)));
         self
     }
 
     pub fn pathname(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(AnchorProp::pathname(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::pathname(val)));
         self
     }
 
     pub fn search(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::search(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::search(val)));
         self
     }
 
     pub fn hash(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AnchorProp::hash(val)));
+        self.0.push_back(HtmlProp::Own(AnchorProp::hash(val)));
         self
     }
 }

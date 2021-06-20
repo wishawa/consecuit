@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTableElement;
 
 #[allow(non_camel_case_types)]
@@ -57,66 +57,66 @@ impl PropEnum<HtmlTableElement> for TableProp {
     }
 }
 
-impl ElementProps<HtmlTableElement> {
+impl HtmlProps<HtmlTableElement> {
     pub fn caption(mut self, val: web_sys::HtmlTableCaptionElement) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::caption(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::caption(val)));
         self
     }
 
     pub fn t_head(mut self, val: web_sys::HtmlTableSectionElement) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::t_head(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::t_head(val)));
         self
     }
 
     pub fn t_foot(mut self, val: web_sys::HtmlTableSectionElement) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::t_foot(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::t_foot(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::align(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::align(val)));
         self
     }
 
     pub fn border(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::border(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::border(val)));
         self
     }
 
     pub fn frame(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::frame(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::frame(val)));
         self
     }
 
     pub fn rules(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::rules(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::rules(val)));
         self
     }
 
     pub fn summary(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::summary(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::summary(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::width(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::width(val)));
         self
     }
 
     pub fn bg_color(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableProp::bg_color(val)));
+        self.0.push_back(HtmlProp::Own(TableProp::bg_color(val)));
         self
     }
 
     pub fn cell_padding(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TableProp::cell_padding(val)));
+            .push_back(HtmlProp::Own(TableProp::cell_padding(val)));
         self
     }
 
     pub fn cell_spacing(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TableProp::cell_spacing(val)));
+            .push_back(HtmlProp::Own(TableProp::cell_spacing(val)));
         self
     }
 }

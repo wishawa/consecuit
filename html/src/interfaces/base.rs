@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlBaseElement;
 
 #[allow(non_camel_case_types)]
@@ -27,14 +27,14 @@ impl PropEnum<HtmlBaseElement> for BaseProp {
     }
 }
 
-impl ElementProps<HtmlBaseElement> {
+impl HtmlProps<HtmlBaseElement> {
     pub fn href(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BaseProp::href(val)));
+        self.0.push_back(HtmlProp::Own(BaseProp::href(val)));
         self
     }
 
     pub fn target(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BaseProp::target(val)));
+        self.0.push_back(HtmlProp::Own(BaseProp::target(val)));
         self
     }
 }

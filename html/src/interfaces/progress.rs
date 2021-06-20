@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlProgressElement;
 
 #[allow(non_camel_case_types)]
@@ -27,14 +27,14 @@ impl PropEnum<HtmlProgressElement> for ProgressProp {
     }
 }
 
-impl ElementProps<HtmlProgressElement> {
+impl HtmlProps<HtmlProgressElement> {
     pub fn value(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(ProgressProp::value(val)));
+        self.0.push_back(HtmlProp::Own(ProgressProp::value(val)));
         self
     }
 
     pub fn max(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(ProgressProp::max(val)));
+        self.0.push_back(HtmlProp::Own(ProgressProp::max(val)));
         self
     }
 }

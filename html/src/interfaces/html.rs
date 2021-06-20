@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp as CrateHtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlHtmlElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlHtmlElement> for HtmlProp {
     }
 }
 
-impl ElementProps<HtmlHtmlElement> {
+impl HtmlProps<HtmlHtmlElement> {
     pub fn version(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HtmlProp::version(val)));
+        self.0.push_back(CrateHtmlProp::Own(HtmlProp::version(val)));
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlIFrameElement;
 
 #[allow(non_camel_case_types)]
@@ -65,82 +65,80 @@ impl PropEnum<HtmlIFrameElement> for IFrameProp {
     }
 }
 
-impl ElementProps<HtmlIFrameElement> {
+impl HtmlProps<HtmlIFrameElement> {
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::src(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::src(val)));
         self
     }
 
     pub fn srcdoc(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::srcdoc(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::srcdoc(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::name(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::name(val)));
         self
     }
 
     pub fn allow_fullscreen(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::allow_fullscreen(val)));
+            .push_back(HtmlProp::Own(IFrameProp::allow_fullscreen(val)));
         self
     }
 
     pub fn allow_payment_request(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::allow_payment_request(val)));
+            .push_back(HtmlProp::Own(IFrameProp::allow_payment_request(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::width(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::height(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::height(val)));
         self
     }
 
     pub fn referrer_policy(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::referrer_policy(val)));
+            .push_back(HtmlProp::Own(IFrameProp::referrer_policy(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(IFrameProp::align(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::align(val)));
         self
     }
 
     pub fn scrolling(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(IFrameProp::scrolling(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::scrolling(val)));
         self
     }
 
     pub fn frame_border(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::frame_border(val)));
+            .push_back(HtmlProp::Own(IFrameProp::frame_border(val)));
         self
     }
 
     pub fn long_desc(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(IFrameProp::long_desc(val)));
+        self.0.push_back(HtmlProp::Own(IFrameProp::long_desc(val)));
         self
     }
 
     pub fn margin_height(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::margin_height(val)));
+            .push_back(HtmlProp::Own(IFrameProp::margin_height(val)));
         self
     }
 
     pub fn margin_width(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(IFrameProp::margin_width(val)));
+            .push_back(HtmlProp::Own(IFrameProp::margin_width(val)));
         self
     }
 }

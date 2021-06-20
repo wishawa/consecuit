@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlModElement;
 
 #[allow(non_camel_case_types)]
@@ -27,14 +27,14 @@ impl PropEnum<HtmlModElement> for ModProp {
     }
 }
 
-impl ElementProps<HtmlModElement> {
+impl HtmlProps<HtmlModElement> {
     pub fn cite(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ModProp::cite(val)));
+        self.0.push_back(HtmlProp::Own(ModProp::cite(val)));
         self
     }
 
     pub fn date_time(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ModProp::date_time(val)));
+        self.0.push_back(HtmlProp::Own(ModProp::date_time(val)));
         self
     }
 }

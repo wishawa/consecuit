@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlOListElement;
 
 #[allow(non_camel_case_types)]
@@ -33,24 +33,24 @@ impl PropEnum<HtmlOListElement> for OListProp {
     }
 }
 
-impl ElementProps<HtmlOListElement> {
+impl HtmlProps<HtmlOListElement> {
     pub fn reversed(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(OListProp::reversed(val)));
+        self.0.push_back(HtmlProp::Own(OListProp::reversed(val)));
         self
     }
 
     pub fn start(mut self, val: i32) -> Self {
-        self.0.push_back(ElementProp::Own(OListProp::start(val)));
+        self.0.push_back(HtmlProp::Own(OListProp::start(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OListProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(OListProp::r#type(val)));
         self
     }
 
     pub fn compact(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(OListProp::compact(val)));
+        self.0.push_back(HtmlProp::Own(OListProp::compact(val)));
         self
     }
 }

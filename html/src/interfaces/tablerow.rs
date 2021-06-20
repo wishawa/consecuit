@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTableRowElement;
 
 #[allow(non_camel_case_types)]
@@ -36,32 +36,29 @@ impl PropEnum<HtmlTableRowElement> for TableRowProp {
     }
 }
 
-impl ElementProps<HtmlTableRowElement> {
+impl HtmlProps<HtmlTableRowElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableRowProp::align(val)));
+        self.0.push_back(HtmlProp::Own(TableRowProp::align(val)));
         self
     }
 
     pub fn ch(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TableRowProp::ch(val)));
+        self.0.push_back(HtmlProp::Own(TableRowProp::ch(val)));
         self
     }
 
     pub fn ch_off(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableRowProp::ch_off(val)));
+        self.0.push_back(HtmlProp::Own(TableRowProp::ch_off(val)));
         self
     }
 
     pub fn v_align(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableRowProp::v_align(val)));
+        self.0.push_back(HtmlProp::Own(TableRowProp::v_align(val)));
         self
     }
 
     pub fn bg_color(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TableRowProp::bg_color(val)));
+        self.0.push_back(HtmlProp::Own(TableRowProp::bg_color(val)));
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlSourceElement;
 
 #[allow(non_camel_case_types)]
@@ -36,29 +36,29 @@ impl PropEnum<HtmlSourceElement> for SourceProp {
     }
 }
 
-impl ElementProps<HtmlSourceElement> {
+impl HtmlProps<HtmlSourceElement> {
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SourceProp::src(val)));
+        self.0.push_back(HtmlProp::Own(SourceProp::src(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SourceProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(SourceProp::r#type(val)));
         self
     }
 
     pub fn srcset(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SourceProp::srcset(val)));
+        self.0.push_back(HtmlProp::Own(SourceProp::srcset(val)));
         self
     }
 
     pub fn sizes(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SourceProp::sizes(val)));
+        self.0.push_back(HtmlProp::Own(SourceProp::sizes(val)));
         self
     }
 
     pub fn media(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SourceProp::media(val)));
+        self.0.push_back(HtmlProp::Own(SourceProp::media(val)));
         self
     }
 }

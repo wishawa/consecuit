@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlLegendElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlLegendElement> for LegendProp {
     }
 }
 
-impl ElementProps<HtmlLegendElement> {
+impl HtmlProps<HtmlLegendElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LegendProp::align(val)));
+        self.0.push_back(HtmlProp::Own(LegendProp::align(val)));
         self
     }
 }

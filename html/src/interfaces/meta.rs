@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlMetaElement;
 
 #[allow(non_camel_case_types)]
@@ -33,25 +33,24 @@ impl PropEnum<HtmlMetaElement> for MetaProp {
     }
 }
 
-impl ElementProps<HtmlMetaElement> {
+impl HtmlProps<HtmlMetaElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MetaProp::name(val)));
+        self.0.push_back(HtmlProp::Own(MetaProp::name(val)));
         self
     }
 
     pub fn http_equiv(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MetaProp::http_equiv(val)));
+        self.0.push_back(HtmlProp::Own(MetaProp::http_equiv(val)));
         self
     }
 
     pub fn content(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MetaProp::content(val)));
+        self.0.push_back(HtmlProp::Own(MetaProp::content(val)));
         self
     }
 
     pub fn scheme(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MetaProp::scheme(val)));
+        self.0.push_back(HtmlProp::Own(MetaProp::scheme(val)));
         self
     }
 }

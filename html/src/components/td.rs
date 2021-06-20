@@ -1,10 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlTableCellElement;
-pub fn td(
-    reia: ComponentBuilder,
-    props: ElementProps<HtmlTableCellElement>,
-) -> impl ContainerReturn {
+pub fn td(reia: ComponentBuilder, props: HtmlProps<HtmlTableCellElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

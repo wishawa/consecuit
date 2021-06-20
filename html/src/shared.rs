@@ -2,7 +2,7 @@ use web_sys::HtmlElement;
 
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
 };
 
 #[allow(non_camel_case_types)]
@@ -385,553 +385,531 @@ impl PropEnum<HtmlElement> for SharedProp {
     }
 }
 
-impl<E: ElementComponent> ElementProps<E> {
+impl<E: ElementComponent> HtmlProps<E> {
     pub fn node_value(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::node_value(val)));
+            .push_back(HtmlProp::Shared(SharedProp::node_value(val)));
         self
     }
     pub fn text_content(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::text_content(val)));
+            .push_back(HtmlProp::Shared(SharedProp::text_content(val)));
         self
     }
     pub fn id(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Shared(SharedProp::id(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::id(val)));
         self
     }
     pub fn class_name(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::class_name(val)));
+            .push_back(HtmlProp::Shared(SharedProp::class_name(val)));
         self
     }
     pub fn scroll_top(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::scroll_top(val)));
+            .push_back(HtmlProp::Shared(SharedProp::scroll_top(val)));
         self
     }
     pub fn scroll_left(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::scroll_left(val)));
+            .push_back(HtmlProp::Shared(SharedProp::scroll_left(val)));
         self
     }
     pub fn inner_html(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::inner_html(val)));
+            .push_back(HtmlProp::Shared(SharedProp::inner_html(val)));
         self
     }
     pub fn outer_html(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::outer_html(val)));
+            .push_back(HtmlProp::Shared(SharedProp::outer_html(val)));
         self
     }
     pub fn slot(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Shared(SharedProp::slot(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::slot(val)));
         self
     }
     pub fn title(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::title(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::title(val)));
         self
     }
     pub fn scroll_height(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::scroll_height(val)));
+            .push_back(HtmlProp::Shared(SharedProp::scroll_height(val)));
         self
     }
     pub fn lang(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Shared(SharedProp::lang(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::lang(val)));
         self
     }
     pub fn dir(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Shared(SharedProp::dir(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::dir(val)));
         self
     }
     pub fn inner_text(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::inner_text(val)));
+            .push_back(HtmlProp::Shared(SharedProp::inner_text(val)));
         self
     }
     pub fn hidden(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::hidden(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::hidden(val)));
         self
     }
     pub fn tab_index(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::tab_index(val)));
+            .push_back(HtmlProp::Shared(SharedProp::tab_index(val)));
         self
     }
     pub fn access_key(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::access_key(val)));
+            .push_back(HtmlProp::Shared(SharedProp::access_key(val)));
         self
     }
     pub fn draggable(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::draggable(val)));
+            .push_back(HtmlProp::Shared(SharedProp::draggable(val)));
         self
     }
     pub fn content_editable(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::content_editable(val)));
+            .push_back(HtmlProp::Shared(SharedProp::content_editable(val)));
         self
     }
     pub fn spellcheck(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::spellcheck(val)));
+            .push_back(HtmlProp::Shared(SharedProp::spellcheck(val)));
         self
     }
     pub fn oncopy(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::oncopy(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::oncopy(val)));
         self
     }
     pub fn oncut(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::oncut(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::oncut(val)));
         self
     }
     pub fn onpaste(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onpaste(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onpaste(val)));
         self
     }
     pub fn onabort(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onabort(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onabort(val)));
         self
     }
     pub fn onblur(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onblur(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onblur(val)));
         self
     }
     pub fn onfocus(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onfocus(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onfocus(val)));
         self
     }
     pub fn onauxclick(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onauxclick(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onauxclick(val)));
         self
     }
     pub fn oncanplay(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::oncanplay(val)));
+            .push_back(HtmlProp::Shared(SharedProp::oncanplay(val)));
         self
     }
     pub fn oncanplaythrough(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::oncanplaythrough(val)));
+            .push_back(HtmlProp::Shared(SharedProp::oncanplaythrough(val)));
         self
     }
     pub fn onchange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onchange(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onchange(val)));
         self
     }
     pub fn onclick(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onclick(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onclick(val)));
         self
     }
     pub fn onclose(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onclose(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onclose(val)));
         self
     }
     pub fn oncontextmenu(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::oncontextmenu(val)));
+            .push_back(HtmlProp::Shared(SharedProp::oncontextmenu(val)));
         self
     }
     pub fn ondblclick(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondblclick(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondblclick(val)));
         self
     }
     pub fn ondrag(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::ondrag(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::ondrag(val)));
         self
     }
     pub fn ondragend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragend(val)));
         self
     }
     pub fn ondragenter(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragenter(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragenter(val)));
         self
     }
     pub fn ondragexit(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragexit(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragexit(val)));
         self
     }
     pub fn ondragleave(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragleave(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragleave(val)));
         self
     }
     pub fn ondragover(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragover(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragover(val)));
         self
     }
     pub fn ondragstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondragstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondragstart(val)));
         self
     }
     pub fn ondrop(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::ondrop(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::ondrop(val)));
         self
     }
     pub fn ondurationchange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ondurationchange(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ondurationchange(val)));
         self
     }
     pub fn onemptied(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onemptied(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onemptied(val)));
         self
     }
     pub fn onended(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onended(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onended(val)));
         self
     }
     pub fn oninput(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::oninput(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::oninput(val)));
         self
     }
     pub fn oninvalid(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::oninvalid(val)));
+            .push_back(HtmlProp::Shared(SharedProp::oninvalid(val)));
         self
     }
     pub fn onkeydown(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onkeydown(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onkeydown(val)));
         self
     }
     pub fn onkeypress(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onkeypress(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onkeypress(val)));
         self
     }
     pub fn onkeyup(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onkeyup(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onkeyup(val)));
         self
     }
     pub fn onload(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onload(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onload(val)));
         self
     }
     pub fn onloadeddata(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onloadeddata(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onloadeddata(val)));
         self
     }
     pub fn onloadedmetadata(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onloadedmetadata(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onloadedmetadata(val)));
         self
     }
     pub fn onloadend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onloadend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onloadend(val)));
         self
     }
     pub fn onloadstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onloadstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onloadstart(val)));
         self
     }
     pub fn onmousedown(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmousedown(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmousedown(val)));
         self
     }
     pub fn onmouseenter(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmouseenter(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmouseenter(val)));
         self
     }
     pub fn onmouseleave(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmouseleave(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmouseleave(val)));
         self
     }
     pub fn onmousemove(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmousemove(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmousemove(val)));
         self
     }
     pub fn onmouseout(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmouseout(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmouseout(val)));
         self
     }
     pub fn onmouseover(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmouseover(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmouseover(val)));
         self
     }
     pub fn onmouseup(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onmouseup(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onmouseup(val)));
         self
     }
     pub fn onwheel(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onwheel(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onwheel(val)));
         self
     }
     pub fn onpause(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onpause(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onpause(val)));
         self
     }
     pub fn onplay(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onplay(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onplay(val)));
         self
     }
     pub fn onplaying(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onplaying(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onplaying(val)));
         self
     }
     pub fn onprogress(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onprogress(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onprogress(val)));
         self
     }
     pub fn onratechange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onratechange(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onratechange(val)));
         self
     }
     pub fn onreset(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onreset(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onreset(val)));
         self
     }
     pub fn onresize(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onresize(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onresize(val)));
         self
     }
     pub fn onscroll(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onscroll(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onscroll(val)));
         self
     }
     pub fn onseeked(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onseeked(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onseeked(val)));
         self
     }
     pub fn onseeking(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onseeking(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onseeking(val)));
         self
     }
     pub fn onselect(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onselect(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onselect(val)));
         self
     }
     pub fn onshow(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onshow(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onshow(val)));
         self
     }
     pub fn onstalled(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onstalled(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onstalled(val)));
         self
     }
     pub fn onsubmit(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onsubmit(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onsubmit(val)));
         self
     }
     pub fn onsuspend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onsuspend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onsuspend(val)));
         self
     }
     pub fn ontimeupdate(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontimeupdate(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontimeupdate(val)));
         self
     }
     pub fn onvolumechange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onvolumechange(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onvolumechange(val)));
         self
     }
     pub fn onwaiting(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onwaiting(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onwaiting(val)));
         self
     }
     pub fn onselectstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onselectstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onselectstart(val)));
         self
     }
     pub fn ontoggle(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontoggle(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontoggle(val)));
         self
     }
     pub fn onpointercancel(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointercancel(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointercancel(val)));
         self
     }
     pub fn onpointerdown(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerdown(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerdown(val)));
         self
     }
     pub fn onpointerup(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerup(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerup(val)));
         self
     }
     pub fn onpointermove(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointermove(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointermove(val)));
         self
     }
     pub fn onpointerout(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerout(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerout(val)));
         self
     }
     pub fn onpointerover(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerover(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerover(val)));
         self
     }
     pub fn onpointerenter(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerenter(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerenter(val)));
         self
     }
     pub fn onpointerleave(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onpointerleave(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onpointerleave(val)));
         self
     }
     pub fn ongotpointercapture(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ongotpointercapture(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ongotpointercapture(val)));
         self
     }
     pub fn onlostpointercapture(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onlostpointercapture(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onlostpointercapture(val)));
         self
     }
     pub fn onanimationcancel(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onanimationcancel(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onanimationcancel(val)));
         self
     }
     pub fn onanimationend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onanimationend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onanimationend(val)));
         self
     }
     pub fn onanimationiteration(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onanimationiteration(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onanimationiteration(val)));
         self
     }
     pub fn onanimationstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onanimationstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onanimationstart(val)));
         self
     }
     pub fn ontransitioncancel(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontransitioncancel(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontransitioncancel(val)));
         self
     }
     pub fn ontransitionend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontransitionend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontransitionend(val)));
         self
     }
     pub fn ontransitionrun(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontransitionrun(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontransitionrun(val)));
         self
     }
     pub fn ontransitionstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontransitionstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontransitionstart(val)));
         self
     }
     pub fn onwebkitanimationend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onwebkitanimationend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onwebkitanimationend(val)));
         self
     }
     pub fn onwebkitanimationiteration(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onwebkitanimationiteration(
+            .push_back(HtmlProp::Shared(SharedProp::onwebkitanimationiteration(
                 val,
             )));
         self
     }
     pub fn onwebkitanimationstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onwebkitanimationstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onwebkitanimationstart(val)));
         self
     }
     pub fn onwebkittransitionend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::onwebkittransitionend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::onwebkittransitionend(val)));
         self
     }
     pub fn onerror(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Shared(SharedProp::onerror(val)));
+        self.0.push_back(HtmlProp::Shared(SharedProp::onerror(val)));
         self
     }
     pub fn ontouchstart(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontouchstart(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontouchstart(val)));
         self
     }
     pub fn ontouchend(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontouchend(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontouchend(val)));
         self
     }
     pub fn ontouchmove(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontouchmove(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontouchmove(val)));
         self
     }
     pub fn ontouchcancel(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Shared(SharedProp::ontouchcancel(val)));
+            .push_back(HtmlProp::Shared(SharedProp::ontouchcancel(val)));
         self
     }
 }

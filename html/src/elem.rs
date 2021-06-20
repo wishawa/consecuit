@@ -21,25 +21,25 @@ pub trait ElementComponent: 'static + Clone + AsRef<HtmlElement> + JsCast {
 }
 
 #[derive(Clone)]
-pub struct ElementProps<E: ElementComponent>(pub(crate) Vector<ElementProp<E>>);
+pub struct HtmlProps<E: ElementComponent>(pub(crate) Vector<HtmlProp<E>>);
 
 #[derive(Clone)]
-pub(crate) enum ElementProp<E: ElementComponent> {
+pub(crate) enum HtmlProp<E: ElementComponent> {
     Shared(SharedProp),
     Own(E::PropEnum),
 }
 
-impl<E: ElementComponent> PartialEq for ElementProp<E> {
+impl<E: ElementComponent> PartialEq for HtmlProp<E> {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
-            (ElementProp::Shared(s1), ElementProp::Shared(s2)) => s1 == s2,
-            (ElementProp::Own(o1), ElementProp::Own(o2)) => o1 == o2,
+            (HtmlProp::Shared(s1), HtmlProp::Shared(s2)) => s1 == s2,
+            (HtmlProp::Own(o1), HtmlProp::Own(o2)) => o1 == o2,
             _ => false,
         }
     }
 }
 
-impl<E: ElementComponent> PartialEq for ElementProps<E> {
+impl<E: ElementComponent> PartialEq for HtmlProps<E> {
     fn eq(&self, other: &Self) -> bool {
         self.0 == other.0
     }
@@ -50,7 +50,7 @@ where
     T: ElementComponent,
 {
     pub tag_name: &'static str,
-    pub props: ElementProps<T>,
+    pub props: HtmlProps<T>,
     pub parent: Element,
 }
 
@@ -82,21 +82,21 @@ pub(crate) fn use_element<T: ElementComponent>(
         })
         .unwrap();
 
-    let (reia, last_props): (_, ReiaRef<Option<Vector<ElementProp<T>>>>) = reia.hook(use_ref, ());
+    let (reia, last_props): (_, ReiaRef<Option<Vector<HtmlProp<T>>>>) = reia.hook(use_ref, ());
     last_props
         .visit_mut_with(|opt| {
             if let Some(last) = opt {
                 for old_prop in last.iter() {
                     match old_prop {
-                        ElementProp::Shared(shared) => shared.unset_on(elem.as_ref()),
-                        ElementProp::Own(own) => own.unset_on(&elem),
+                        HtmlProp::Shared(shared) => shared.unset_on(elem.as_ref()),
+                        HtmlProp::Own(own) => own.unset_on(&elem),
                     }
                 }
             }
             for new_prop in props.0.iter() {
                 match new_prop {
-                    ElementProp::Shared(shared) => shared.set_on(elem.as_ref()),
-                    ElementProp::Own(own) => own.set_on(&elem),
+                    HtmlProp::Shared(shared) => shared.set_on(elem.as_ref()),
+                    HtmlProp::Own(own) => own.set_on(&elem),
                 }
             }
             *opt = Some(props.0);
@@ -106,8 +106,12 @@ pub(crate) fn use_element<T: ElementComponent>(
     (reia, elem)
 }
 
-impl<E: ElementComponent> ElementProps<E> {
+impl<E: ElementComponent> HtmlProps<E> {
     pub fn new() -> Self {
         Self(Vector::new())
     }
+}
+
+pub fn html_props<E: ElementComponent>() -> HtmlProps<E> {
+    HtmlProps::new()
 }

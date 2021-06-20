@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlFrameElement;
 
 #[allow(non_camel_case_types)]
@@ -45,50 +45,47 @@ impl PropEnum<HtmlFrameElement> for FrameProp {
     }
 }
 
-impl ElementProps<HtmlFrameElement> {
+impl HtmlProps<HtmlFrameElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FrameProp::name(val)));
+        self.0.push_back(HtmlProp::Own(FrameProp::name(val)));
         self
     }
 
     pub fn scrolling(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FrameProp::scrolling(val)));
+        self.0.push_back(HtmlProp::Own(FrameProp::scrolling(val)));
         self
     }
 
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FrameProp::src(val)));
+        self.0.push_back(HtmlProp::Own(FrameProp::src(val)));
         self
     }
 
     pub fn frame_border(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameProp::frame_border(val)));
+            .push_back(HtmlProp::Own(FrameProp::frame_border(val)));
         self
     }
 
     pub fn long_desc(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FrameProp::long_desc(val)));
+        self.0.push_back(HtmlProp::Own(FrameProp::long_desc(val)));
         self
     }
 
     pub fn no_resize(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FrameProp::no_resize(val)));
+        self.0.push_back(HtmlProp::Own(FrameProp::no_resize(val)));
         self
     }
 
     pub fn margin_height(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameProp::margin_height(val)));
+            .push_back(HtmlProp::Own(FrameProp::margin_height(val)));
         self
     }
 
     pub fn margin_width(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameProp::margin_width(val)));
+            .push_back(HtmlProp::Own(FrameProp::margin_width(val)));
         self
     }
 }

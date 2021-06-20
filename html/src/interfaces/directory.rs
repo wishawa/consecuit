@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDirectoryElement;
 
 #[allow(non_camel_case_types)]
@@ -24,10 +24,9 @@ impl PropEnum<HtmlDirectoryElement> for DirectoryProp {
     }
 }
 
-impl ElementProps<HtmlDirectoryElement> {
+impl HtmlProps<HtmlDirectoryElement> {
     pub fn compact(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(DirectoryProp::compact(val)));
+        self.0.push_back(HtmlProp::Own(DirectoryProp::compact(val)));
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlLabelElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlLabelElement> for LabelProp {
     }
 }
 
-impl ElementProps<HtmlLabelElement> {
+impl HtmlProps<HtmlLabelElement> {
     pub fn html_for(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LabelProp::html_for(val)));
+        self.0.push_back(HtmlProp::Own(LabelProp::html_for(val)));
         self
     }
 }

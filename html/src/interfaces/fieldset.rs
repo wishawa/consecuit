@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlFieldSetElement;
 
 #[allow(non_camel_case_types)]
@@ -27,15 +27,14 @@ impl PropEnum<HtmlFieldSetElement> for FieldSetProp {
     }
 }
 
-impl ElementProps<HtmlFieldSetElement> {
+impl HtmlProps<HtmlFieldSetElement> {
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FieldSetProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(FieldSetProp::disabled(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FieldSetProp::name(val)));
+        self.0.push_back(HtmlProp::Own(FieldSetProp::name(val)));
         self
     }
 }

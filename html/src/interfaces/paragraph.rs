@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlParagraphElement;
 
 #[allow(non_camel_case_types)]
@@ -24,10 +24,9 @@ impl PropEnum<HtmlParagraphElement> for ParagraphProp {
     }
 }
 
-impl ElementProps<HtmlParagraphElement> {
+impl HtmlProps<HtmlParagraphElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ParagraphProp::align(val)));
+        self.0.push_back(HtmlProp::Own(ParagraphProp::align(val)));
         self
     }
 }

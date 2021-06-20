@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlFormElement;
 
 #[allow(non_camel_case_types)]
@@ -48,52 +48,50 @@ impl PropEnum<HtmlFormElement> for FormProp {
     }
 }
 
-impl ElementProps<HtmlFormElement> {
+impl HtmlProps<HtmlFormElement> {
     pub fn accept_charset(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(FormProp::accept_charset(val)));
+            .push_back(HtmlProp::Own(FormProp::accept_charset(val)));
         self
     }
 
     pub fn action(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::action(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::action(val)));
         self
     }
 
     pub fn autocomplete(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FormProp::autocomplete(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::autocomplete(val)));
         self
     }
 
     pub fn enctype(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::enctype(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::enctype(val)));
         self
     }
 
     pub fn encoding(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::encoding(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::encoding(val)));
         self
     }
 
     pub fn method(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::method(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::method(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::name(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::name(val)));
         self
     }
 
     pub fn no_validate(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FormProp::no_validate(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::no_validate(val)));
         self
     }
 
     pub fn target(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FormProp::target(val)));
+        self.0.push_back(HtmlProp::Own(FormProp::target(val)));
         self
     }
 }

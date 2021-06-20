@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlButtonElement;
 
 #[allow(non_camel_case_types)]
@@ -51,61 +51,59 @@ impl PropEnum<HtmlButtonElement> for ButtonProp {
     }
 }
 
-impl ElementProps<HtmlButtonElement> {
+impl HtmlProps<HtmlButtonElement> {
     pub fn autofocus(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ButtonProp::autofocus(val)));
+        self.0.push_back(HtmlProp::Own(ButtonProp::autofocus(val)));
         self
     }
 
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ButtonProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(ButtonProp::disabled(val)));
         self
     }
 
     pub fn form_action(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ButtonProp::form_action(val)));
+            .push_back(HtmlProp::Own(ButtonProp::form_action(val)));
         self
     }
 
     pub fn form_enctype(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ButtonProp::form_enctype(val)));
+            .push_back(HtmlProp::Own(ButtonProp::form_enctype(val)));
         self
     }
 
     pub fn form_method(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ButtonProp::form_method(val)));
+            .push_back(HtmlProp::Own(ButtonProp::form_method(val)));
         self
     }
 
     pub fn form_no_validate(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(ButtonProp::form_no_validate(val)));
+            .push_back(HtmlProp::Own(ButtonProp::form_no_validate(val)));
         self
     }
 
     pub fn form_target(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ButtonProp::form_target(val)));
+            .push_back(HtmlProp::Own(ButtonProp::form_target(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ButtonProp::name(val)));
+        self.0.push_back(HtmlProp::Own(ButtonProp::name(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ButtonProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(ButtonProp::r#type(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ButtonProp::value(val)));
+        self.0.push_back(HtmlProp::Own(ButtonProp::value(val)));
         self
     }
 }

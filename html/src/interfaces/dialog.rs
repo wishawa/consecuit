@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDialogElement;
 
 #[allow(non_camel_case_types)]
@@ -27,15 +27,15 @@ impl PropEnum<HtmlDialogElement> for DialogProp {
     }
 }
 
-impl ElementProps<HtmlDialogElement> {
+impl HtmlProps<HtmlDialogElement> {
     pub fn open(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(DialogProp::open(val)));
+        self.0.push_back(HtmlProp::Own(DialogProp::open(val)));
         self
     }
 
     pub fn return_value(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(DialogProp::return_value(val)));
+            .push_back(HtmlProp::Own(DialogProp::return_value(val)));
         self
     }
 }

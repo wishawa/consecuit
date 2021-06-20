@@ -1,10 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlIFrameElement;
-pub fn iframe(
-    reia: ComponentBuilder,
-    props: ElementProps<HtmlIFrameElement>,
-) -> impl ContainerReturn {
+pub fn iframe(reia: ComponentBuilder, props: HtmlProps<HtmlIFrameElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

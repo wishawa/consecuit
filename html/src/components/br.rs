@@ -1,7 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlBrElement;
-pub fn br(reia: ComponentBuilder, props: ElementProps<HtmlBrElement>) -> impl ContainerReturn {
+pub fn br(reia: ComponentBuilder, props: HtmlProps<HtmlBrElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

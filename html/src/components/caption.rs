@@ -1,9 +1,9 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlTableCaptionElement;
 pub fn caption(
     reia: ComponentBuilder,
-    props: ElementProps<HtmlTableCaptionElement>,
+    props: HtmlProps<HtmlTableCaptionElement>,
 ) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();

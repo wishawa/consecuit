@@ -1,10 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlSelectElement;
-pub fn select(
-    reia: ComponentBuilder,
-    props: ElementProps<HtmlSelectElement>,
-) -> impl ContainerReturn {
+pub fn select(reia: ComponentBuilder, props: HtmlProps<HtmlSelectElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

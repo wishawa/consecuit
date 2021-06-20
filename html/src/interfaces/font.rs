@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlFontElement;
 
 #[allow(non_camel_case_types)]
@@ -30,19 +30,19 @@ impl PropEnum<HtmlFontElement> for FontProp {
     }
 }
 
-impl ElementProps<HtmlFontElement> {
+impl HtmlProps<HtmlFontElement> {
     pub fn color(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FontProp::color(val)));
+        self.0.push_back(HtmlProp::Own(FontProp::color(val)));
         self
     }
 
     pub fn face(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FontProp::face(val)));
+        self.0.push_back(HtmlProp::Own(FontProp::face(val)));
         self
     }
 
     pub fn size(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FontProp::size(val)));
+        self.0.push_back(HtmlProp::Own(FontProp::size(val)));
         self
     }
 }

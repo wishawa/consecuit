@@ -1,10 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlStyleElement;
-pub fn style(
-    reia: ComponentBuilder,
-    props: ElementProps<HtmlStyleElement>,
-) -> impl ContainerReturn {
+pub fn style(reia: ComponentBuilder, props: HtmlProps<HtmlStyleElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

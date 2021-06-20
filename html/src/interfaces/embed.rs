@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlEmbedElement;
 
 #[allow(non_camel_case_types)]
@@ -39,34 +39,34 @@ impl PropEnum<HtmlEmbedElement> for EmbedProp {
     }
 }
 
-impl ElementProps<HtmlEmbedElement> {
+impl HtmlProps<HtmlEmbedElement> {
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::src(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::src(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::r#type(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::width(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::height(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::height(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::align(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::align(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(EmbedProp::name(val)));
+        self.0.push_back(HtmlProp::Own(EmbedProp::name(val)));
         self
     }
 }

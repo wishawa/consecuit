@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlOptGroupElement;
 
 #[allow(non_camel_case_types)]
@@ -27,15 +27,14 @@ impl PropEnum<HtmlOptGroupElement> for OptGroupProp {
     }
 }
 
-impl ElementProps<HtmlOptGroupElement> {
+impl HtmlProps<HtmlOptGroupElement> {
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(OptGroupProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(OptGroupProp::disabled(val)));
         self
     }
 
     pub fn label(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(OptGroupProp::label(val)));
+        self.0.push_back(HtmlProp::Own(OptGroupProp::label(val)));
         self
     }
 }

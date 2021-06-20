@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDivElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlDivElement> for DivProp {
     }
 }
 
-impl ElementProps<HtmlDivElement> {
+impl HtmlProps<HtmlDivElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(DivProp::align(val)));
+        self.0.push_back(HtmlProp::Own(DivProp::align(val)));
         self
     }
 }

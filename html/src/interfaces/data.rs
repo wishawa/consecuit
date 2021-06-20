@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDataElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlDataElement> for DataProp {
     }
 }
 
-impl ElementProps<HtmlDataElement> {
+impl HtmlProps<HtmlDataElement> {
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(DataProp::value(val)));
+        self.0.push_back(HtmlProp::Own(DataProp::value(val)));
         self
     }
 }

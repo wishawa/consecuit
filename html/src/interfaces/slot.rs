@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlSlotElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlSlotElement> for SlotProp {
     }
 }
 
-impl ElementProps<HtmlSlotElement> {
+impl HtmlProps<HtmlSlotElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(SlotProp::name(val)));
+        self.0.push_back(HtmlProp::Own(SlotProp::name(val)));
         self
     }
 }

@@ -3,11 +3,7 @@ use reia::{
     ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
     HookReturn,
 };
-use reia_html::{
-    callback::Callback,
-    components::{button, div, text_node},
-    ElementProps,
-};
+use reia_html::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -22,12 +18,13 @@ pub fn run() -> Result<(), JsValue> {
 fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
-    reia.comp(text_node, label)
+    reia.comp(h1, HtmlProps::new())
+        .child(|r| r.comp(text_node, label))
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.comp(div, ElementProps::new()).hole_here()
+    reia.comp(div, HtmlProps::new()).hole_here()
 }
 
 fn count_button(
@@ -35,10 +32,18 @@ fn count_button(
     (increment, decrement): (Callback, Callback),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.comp(button, ElementProps::new().onclick(increment))
-        .child(|reia| reia.comp(text_node, "Increment Counter"))
-        .comp(button, ElementProps::new().onclick(decrement))
-        .child(|reia| reia.comp(text_node, "Decrement Counter"))
+    reia.comp(button, HtmlProps::new().onclick(increment))
+        .child(|r| {
+            r.comp(b, HtmlProps::new())
+                .child(|r| r.comp(text_node, "increment"))
+                .comp(text_node, "counter")
+        })
+        .comp(button, HtmlProps::new().onclick(decrement))
+        .child(|r| {
+            r.comp(b, HtmlProps::new())
+                .child(|r| r.comp(text_node, "decrement"))
+                .comp(text_node, "counter")
+        })
 }
 
 fn use_counter(

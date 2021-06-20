@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlBrElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlBrElement> for BrProp {
     }
 }
 
-impl ElementProps<HtmlBrElement> {
+impl HtmlProps<HtmlBrElement> {
     pub fn clear(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BrProp::clear(val)));
+        self.0.push_back(HtmlProp::Own(BrProp::clear(val)));
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTrackElement;
 
 #[allow(non_camel_case_types)]
@@ -36,29 +36,29 @@ impl PropEnum<HtmlTrackElement> for TrackProp {
     }
 }
 
-impl ElementProps<HtmlTrackElement> {
+impl HtmlProps<HtmlTrackElement> {
     pub fn kind(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TrackProp::kind(val)));
+        self.0.push_back(HtmlProp::Own(TrackProp::kind(val)));
         self
     }
 
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TrackProp::src(val)));
+        self.0.push_back(HtmlProp::Own(TrackProp::src(val)));
         self
     }
 
     pub fn srclang(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TrackProp::srclang(val)));
+        self.0.push_back(HtmlProp::Own(TrackProp::srclang(val)));
         self
     }
 
     pub fn label(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TrackProp::label(val)));
+        self.0.push_back(HtmlProp::Own(TrackProp::label(val)));
         self
     }
 
     pub fn default(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(TrackProp::default(val)));
+        self.0.push_back(HtmlProp::Own(TrackProp::default(val)));
         self
     }
 }

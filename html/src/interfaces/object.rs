@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlObjectElement;
 
 #[allow(non_camel_case_types)]
@@ -72,92 +72,90 @@ impl PropEnum<HtmlObjectElement> for ObjectProp {
     }
 }
 
-impl ElementProps<HtmlObjectElement> {
+impl HtmlProps<HtmlObjectElement> {
     pub fn data(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::data(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::data(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::r#type(val)));
         self
     }
 
     pub fn type_must_match(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(ObjectProp::type_must_match(val)));
+            .push_back(HtmlProp::Own(ObjectProp::type_must_match(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::name(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::name(val)));
         self
     }
 
     pub fn use_map(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::use_map(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::use_map(val)));
         self
     }
 
     pub fn width(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::width(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::height(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::height(val)));
         self
     }
 
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::align(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::align(val)));
         self
     }
 
     pub fn archive(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::archive(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::archive(val)));
         self
     }
 
     pub fn code(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::code(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::code(val)));
         self
     }
 
     pub fn declare(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::declare(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::declare(val)));
         self
     }
 
     pub fn hspace(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::hspace(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::hspace(val)));
         self
     }
 
     pub fn standby(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::standby(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::standby(val)));
         self
     }
 
     pub fn vspace(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::vspace(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::vspace(val)));
         self
     }
 
     pub fn code_base(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ObjectProp::code_base(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::code_base(val)));
         self
     }
 
     pub fn code_type(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ObjectProp::code_type(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::code_type(val)));
         self
     }
 
     pub fn border(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ObjectProp::border(val)));
+        self.0.push_back(HtmlProp::Own(ObjectProp::border(val)));
         self
     }
 }

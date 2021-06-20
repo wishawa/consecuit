@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTextAreaElement;
 
 #[allow(non_camel_case_types)]
@@ -60,77 +60,75 @@ impl PropEnum<HtmlTextAreaElement> for TextAreaProp {
     }
 }
 
-impl ElementProps<HtmlTextAreaElement> {
+impl HtmlProps<HtmlTextAreaElement> {
     pub fn autocomplete(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::autocomplete(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::autocomplete(val)));
         self
     }
 
     pub fn autofocus(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::autofocus(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::autofocus(val)));
         self
     }
 
     pub fn cols(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(TextAreaProp::cols(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::cols(val)));
         self
     }
 
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TextAreaProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::disabled(val)));
         self
     }
 
     pub fn max_length(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::max_length(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::max_length(val)));
         self
     }
 
     pub fn min_length(mut self, val: i32) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::min_length(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::min_length(val)));
         self
     }
 
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TextAreaProp::name(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::name(val)));
         self
     }
 
     pub fn placeholder(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::placeholder(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::placeholder(val)));
         self
     }
 
     pub fn read_only(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(TextAreaProp::read_only(val)));
+            .push_back(HtmlProp::Own(TextAreaProp::read_only(val)));
         self
     }
 
     pub fn required(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(TextAreaProp::required(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::required(val)));
         self
     }
 
     pub fn rows(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(TextAreaProp::rows(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::rows(val)));
         self
     }
 
     pub fn wrap(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TextAreaProp::wrap(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::wrap(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TextAreaProp::value(val)));
+        self.0.push_back(HtmlProp::Own(TextAreaProp::value(val)));
         self
     }
 }

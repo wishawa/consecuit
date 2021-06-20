@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
 };
 use web_sys::HtmlBodyElement;
 
@@ -86,114 +86,108 @@ impl PropEnum<HtmlBodyElement> for BodyProp {
     }
 }
 
-impl ElementProps<HtmlBodyElement> {
+impl HtmlProps<HtmlBodyElement> {
     pub fn text(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::text(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::text(val)));
         self
     }
 
     pub fn link(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::link(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::link(val)));
         self
     }
 
     pub fn v_link(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::v_link(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::v_link(val)));
         self
     }
 
     pub fn a_link(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::a_link(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::a_link(val)));
         self
     }
 
     pub fn bg_color(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::bg_color(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::bg_color(val)));
         self
     }
 
     pub fn background(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::background(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::background(val)));
         self
     }
 
     pub fn onafterprint(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::onafterprint(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onafterprint(val)));
         self
     }
 
     pub fn onbeforeprint(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(BodyProp::onbeforeprint(val)));
+            .push_back(HtmlProp::Own(BodyProp::onbeforeprint(val)));
         self
     }
 
     pub fn onbeforeunload(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(BodyProp::onbeforeunload(val)));
+            .push_back(HtmlProp::Own(BodyProp::onbeforeunload(val)));
         self
     }
 
     pub fn onhashchange(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::onhashchange(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onhashchange(val)));
         self
     }
 
     pub fn onlanguagechange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(BodyProp::onlanguagechange(val)));
+            .push_back(HtmlProp::Own(BodyProp::onlanguagechange(val)));
         self
     }
 
     pub fn onmessage(mut self, val: Callback) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::onmessage(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onmessage(val)));
         self
     }
 
     pub fn onmessageerror(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(BodyProp::onmessageerror(val)));
+            .push_back(HtmlProp::Own(BodyProp::onmessageerror(val)));
         self
     }
 
     pub fn onoffline(mut self, val: Callback) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::onoffline(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onoffline(val)));
         self
     }
 
     pub fn ononline(mut self, val: Callback) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::ononline(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::ononline(val)));
         self
     }
 
     pub fn onpagehide(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::onpagehide(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onpagehide(val)));
         self
     }
 
     pub fn onpageshow(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::onpageshow(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onpageshow(val)));
         self
     }
 
     pub fn onpopstate(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(BodyProp::onpopstate(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onpopstate(val)));
         self
     }
 
     pub fn onstorage(mut self, val: Callback) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::onstorage(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onstorage(val)));
         self
     }
 
     pub fn onunload(mut self, val: Callback) -> Self {
-        self.0.push_back(ElementProp::Own(BodyProp::onunload(val)));
+        self.0.push_back(HtmlProp::Own(BodyProp::onunload(val)));
         self
     }
 }

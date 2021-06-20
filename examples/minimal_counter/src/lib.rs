@@ -2,11 +2,7 @@ use reia::{
     hooks::{use_memo, use_state, StateSetter},
     ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
 };
-use reia_html::{
-    callback::Callback,
-    components::{button, div, text_node},
-    ElementProps,
-};
+use reia_html::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -22,7 +18,7 @@ fn button_with_text(
     (text, onclick): (String, Callback),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.comp(button, ElementProps::new().onclick(onclick))
+    reia.comp(button, HtmlProps::new().onclick(onclick))
         .child(|reia| reia.comp(text_node, text))
 }
 
@@ -57,7 +53,7 @@ fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, Callbac
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
     let (reia, (count, increment, decrement)) = reia.hook(use_counter, 0);
-    reia.comp(div, ElementProps::new()).child(move |reia| {
+    reia.comp(div, HtmlProps::new()).child(move |reia| {
         reia.comp(button_with_text, ("-".into(), decrement))
             .comp(text_node, format!("{}", count))
             .comp(button_with_text, ("+".into(), increment))

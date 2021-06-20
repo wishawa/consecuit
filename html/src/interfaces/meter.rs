@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlMeterElement;
 
 #[allow(non_camel_case_types)]
@@ -39,34 +39,34 @@ impl PropEnum<HtmlMeterElement> for MeterProp {
     }
 }
 
-impl ElementProps<HtmlMeterElement> {
+impl HtmlProps<HtmlMeterElement> {
     pub fn value(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::value(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::value(val)));
         self
     }
 
     pub fn min(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::min(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::min(val)));
         self
     }
 
     pub fn max(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::max(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::max(val)));
         self
     }
 
     pub fn low(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::low(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::low(val)));
         self
     }
 
     pub fn high(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::high(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::high(val)));
         self
     }
 
     pub fn optimum(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MeterProp::optimum(val)));
+        self.0.push_back(HtmlProp::Own(MeterProp::optimum(val)));
         self
     }
 }

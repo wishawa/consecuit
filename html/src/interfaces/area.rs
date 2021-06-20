@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlAreaElement;
 
 #[allow(non_camel_case_types)]
@@ -78,100 +78,100 @@ impl PropEnum<HtmlAreaElement> for AreaProp {
     }
 }
 
-impl ElementProps<HtmlAreaElement> {
+impl HtmlProps<HtmlAreaElement> {
     pub fn alt(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::alt(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::alt(val)));
         self
     }
 
     pub fn coords(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::coords(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::coords(val)));
         self
     }
 
     pub fn shape(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::shape(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::shape(val)));
         self
     }
 
     pub fn target(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::target(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::target(val)));
         self
     }
 
     pub fn download(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::download(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::download(val)));
         self
     }
 
     pub fn ping(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::ping(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::ping(val)));
         self
     }
 
     pub fn rel(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::rel(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::rel(val)));
         self
     }
 
     pub fn referrer_policy(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(AreaProp::referrer_policy(val)));
+            .push_back(HtmlProp::Own(AreaProp::referrer_policy(val)));
         self
     }
 
     pub fn no_href(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::no_href(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::no_href(val)));
         self
     }
 
     pub fn href(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::href(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::href(val)));
         self
     }
 
     pub fn protocol(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::protocol(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::protocol(val)));
         self
     }
 
     pub fn username(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::username(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::username(val)));
         self
     }
 
     pub fn password(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::password(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::password(val)));
         self
     }
 
     pub fn host(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::host(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::host(val)));
         self
     }
 
     pub fn hostname(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::hostname(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::hostname(val)));
         self
     }
 
     pub fn port(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::port(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::port(val)));
         self
     }
 
     pub fn pathname(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::pathname(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::pathname(val)));
         self
     }
 
     pub fn search(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::search(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::search(val)));
         self
     }
 
     pub fn hash(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(AreaProp::hash(val)));
+        self.0.push_back(HtmlProp::Own(AreaProp::hash(val)));
         self
     }
 }

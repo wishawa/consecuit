@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProps, PropEnum};
 use web_sys::HtmlDataListElement;
 
 #[allow(non_camel_case_types)]
@@ -22,4 +22,4 @@ impl PropEnum<HtmlDataListElement> for DataListProp {
     }
 }
 
-impl ElementProps<HtmlDataListElement> {}
+impl HtmlProps<HtmlDataListElement> {}

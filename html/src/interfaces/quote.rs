@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlQuoteElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlQuoteElement> for QuoteProp {
     }
 }
 
-impl ElementProps<HtmlQuoteElement> {
+impl HtmlProps<HtmlQuoteElement> {
     pub fn cite(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(QuoteProp::cite(val)));
+        self.0.push_back(HtmlProp::Own(QuoteProp::cite(val)));
         self
     }
 }

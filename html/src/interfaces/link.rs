@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlLinkElement;
 
 #[allow(non_camel_case_types)]
@@ -60,71 +60,70 @@ impl PropEnum<HtmlLinkElement> for LinkProp {
     }
 }
 
-impl ElementProps<HtmlLinkElement> {
+impl HtmlProps<HtmlLinkElement> {
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::disabled(val)));
         self
     }
 
     pub fn href(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::href(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::href(val)));
         self
     }
 
     pub fn cross_origin(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(LinkProp::cross_origin(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::cross_origin(val)));
         self
     }
 
     pub fn rel(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::rel(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::rel(val)));
         self
     }
 
     pub fn media(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::media(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::media(val)));
         self
     }
 
     pub fn hreflang(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::hreflang(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::hreflang(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::r#type(val)));
         self
     }
 
     pub fn referrer_policy(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(LinkProp::referrer_policy(val)));
+            .push_back(HtmlProp::Own(LinkProp::referrer_policy(val)));
         self
     }
 
     pub fn charset(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::charset(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::charset(val)));
         self
     }
 
     pub fn rev(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::rev(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::rev(val)));
         self
     }
 
     pub fn target(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::target(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::target(val)));
         self
     }
 
     pub fn integrity(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::integrity(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::integrity(val)));
         self
     }
 
     pub fn r#as(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(LinkProp::r#as(val)));
+        self.0.push_back(HtmlProp::Own(LinkProp::r#as(val)));
         self
     }
 }

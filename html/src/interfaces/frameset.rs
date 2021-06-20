@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
 };
 use web_sys::HtmlFrameSetElement;
 
@@ -78,98 +78,96 @@ impl PropEnum<HtmlFrameSetElement> for FrameSetProp {
     }
 }
 
-impl ElementProps<HtmlFrameSetElement> {
+impl HtmlProps<HtmlFrameSetElement> {
     pub fn cols(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FrameSetProp::cols(val)));
+        self.0.push_back(HtmlProp::Own(FrameSetProp::cols(val)));
         self
     }
 
     pub fn rows(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(FrameSetProp::rows(val)));
+        self.0.push_back(HtmlProp::Own(FrameSetProp::rows(val)));
         self
     }
 
     pub fn onafterprint(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onafterprint(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onafterprint(val)));
         self
     }
 
     pub fn onbeforeprint(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onbeforeprint(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onbeforeprint(val)));
         self
     }
 
     pub fn onbeforeunload(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onbeforeunload(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onbeforeunload(val)));
         self
     }
 
     pub fn onhashchange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onhashchange(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onhashchange(val)));
         self
     }
 
     pub fn onlanguagechange(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onlanguagechange(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onlanguagechange(val)));
         self
     }
 
     pub fn onmessage(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onmessage(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onmessage(val)));
         self
     }
 
     pub fn onmessageerror(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onmessageerror(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onmessageerror(val)));
         self
     }
 
     pub fn onoffline(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onoffline(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onoffline(val)));
         self
     }
 
     pub fn ononline(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FrameSetProp::ononline(val)));
+        self.0.push_back(HtmlProp::Own(FrameSetProp::ononline(val)));
         self
     }
 
     pub fn onpagehide(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onpagehide(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onpagehide(val)));
         self
     }
 
     pub fn onpageshow(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onpageshow(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onpageshow(val)));
         self
     }
 
     pub fn onpopstate(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onpopstate(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onpopstate(val)));
         self
     }
 
     pub fn onstorage(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(FrameSetProp::onstorage(val)));
+            .push_back(HtmlProp::Own(FrameSetProp::onstorage(val)));
         self
     }
 
     pub fn onunload(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(FrameSetProp::onunload(val)));
+        self.0.push_back(HtmlProp::Own(FrameSetProp::onunload(val)));
         self
     }
 }

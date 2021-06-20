@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlHeadingElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlHeadingElement> for HeadingProp {
     }
 }
 
-impl ElementProps<HtmlHeadingElement> {
+impl HtmlProps<HtmlHeadingElement> {
     pub fn align(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(HeadingProp::align(val)));
+        self.0.push_back(HtmlProp::Own(HeadingProp::align(val)));
         self
     }
 }

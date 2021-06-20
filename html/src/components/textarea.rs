@@ -1,9 +1,9 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlTextAreaElement;
 pub fn textarea(
     reia: ComponentBuilder,
-    props: ElementProps<HtmlTextAreaElement>,
+    props: HtmlProps<HtmlTextAreaElement>,
 ) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();

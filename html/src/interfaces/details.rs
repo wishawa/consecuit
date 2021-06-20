@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDetailsElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlDetailsElement> for DetailsProp {
     }
 }
 
-impl ElementProps<HtmlDetailsElement> {
+impl HtmlProps<HtmlDetailsElement> {
     pub fn open(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(DetailsProp::open(val)));
+        self.0.push_back(HtmlProp::Own(DetailsProp::open(val)));
         self
     }
 }

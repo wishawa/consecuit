@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlMapElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlMapElement> for MapProp {
     }
 }
 
-impl ElementProps<HtmlMapElement> {
+impl HtmlProps<HtmlMapElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MapProp::name(val)));
+        self.0.push_back(HtmlProp::Own(MapProp::name(val)));
         self
     }
 }

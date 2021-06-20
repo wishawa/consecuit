@@ -1,7 +1,7 @@
-use crate::elem::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, HtmlProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlOListElement;
-pub fn ol(reia: ComponentBuilder, props: ElementProps<HtmlOListElement>) -> impl ContainerReturn {
+pub fn ol(reia: ComponentBuilder, props: HtmlProps<HtmlOListElement>) -> impl ContainerReturn {
     let reia = reia.init();
     let parent = reia.get_parent_node();
     let (reia, elem) = reia.hook(

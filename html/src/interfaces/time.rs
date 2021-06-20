@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlTimeElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlTimeElement> for TimeProp {
     }
 }
 
-impl ElementProps<HtmlTimeElement> {
+impl HtmlProps<HtmlTimeElement> {
     pub fn date_time(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(TimeProp::date_time(val)));
+        self.0.push_back(HtmlProp::Own(TimeProp::date_time(val)));
         self
     }
 }

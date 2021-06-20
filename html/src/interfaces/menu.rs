@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlMenuElement;
 
 #[allow(non_camel_case_types)]
@@ -30,19 +30,19 @@ impl PropEnum<HtmlMenuElement> for MenuProp {
     }
 }
 
-impl ElementProps<HtmlMenuElement> {
+impl HtmlProps<HtmlMenuElement> {
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MenuProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(MenuProp::r#type(val)));
         self
     }
 
     pub fn label(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MenuProp::label(val)));
+        self.0.push_back(HtmlProp::Own(MenuProp::label(val)));
         self
     }
 
     pub fn compact(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(MenuProp::compact(val)));
+        self.0.push_back(HtmlProp::Own(MenuProp::compact(val)));
         self
     }
 }

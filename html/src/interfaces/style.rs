@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlStyleElement;
 
 #[allow(non_camel_case_types)]
@@ -30,19 +30,19 @@ impl PropEnum<HtmlStyleElement> for StyleProp {
     }
 }
 
-impl ElementProps<HtmlStyleElement> {
+impl HtmlProps<HtmlStyleElement> {
     pub fn disabled(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(StyleProp::disabled(val)));
+        self.0.push_back(HtmlProp::Own(StyleProp::disabled(val)));
         self
     }
 
     pub fn media(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(StyleProp::media(val)));
+        self.0.push_back(HtmlProp::Own(StyleProp::media(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(StyleProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(StyleProp::r#type(val)));
         self
     }
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlScriptElement;
 
 #[allow(non_camel_case_types)]
@@ -51,58 +51,55 @@ impl PropEnum<HtmlScriptElement> for ScriptProp {
     }
 }
 
-impl ElementProps<HtmlScriptElement> {
+impl HtmlProps<HtmlScriptElement> {
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::src(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::src(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::r#type(val)));
         self
     }
 
     pub fn no_module(mut self, val: bool) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ScriptProp::no_module(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::no_module(val)));
         self
     }
 
     pub fn charset(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::charset(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::charset(val)));
         self
     }
 
     pub fn r#async(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::r#async(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::r#async(val)));
         self
     }
 
     pub fn defer(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::defer(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::defer(val)));
         self
     }
 
     pub fn cross_origin(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(ScriptProp::cross_origin(val)));
+            .push_back(HtmlProp::Own(ScriptProp::cross_origin(val)));
         self
     }
 
     pub fn event(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ScriptProp::event(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::event(val)));
         self
     }
 
     pub fn html_for(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ScriptProp::html_for(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::html_for(val)));
         self
     }
 
     pub fn integrity(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ScriptProp::integrity(val)));
+        self.0.push_back(HtmlProp::Own(ScriptProp::integrity(val)));
         self
     }
 }

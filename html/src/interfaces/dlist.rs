@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlDListElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlDListElement> for DListProp {
     }
 }
 
-impl ElementProps<HtmlDListElement> {
+impl HtmlProps<HtmlDListElement> {
     pub fn compact(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(DListProp::compact(val)));
+        self.0.push_back(HtmlProp::Own(DListProp::compact(val)));
         self
     }
 }

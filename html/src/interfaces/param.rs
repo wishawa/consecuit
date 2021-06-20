@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlParamElement;
 
 #[allow(non_camel_case_types)]
@@ -33,25 +33,24 @@ impl PropEnum<HtmlParamElement> for ParamProp {
     }
 }
 
-impl ElementProps<HtmlParamElement> {
+impl HtmlProps<HtmlParamElement> {
     pub fn name(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ParamProp::name(val)));
+        self.0.push_back(HtmlProp::Own(ParamProp::name(val)));
         self
     }
 
     pub fn value(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ParamProp::value(val)));
+        self.0.push_back(HtmlProp::Own(ParamProp::value(val)));
         self
     }
 
     pub fn r#type(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(ParamProp::r#type(val)));
+        self.0.push_back(HtmlProp::Own(ParamProp::r#type(val)));
         self
     }
 
     pub fn value_type(mut self, val: String) -> Self {
-        self.0
-            .push_back(ElementProp::Own(ParamProp::value_type(val)));
+        self.0.push_back(HtmlProp::Own(ParamProp::value_type(val)));
         self
     }
 }

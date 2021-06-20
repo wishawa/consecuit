@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProps, PropEnum};
 use web_sys::HtmlSpanElement;
 
 #[allow(non_camel_case_types)]
@@ -22,4 +22,4 @@ impl PropEnum<HtmlSpanElement> for SpanProp {
     }
 }
 
-impl ElementProps<HtmlSpanElement> {}
+impl HtmlProps<HtmlSpanElement> {}

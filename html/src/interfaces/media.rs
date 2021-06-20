@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
 };
 use web_sys::HtmlMediaElement;
 
@@ -71,87 +71,85 @@ impl PropEnum<HtmlMediaElement> for MediaProp {
     }
 }
 
-impl ElementProps<HtmlMediaElement> {
+impl HtmlProps<HtmlMediaElement> {
     pub fn src(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::src(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::src(val)));
         self
     }
 
     pub fn src_object(mut self, val: web_sys::MediaStream) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MediaProp::src_object(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::src_object(val)));
         self
     }
 
     pub fn cross_origin(mut self, val: String) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::cross_origin(val)));
+            .push_back(HtmlProp::Own(MediaProp::cross_origin(val)));
         self
     }
 
     pub fn preload(mut self, val: String) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::preload(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::preload(val)));
         self
     }
 
     pub fn current_time(mut self, val: f64) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::current_time(val)));
+            .push_back(HtmlProp::Own(MediaProp::current_time(val)));
         self
     }
 
     pub fn default_playback_rate(mut self, val: f64) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::default_playback_rate(val)));
+            .push_back(HtmlProp::Own(MediaProp::default_playback_rate(val)));
         self
     }
 
     pub fn playback_rate(mut self, val: f64) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::playback_rate(val)));
+            .push_back(HtmlProp::Own(MediaProp::playback_rate(val)));
         self
     }
 
     pub fn autoplay(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::autoplay(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::autoplay(val)));
         self
     }
 
     pub fn r#loop(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::r#loop(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::r#loop(val)));
         self
     }
 
     pub fn controls(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::controls(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::controls(val)));
         self
     }
 
     pub fn volume(mut self, val: f64) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::volume(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::volume(val)));
         self
     }
 
     pub fn muted(mut self, val: bool) -> Self {
-        self.0.push_back(ElementProp::Own(MediaProp::muted(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::muted(val)));
         self
     }
 
     pub fn default_muted(mut self, val: bool) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::default_muted(val)));
+            .push_back(HtmlProp::Own(MediaProp::default_muted(val)));
         self
     }
 
     pub fn onencrypted(mut self, val: Callback) -> Self {
-        self.0
-            .push_back(ElementProp::Own(MediaProp::onencrypted(val)));
+        self.0.push_back(HtmlProp::Own(MediaProp::onencrypted(val)));
         self
     }
 
     pub fn onwaitingforkey(mut self, val: Callback) -> Self {
         self.0
-            .push_back(ElementProp::Own(MediaProp::onwaitingforkey(val)));
+            .push_back(HtmlProp::Own(MediaProp::onwaitingforkey(val)));
         self
     }
 }

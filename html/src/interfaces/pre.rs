@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlPreElement;
 
 #[allow(non_camel_case_types)]
@@ -24,9 +24,9 @@ impl PropEnum<HtmlPreElement> for PreProp {
     }
 }
 
-impl ElementProps<HtmlPreElement> {
+impl HtmlProps<HtmlPreElement> {
     pub fn width(mut self, val: i32) -> Self {
-        self.0.push_back(ElementProp::Own(PreProp::width(val)));
+        self.0.push_back(HtmlProp::Own(PreProp::width(val)));
         self
     }
 }

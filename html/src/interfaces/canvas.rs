@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
 use web_sys::HtmlCanvasElement;
 
 #[allow(non_camel_case_types)]
@@ -27,14 +27,14 @@ impl PropEnum<HtmlCanvasElement> for CanvasProp {
     }
 }
 
-impl ElementProps<HtmlCanvasElement> {
+impl HtmlProps<HtmlCanvasElement> {
     pub fn width(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(CanvasProp::width(val)));
+        self.0.push_back(HtmlProp::Own(CanvasProp::width(val)));
         self
     }
 
     pub fn height(mut self, val: u32) -> Self {
-        self.0.push_back(ElementProp::Own(CanvasProp::height(val)));
+        self.0.push_back(HtmlProp::Own(CanvasProp::height(val)));
         self
     }
 }

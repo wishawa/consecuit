@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, HtmlProps, PropEnum};
 use web_sys::HtmlTitleElement;
 
 #[allow(non_camel_case_types)]
@@ -22,4 +22,4 @@ impl PropEnum<HtmlTitleElement> for TitleProp {
     }
 }
 
-impl ElementProps<HtmlTitleElement> {}
+impl HtmlProps<HtmlTitleElement> {}
