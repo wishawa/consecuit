@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableCellElement;
 
 #[allow(non_camel_case_types)]
@@ -18,10 +18,12 @@ pub enum TableCellProp {
     bg_color(String),
 }
 
-impl ElementComponent for HtmlTableCellElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableCellElement {
     type PropEnum = TableCellProp;
 }
-impl PropEnum<HtmlTableCellElement> for TableCellProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableCellElement> for TableCellProp {
     fn unset_on(&self, elem: &HtmlTableCellElement) {
         match self {
             TableCellProp::col_span(_) => elem.remove_attribute("col_span").unwrap(),

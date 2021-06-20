@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlScriptElement;
 
 #[allow(non_camel_case_types)]
@@ -16,10 +16,12 @@ pub enum ScriptProp {
     integrity(String),
 }
 
-impl ElementComponent for HtmlScriptElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlScriptElement {
     type PropEnum = ScriptProp;
 }
-impl PropEnum<HtmlScriptElement> for ScriptProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlScriptElement> for ScriptProp {
     fn unset_on(&self, elem: &HtmlScriptElement) {
         match self {
             ScriptProp::src(_) => elem.remove_attribute("src").unwrap(),

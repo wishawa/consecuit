@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlParagraphElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum ParagraphProp {
     align(String),
 }
 
-impl ElementComponent for HtmlParagraphElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlParagraphElement {
     type PropEnum = ParagraphProp;
 }
-impl PropEnum<HtmlParagraphElement> for ParagraphProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlParagraphElement> for ParagraphProp {
     fn unset_on(&self, elem: &HtmlParagraphElement) {
         match self {
             ParagraphProp::align(_) => elem.remove_attribute("align").unwrap(),

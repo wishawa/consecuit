@@ -1,14 +1,16 @@
-use crate::elem::{ElementComponent, HtmlProps, PropEnum};
+use crate::elem::HtmlProps;
 use web_sys::HtmlPictureElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum PictureProp {}
 
-impl ElementComponent for HtmlPictureElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlPictureElement {
     type PropEnum = PictureProp;
 }
-impl PropEnum<HtmlPictureElement> for PictureProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlPictureElement> for PictureProp {
     fn unset_on(&self, _elem: &HtmlPictureElement) {
         match self {
             _ => {}

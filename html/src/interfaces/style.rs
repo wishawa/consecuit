@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlStyleElement;
 
 #[allow(non_camel_case_types)]
@@ -9,10 +9,12 @@ pub enum StyleProp {
     r#type(String),
 }
 
-impl ElementComponent for HtmlStyleElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlStyleElement {
     type PropEnum = StyleProp;
 }
-impl PropEnum<HtmlStyleElement> for StyleProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlStyleElement> for StyleProp {
     fn unset_on(&self, elem: &HtmlStyleElement) {
         match self {
             StyleProp::disabled(_) => elem.remove_attribute("disabled").unwrap(),

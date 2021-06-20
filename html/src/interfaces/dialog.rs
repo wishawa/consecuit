@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlDialogElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum DialogProp {
     return_value(String),
 }
 
-impl ElementComponent for HtmlDialogElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlDialogElement {
     type PropEnum = DialogProp;
 }
-impl PropEnum<HtmlDialogElement> for DialogProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlDialogElement> for DialogProp {
     fn unset_on(&self, elem: &HtmlDialogElement) {
         match self {
             DialogProp::open(_) => elem.remove_attribute("open").unwrap(),

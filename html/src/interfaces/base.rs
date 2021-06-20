@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlBaseElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum BaseProp {
     target(String),
 }
 
-impl ElementComponent for HtmlBaseElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlBaseElement {
     type PropEnum = BaseProp;
 }
-impl PropEnum<HtmlBaseElement> for BaseProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlBaseElement> for BaseProp {
     fn unset_on(&self, elem: &HtmlBaseElement) {
         match self {
             BaseProp::href(_) => elem.remove_attribute("href").unwrap(),

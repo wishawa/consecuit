@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlUListElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum UListProp {
     r#type(String),
 }
 
-impl ElementComponent for HtmlUListElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlUListElement {
     type PropEnum = UListProp;
 }
-impl PropEnum<HtmlUListElement> for UListProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlUListElement> for UListProp {
     fn unset_on(&self, elem: &HtmlUListElement) {
         match self {
             UListProp::compact(_) => elem.remove_attribute("compact").unwrap(),

@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
+    elem::{HtmlProp, HtmlProps},
 };
 use web_sys::HtmlBodyElement;
 
@@ -29,10 +29,12 @@ pub enum BodyProp {
     onunload(Callback),
 }
 
-impl ElementComponent for HtmlBodyElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlBodyElement {
     type PropEnum = BodyProp;
 }
-impl PropEnum<HtmlBodyElement> for BodyProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlBodyElement> for BodyProp {
     fn unset_on(&self, elem: &HtmlBodyElement) {
         match self {
             BodyProp::text(_) => elem.remove_attribute("text").unwrap(),

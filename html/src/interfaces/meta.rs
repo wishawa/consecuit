@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlMetaElement;
 
 #[allow(non_camel_case_types)]
@@ -10,10 +10,12 @@ pub enum MetaProp {
     scheme(String),
 }
 
-impl ElementComponent for HtmlMetaElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlMetaElement {
     type PropEnum = MetaProp;
 }
-impl PropEnum<HtmlMetaElement> for MetaProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlMetaElement> for MetaProp {
     fn unset_on(&self, elem: &HtmlMetaElement) {
         match self {
             MetaProp::name(_) => elem.remove_attribute("name").unwrap(),

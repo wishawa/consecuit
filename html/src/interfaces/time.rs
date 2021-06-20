@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTimeElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum TimeProp {
     date_time(String),
 }
 
-impl ElementComponent for HtmlTimeElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTimeElement {
     type PropEnum = TimeProp;
 }
-impl PropEnum<HtmlTimeElement> for TimeProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTimeElement> for TimeProp {
     fn unset_on(&self, elem: &HtmlTimeElement) {
         match self {
             TimeProp::date_time(_) => elem.remove_attribute("date_time").unwrap(),

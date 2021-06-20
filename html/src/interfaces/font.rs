@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlFontElement;
 
 #[allow(non_camel_case_types)]
@@ -9,10 +9,12 @@ pub enum FontProp {
     size(String),
 }
 
-impl ElementComponent for HtmlFontElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlFontElement {
     type PropEnum = FontProp;
 }
-impl PropEnum<HtmlFontElement> for FontProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlFontElement> for FontProp {
     fn unset_on(&self, elem: &HtmlFontElement) {
         match self {
             FontProp::color(_) => elem.remove_attribute("color").unwrap(),

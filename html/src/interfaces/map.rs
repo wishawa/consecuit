@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlMapElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum MapProp {
     name(String),
 }
 
-impl ElementComponent for HtmlMapElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlMapElement {
     type PropEnum = MapProp;
 }
-impl PropEnum<HtmlMapElement> for MapProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlMapElement> for MapProp {
     fn unset_on(&self, elem: &HtmlMapElement) {
         match self {
             MapProp::name(_) => elem.remove_attribute("name").unwrap(),

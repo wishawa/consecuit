@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlFieldSetElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum FieldSetProp {
     name(String),
 }
 
-impl ElementComponent for HtmlFieldSetElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlFieldSetElement {
     type PropEnum = FieldSetProp;
 }
-impl PropEnum<HtmlFieldSetElement> for FieldSetProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlFieldSetElement> for FieldSetProp {
     fn unset_on(&self, elem: &HtmlFieldSetElement) {
         match self {
             FieldSetProp::disabled(_) => elem.remove_attribute("disabled").unwrap(),

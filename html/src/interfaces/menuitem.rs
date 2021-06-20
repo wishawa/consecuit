@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlMenuItemElement;
 
 #[allow(non_camel_case_types)]
@@ -13,10 +13,12 @@ pub enum MenuItemProp {
     default_checked(bool),
 }
 
-impl ElementComponent for HtmlMenuItemElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlMenuItemElement {
     type PropEnum = MenuItemProp;
 }
-impl PropEnum<HtmlMenuItemElement> for MenuItemProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlMenuItemElement> for MenuItemProp {
     fn unset_on(&self, elem: &HtmlMenuItemElement) {
         match self {
             MenuItemProp::r#type(_) => elem.remove_attribute("type").unwrap(),

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlBrElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum BrProp {
     clear(String),
 }
 
-impl ElementComponent for HtmlBrElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlBrElement {
     type PropEnum = BrProp;
 }
-impl PropEnum<HtmlBrElement> for BrProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlBrElement> for BrProp {
     fn unset_on(&self, elem: &HtmlBrElement) {
         match self {
             BrProp::clear(_) => elem.remove_attribute("clear").unwrap(),

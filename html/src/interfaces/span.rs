@@ -1,14 +1,16 @@
-use crate::elem::{ElementComponent, HtmlProps, PropEnum};
+use crate::elem::HtmlProps;
 use web_sys::HtmlSpanElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum SpanProp {}
 
-impl ElementComponent for HtmlSpanElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlSpanElement {
     type PropEnum = SpanProp;
 }
-impl PropEnum<HtmlSpanElement> for SpanProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlSpanElement> for SpanProp {
     fn unset_on(&self, _elem: &HtmlSpanElement) {
         match self {
             _ => {}

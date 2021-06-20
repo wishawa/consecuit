@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlFormElement;
 
 #[allow(non_camel_case_types)]
@@ -15,10 +15,12 @@ pub enum FormProp {
     target(String),
 }
 
-impl ElementComponent for HtmlFormElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlFormElement {
     type PropEnum = FormProp;
 }
-impl PropEnum<HtmlFormElement> for FormProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlFormElement> for FormProp {
     fn unset_on(&self, elem: &HtmlFormElement) {
         match self {
             FormProp::accept_charset(_) => elem.remove_attribute("accept_charset").unwrap(),

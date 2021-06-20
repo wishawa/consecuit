@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlImageElement;
 
 #[allow(non_camel_case_types)]
@@ -23,10 +23,12 @@ pub enum ImageProp {
     sizes(String),
 }
 
-impl ElementComponent for HtmlImageElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlImageElement {
     type PropEnum = ImageProp;
 }
-impl PropEnum<HtmlImageElement> for ImageProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlImageElement> for ImageProp {
     fn unset_on(&self, elem: &HtmlImageElement) {
         match self {
             ImageProp::alt(_) => elem.remove_attribute("alt").unwrap(),

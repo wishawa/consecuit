@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlPreElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum PreProp {
     width(i32),
 }
 
-impl ElementComponent for HtmlPreElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlPreElement {
     type PropEnum = PreProp;
 }
-impl PropEnum<HtmlPreElement> for PreProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlPreElement> for PreProp {
     fn unset_on(&self, elem: &HtmlPreElement) {
         match self {
             PreProp::width(_) => elem.remove_attribute("width").unwrap(),

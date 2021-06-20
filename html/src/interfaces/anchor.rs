@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlAnchorElement;
 
 #[allow(non_camel_case_types)]
@@ -28,10 +28,12 @@ pub enum AnchorProp {
     hash(String),
 }
 
-impl ElementComponent for HtmlAnchorElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlAnchorElement {
     type PropEnum = AnchorProp;
 }
-impl PropEnum<HtmlAnchorElement> for AnchorProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlAnchorElement> for AnchorProp {
     fn unset_on(&self, elem: &HtmlAnchorElement) {
         match self {
             AnchorProp::target(_) => elem.remove_attribute("target").unwrap(),

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlProgressElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum ProgressProp {
     max(f64),
 }
 
-impl ElementComponent for HtmlProgressElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlProgressElement {
     type PropEnum = ProgressProp;
 }
-impl PropEnum<HtmlProgressElement> for ProgressProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlProgressElement> for ProgressProp {
     fn unset_on(&self, elem: &HtmlProgressElement) {
         match self {
             ProgressProp::value(_) => elem.remove_attribute("value").unwrap(),

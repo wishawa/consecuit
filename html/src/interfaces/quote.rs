@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlQuoteElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum QuoteProp {
     cite(String),
 }
 
-impl ElementComponent for HtmlQuoteElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlQuoteElement {
     type PropEnum = QuoteProp;
 }
-impl PropEnum<HtmlQuoteElement> for QuoteProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlQuoteElement> for QuoteProp {
     fn unset_on(&self, elem: &HtmlQuoteElement) {
         match self {
             QuoteProp::cite(_) => elem.remove_attribute("cite").unwrap(),

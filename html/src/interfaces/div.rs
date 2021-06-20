@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlDivElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum DivProp {
     align(String),
 }
 
-impl ElementComponent for HtmlDivElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlDivElement {
     type PropEnum = DivProp;
 }
-impl PropEnum<HtmlDivElement> for DivProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlDivElement> for DivProp {
     fn unset_on(&self, elem: &HtmlDivElement) {
         match self {
             DivProp::align(_) => elem.remove_attribute("align").unwrap(),

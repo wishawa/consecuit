@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlDirectoryElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum DirectoryProp {
     compact(bool),
 }
 
-impl ElementComponent for HtmlDirectoryElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlDirectoryElement {
     type PropEnum = DirectoryProp;
 }
-impl PropEnum<HtmlDirectoryElement> for DirectoryProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlDirectoryElement> for DirectoryProp {
     fn unset_on(&self, elem: &HtmlDirectoryElement) {
         match self {
             DirectoryProp::compact(_) => elem.remove_attribute("compact").unwrap(),

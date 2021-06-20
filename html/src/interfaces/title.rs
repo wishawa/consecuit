@@ -1,14 +1,16 @@
-use crate::elem::{ElementComponent, HtmlProps, PropEnum};
+use crate::elem::HtmlProps;
 use web_sys::HtmlTitleElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TitleProp {}
 
-impl ElementComponent for HtmlTitleElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTitleElement {
     type PropEnum = TitleProp;
 }
-impl PropEnum<HtmlTitleElement> for TitleProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTitleElement> for TitleProp {
     fn unset_on(&self, _elem: &HtmlTitleElement) {
         match self {
             _ => {}

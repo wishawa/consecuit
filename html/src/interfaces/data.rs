@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlDataElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum DataProp {
     value(String),
 }
 
-impl ElementComponent for HtmlDataElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlDataElement {
     type PropEnum = DataProp;
 }
-impl PropEnum<HtmlDataElement> for DataProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlDataElement> for DataProp {
     fn unset_on(&self, elem: &HtmlDataElement) {
         match self {
             DataProp::value(_) => elem.remove_attribute("value").unwrap(),

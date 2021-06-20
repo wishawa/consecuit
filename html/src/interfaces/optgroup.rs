@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlOptGroupElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum OptGroupProp {
     label(String),
 }
 
-impl ElementComponent for HtmlOptGroupElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlOptGroupElement {
     type PropEnum = OptGroupProp;
 }
-impl PropEnum<HtmlOptGroupElement> for OptGroupProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlOptGroupElement> for OptGroupProp {
     fn unset_on(&self, elem: &HtmlOptGroupElement) {
         match self {
             OptGroupProp::disabled(_) => elem.remove_attribute("disabled").unwrap(),

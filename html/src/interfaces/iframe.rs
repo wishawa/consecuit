@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlIFrameElement;
 
 #[allow(non_camel_case_types)]
@@ -20,10 +20,12 @@ pub enum IFrameProp {
     margin_width(String),
 }
 
-impl ElementComponent for HtmlIFrameElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlIFrameElement {
     type PropEnum = IFrameProp;
 }
-impl PropEnum<HtmlIFrameElement> for IFrameProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlIFrameElement> for IFrameProp {
     fn unset_on(&self, elem: &HtmlIFrameElement) {
         match self {
             IFrameProp::src(_) => elem.remove_attribute("src").unwrap(),

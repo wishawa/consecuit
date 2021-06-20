@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
+    elem::{HtmlProp, HtmlProps},
 };
 use web_sys::HtmlMediaElement;
 
@@ -24,10 +24,12 @@ pub enum MediaProp {
     onwaitingforkey(Callback),
 }
 
-impl ElementComponent for HtmlMediaElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlMediaElement {
     type PropEnum = MediaProp;
 }
-impl PropEnum<HtmlMediaElement> for MediaProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlMediaElement> for MediaProp {
     fn unset_on(&self, elem: &HtmlMediaElement) {
         match self {
             MediaProp::src(_) => elem.remove_attribute("src").unwrap(),

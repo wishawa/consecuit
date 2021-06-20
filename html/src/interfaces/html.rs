@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp as CrateHtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp as CrateHtmlProp, HtmlProps};
 use web_sys::HtmlHtmlElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum HtmlProp {
     version(String),
 }
 
-impl ElementComponent for HtmlHtmlElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlHtmlElement {
     type PropEnum = HtmlProp;
 }
-impl PropEnum<HtmlHtmlElement> for HtmlProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlHtmlElement> for HtmlProp {
     fn unset_on(&self, elem: &HtmlHtmlElement) {
         match self {
             HtmlProp::version(_) => elem.remove_attribute("version").unwrap(),

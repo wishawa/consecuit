@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlLabelElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum LabelProp {
     html_for(String),
 }
 
-impl ElementComponent for HtmlLabelElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlLabelElement {
     type PropEnum = LabelProp;
 }
-impl PropEnum<HtmlLabelElement> for LabelProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlLabelElement> for LabelProp {
     fn unset_on(&self, elem: &HtmlLabelElement) {
         match self {
             LabelProp::html_for(_) => elem.remove_attribute("html_for").unwrap(),

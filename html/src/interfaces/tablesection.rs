@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableSectionElement;
 
 #[allow(non_camel_case_types)]
@@ -10,10 +10,12 @@ pub enum TableSectionProp {
     v_align(String),
 }
 
-impl ElementComponent for HtmlTableSectionElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableSectionElement {
     type PropEnum = TableSectionProp;
 }
-impl PropEnum<HtmlTableSectionElement> for TableSectionProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableSectionElement> for TableSectionProp {
     fn unset_on(&self, elem: &HtmlTableSectionElement) {
         match self {
             TableSectionProp::align(_) => elem.remove_attribute("align").unwrap(),

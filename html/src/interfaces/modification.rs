@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlModElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum ModProp {
     date_time(String),
 }
 
-impl ElementComponent for HtmlModElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlModElement {
     type PropEnum = ModProp;
 }
-impl PropEnum<HtmlModElement> for ModProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlModElement> for ModProp {
     fn unset_on(&self, elem: &HtmlModElement) {
         match self {
             ModProp::cite(_) => elem.remove_attribute("cite").unwrap(),

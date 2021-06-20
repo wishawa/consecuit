@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlParamElement;
 
 #[allow(non_camel_case_types)]
@@ -10,10 +10,12 @@ pub enum ParamProp {
     value_type(String),
 }
 
-impl ElementComponent for HtmlParamElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlParamElement {
     type PropEnum = ParamProp;
 }
-impl PropEnum<HtmlParamElement> for ParamProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlParamElement> for ParamProp {
     fn unset_on(&self, elem: &HtmlParamElement) {
         match self {
             ParamProp::name(_) => elem.remove_attribute("name").unwrap(),

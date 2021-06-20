@@ -1,14 +1,16 @@
-use crate::elem::{ElementComponent, HtmlProps, PropEnum};
+use crate::elem::HtmlProps;
 use web_sys::HtmlAudioElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum AudioProp {}
 
-impl ElementComponent for HtmlAudioElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlAudioElement {
     type PropEnum = AudioProp;
 }
-impl PropEnum<HtmlAudioElement> for AudioProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlAudioElement> for AudioProp {
     fn unset_on(&self, _elem: &HtmlAudioElement) {
         match self {
             _ => {}

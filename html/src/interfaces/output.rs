@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlOutputElement;
 
 #[allow(non_camel_case_types)]
@@ -9,10 +9,12 @@ pub enum OutputProp {
     value(String),
 }
 
-impl ElementComponent for HtmlOutputElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlOutputElement {
     type PropEnum = OutputProp;
 }
-impl PropEnum<HtmlOutputElement> for OutputProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlOutputElement> for OutputProp {
     fn unset_on(&self, elem: &HtmlOutputElement) {
         match self {
             OutputProp::name(_) => elem.remove_attribute("name").unwrap(),

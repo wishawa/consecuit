@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableElement;
 
 #[allow(non_camel_case_types)]
@@ -18,10 +18,12 @@ pub enum TableProp {
     cell_spacing(String),
 }
 
-impl ElementComponent for HtmlTableElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableElement {
     type PropEnum = TableProp;
 }
-impl PropEnum<HtmlTableElement> for TableProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableElement> for TableProp {
     fn unset_on(&self, elem: &HtmlTableElement) {
         match self {
             TableProp::caption(_) => elem.set_caption(None),

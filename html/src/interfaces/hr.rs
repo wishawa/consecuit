@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlHrElement;
 
 #[allow(non_camel_case_types)]
@@ -11,10 +11,12 @@ pub enum HrProp {
     width(String),
 }
 
-impl ElementComponent for HtmlHrElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlHrElement {
     type PropEnum = HrProp;
 }
-impl PropEnum<HtmlHrElement> for HrProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlHrElement> for HrProp {
     fn unset_on(&self, elem: &HtmlHrElement) {
         match self {
             HrProp::align(_) => elem.remove_attribute("align").unwrap(),

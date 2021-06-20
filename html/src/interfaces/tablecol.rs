@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableColElement;
 
 #[allow(non_camel_case_types)]
@@ -12,10 +12,12 @@ pub enum TableColProp {
     width(String),
 }
 
-impl ElementComponent for HtmlTableColElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableColElement {
     type PropEnum = TableColProp;
 }
-impl PropEnum<HtmlTableColElement> for TableColProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableColElement> for TableColProp {
     fn unset_on(&self, elem: &HtmlTableColElement) {
         match self {
             TableColProp::span(_) => elem.remove_attribute("span").unwrap(),

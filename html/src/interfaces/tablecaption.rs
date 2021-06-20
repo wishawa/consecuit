@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableCaptionElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum TableCaptionProp {
     align(String),
 }
 
-impl ElementComponent for HtmlTableCaptionElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableCaptionElement {
     type PropEnum = TableCaptionProp;
 }
-impl PropEnum<HtmlTableCaptionElement> for TableCaptionProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableCaptionElement> for TableCaptionProp {
     fn unset_on(&self, elem: &HtmlTableCaptionElement) {
         match self {
             TableCaptionProp::align(_) => elem.remove_attribute("align").unwrap(),

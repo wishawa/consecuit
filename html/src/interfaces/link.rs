@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlLinkElement;
 
 #[allow(non_camel_case_types)]
@@ -19,10 +19,12 @@ pub enum LinkProp {
     r#as(String),
 }
 
-impl ElementComponent for HtmlLinkElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlLinkElement {
     type PropEnum = LinkProp;
 }
-impl PropEnum<HtmlLinkElement> for LinkProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlLinkElement> for LinkProp {
     fn unset_on(&self, elem: &HtmlLinkElement) {
         match self {
             LinkProp::disabled(_) => elem.remove_attribute("disabled").unwrap(),

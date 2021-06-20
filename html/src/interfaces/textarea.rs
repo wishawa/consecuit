@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTextAreaElement;
 
 #[allow(non_camel_case_types)]
@@ -19,10 +19,12 @@ pub enum TextAreaProp {
     value(String),
 }
 
-impl ElementComponent for HtmlTextAreaElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTextAreaElement {
     type PropEnum = TextAreaProp;
 }
-impl PropEnum<HtmlTextAreaElement> for TextAreaProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTextAreaElement> for TextAreaProp {
     fn unset_on(&self, elem: &HtmlTextAreaElement) {
         match self {
             TextAreaProp::autocomplete(_) => elem.remove_attribute("autocomplete").unwrap(),

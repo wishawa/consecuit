@@ -1,6 +1,6 @@
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
+    elem::{HtmlProp, HtmlProps},
 };
 use web_sys::HtmlFrameSetElement;
 
@@ -25,10 +25,12 @@ pub enum FrameSetProp {
     onunload(Callback),
 }
 
-impl ElementComponent for HtmlFrameSetElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlFrameSetElement {
     type PropEnum = FrameSetProp;
 }
-impl PropEnum<HtmlFrameSetElement> for FrameSetProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlFrameSetElement> for FrameSetProp {
     fn unset_on(&self, elem: &HtmlFrameSetElement) {
         match self {
             FrameSetProp::cols(_) => elem.remove_attribute("cols").unwrap(),

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlCanvasElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum CanvasProp {
     height(u32),
 }
 
-impl ElementComponent for HtmlCanvasElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlCanvasElement {
     type PropEnum = CanvasProp;
 }
-impl PropEnum<HtmlCanvasElement> for CanvasProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlCanvasElement> for CanvasProp {
     fn unset_on(&self, elem: &HtmlCanvasElement) {
         match self {
             CanvasProp::width(_) => elem.remove_attribute("width").unwrap(),

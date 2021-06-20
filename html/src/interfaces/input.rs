@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlInputElement;
 
 #[allow(non_camel_case_types)]
@@ -43,10 +43,12 @@ pub enum InputProp {
     webkitdirectory(bool),
 }
 
-impl ElementComponent for HtmlInputElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlInputElement {
     type PropEnum = InputProp;
 }
-impl PropEnum<HtmlInputElement> for InputProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlInputElement> for InputProp {
     fn unset_on(&self, elem: &HtmlInputElement) {
         match self {
             InputProp::accept(_) => elem.remove_attribute("accept").unwrap(),

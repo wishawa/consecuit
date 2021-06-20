@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlSlotElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum SlotProp {
     name(String),
 }
 
-impl ElementComponent for HtmlSlotElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlSlotElement {
     type PropEnum = SlotProp;
 }
-impl PropEnum<HtmlSlotElement> for SlotProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlSlotElement> for SlotProp {
     fn unset_on(&self, elem: &HtmlSlotElement) {
         match self {
             SlotProp::name(_) => elem.remove_attribute("name").unwrap(),

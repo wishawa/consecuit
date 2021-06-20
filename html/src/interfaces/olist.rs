@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlOListElement;
 
 #[allow(non_camel_case_types)]
@@ -10,10 +10,12 @@ pub enum OListProp {
     compact(bool),
 }
 
-impl ElementComponent for HtmlOListElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlOListElement {
     type PropEnum = OListProp;
 }
-impl PropEnum<HtmlOListElement> for OListProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlOListElement> for OListProp {
     fn unset_on(&self, elem: &HtmlOListElement) {
         match self {
             OListProp::reversed(_) => elem.remove_attribute("reversed").unwrap(),

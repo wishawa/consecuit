@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlOptionElement;
 
 #[allow(non_camel_case_types)]
@@ -12,10 +12,12 @@ pub enum OptionProp {
     text(String),
 }
 
-impl ElementComponent for HtmlOptionElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlOptionElement {
     type PropEnum = OptionProp;
 }
-impl PropEnum<HtmlOptionElement> for OptionProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlOptionElement> for OptionProp {
     fn unset_on(&self, elem: &HtmlOptionElement) {
         match self {
             OptionProp::disabled(_) => elem.remove_attribute("disabled").unwrap(),

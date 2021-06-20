@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlSelectElement;
 
 #[allow(non_camel_case_types)]
@@ -16,10 +16,12 @@ pub enum SelectProp {
     value(String),
 }
 
-impl ElementComponent for HtmlSelectElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlSelectElement {
     type PropEnum = SelectProp;
 }
-impl PropEnum<HtmlSelectElement> for SelectProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlSelectElement> for SelectProp {
     fn unset_on(&self, elem: &HtmlSelectElement) {
         match self {
             SelectProp::autofocus(_) => elem.remove_attribute("autofocus").unwrap(),

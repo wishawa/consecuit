@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlSourceElement;
 
 #[allow(non_camel_case_types)]
@@ -11,10 +11,12 @@ pub enum SourceProp {
     media(String),
 }
 
-impl ElementComponent for HtmlSourceElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlSourceElement {
     type PropEnum = SourceProp;
 }
-impl PropEnum<HtmlSourceElement> for SourceProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlSourceElement> for SourceProp {
     fn unset_on(&self, elem: &HtmlSourceElement) {
         match self {
             SourceProp::src(_) => elem.remove_attribute("src").unwrap(),

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlVideoElement;
 
 #[allow(non_camel_case_types)]
@@ -9,10 +9,12 @@ pub enum VideoProp {
     poster(String),
 }
 
-impl ElementComponent for HtmlVideoElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlVideoElement {
     type PropEnum = VideoProp;
 }
-impl PropEnum<HtmlVideoElement> for VideoProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlVideoElement> for VideoProp {
     fn unset_on(&self, elem: &HtmlVideoElement) {
         match self {
             VideoProp::width(_) => elem.remove_attribute("width").unwrap(),

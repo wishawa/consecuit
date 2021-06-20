@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlFrameElement;
 
 #[allow(non_camel_case_types)]
@@ -14,10 +14,12 @@ pub enum FrameProp {
     margin_width(String),
 }
 
-impl ElementComponent for HtmlFrameElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlFrameElement {
     type PropEnum = FrameProp;
 }
-impl PropEnum<HtmlFrameElement> for FrameProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlFrameElement> for FrameProp {
     fn unset_on(&self, elem: &HtmlFrameElement) {
         match self {
             FrameProp::name(_) => elem.remove_attribute("name").unwrap(),

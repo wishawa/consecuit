@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlEmbedElement;
 
 #[allow(non_camel_case_types)]
@@ -12,10 +12,12 @@ pub enum EmbedProp {
     name(String),
 }
 
-impl ElementComponent for HtmlEmbedElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlEmbedElement {
     type PropEnum = EmbedProp;
 }
-impl PropEnum<HtmlEmbedElement> for EmbedProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlEmbedElement> for EmbedProp {
     fn unset_on(&self, elem: &HtmlEmbedElement) {
         match self {
             EmbedProp::src(_) => elem.remove_attribute("src").unwrap(),

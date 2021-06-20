@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlHeadingElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum HeadingProp {
     align(String),
 }
 
-impl ElementComponent for HtmlHeadingElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlHeadingElement {
     type PropEnum = HeadingProp;
 }
-impl PropEnum<HtmlHeadingElement> for HeadingProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlHeadingElement> for HeadingProp {
     fn unset_on(&self, elem: &HtmlHeadingElement) {
         match self {
             HeadingProp::align(_) => elem.remove_attribute("align").unwrap(),

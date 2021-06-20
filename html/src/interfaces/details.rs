@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlDetailsElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum DetailsProp {
     open(bool),
 }
 
-impl ElementComponent for HtmlDetailsElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlDetailsElement {
     type PropEnum = DetailsProp;
 }
-impl PropEnum<HtmlDetailsElement> for DetailsProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlDetailsElement> for DetailsProp {
     fn unset_on(&self, elem: &HtmlDetailsElement) {
         match self {
             DetailsProp::open(_) => elem.remove_attribute("open").unwrap(),

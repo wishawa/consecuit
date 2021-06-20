@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlButtonElement;
 
 #[allow(non_camel_case_types)]
@@ -16,10 +16,12 @@ pub enum ButtonProp {
     value(String),
 }
 
-impl ElementComponent for HtmlButtonElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlButtonElement {
     type PropEnum = ButtonProp;
 }
-impl PropEnum<HtmlButtonElement> for ButtonProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlButtonElement> for ButtonProp {
     fn unset_on(&self, elem: &HtmlButtonElement) {
         match self {
             ButtonProp::autofocus(_) => elem.remove_attribute("autofocus").unwrap(),

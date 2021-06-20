@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTrackElement;
 
 #[allow(non_camel_case_types)]
@@ -11,10 +11,12 @@ pub enum TrackProp {
     default(bool),
 }
 
-impl ElementComponent for HtmlTrackElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTrackElement {
     type PropEnum = TrackProp;
 }
-impl PropEnum<HtmlTrackElement> for TrackProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTrackElement> for TrackProp {
     fn unset_on(&self, elem: &HtmlTrackElement) {
         match self {
             TrackProp::kind(_) => elem.remove_attribute("kind").unwrap(),

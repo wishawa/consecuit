@@ -11,25 +11,27 @@ use wasm_bindgen::JsCast;
 #[derive(Clone)]
 struct WrappedElement<T: Clone + AsRef<HtmlElement>>(T);
 
+#[sealed::sealed(pub(crate))]
 pub trait PropEnum<T: AsRef<HtmlElement>>: Clone + PartialEq {
     fn set_on(&self, elem: &T);
     fn unset_on(&self, elem: &T);
 }
 
-pub trait ElementComponent: 'static + Clone + AsRef<HtmlElement> + JsCast {
+#[sealed::sealed(pub(crate))]
+pub trait HtmlComponent: 'static + Clone + AsRef<HtmlElement> + JsCast {
     type PropEnum: PropEnum<Self>;
 }
 
 #[derive(Clone)]
-pub struct HtmlProps<E: ElementComponent>(pub(crate) Vector<HtmlProp<E>>);
+pub struct HtmlProps<E: HtmlComponent>(pub(crate) Vector<HtmlProp<E>>);
 
 #[derive(Clone)]
-pub(crate) enum HtmlProp<E: ElementComponent> {
+pub(crate) enum HtmlProp<E: HtmlComponent> {
     Shared(SharedProp),
     Own(E::PropEnum),
 }
 
-impl<E: ElementComponent> PartialEq for HtmlProp<E> {
+impl<E: HtmlComponent> PartialEq for HtmlProp<E> {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (HtmlProp::Shared(s1), HtmlProp::Shared(s2)) => s1 == s2,
@@ -39,7 +41,7 @@ impl<E: ElementComponent> PartialEq for HtmlProp<E> {
     }
 }
 
-impl<E: ElementComponent> PartialEq for HtmlProps<E> {
+impl<E: HtmlComponent> PartialEq for HtmlProps<E> {
     fn eq(&self, other: &Self) -> bool {
         self.0 == other.0
     }
@@ -47,14 +49,14 @@ impl<E: ElementComponent> PartialEq for HtmlProps<E> {
 
 pub(crate) struct UseElementArgs<T>
 where
-    T: ElementComponent,
+    T: HtmlComponent,
 {
     pub tag_name: &'static str,
     pub props: HtmlProps<T>,
     pub parent: Element,
 }
 
-pub(crate) fn use_element<T: ElementComponent>(
+pub(crate) fn use_element<T: HtmlComponent>(
     reia: HookBuilder,
     args: UseElementArgs<T>,
 ) -> impl HookReturn<T> {
@@ -64,7 +66,7 @@ pub(crate) fn use_element<T: ElementComponent>(
         props,
         parent,
     } = args;
-    let (reia, store): (_, ReiaRef<Option<WrappedElement<T>>>) = reia.hook(use_ref, ());
+    let (reia, store): (_, ReiaRef<Option<T>>) = reia.hook(use_ref, ());
     let elem = store
         .visit_mut_with(|opt| {
             let elem = opt.get_or_insert_with(|| {
@@ -76,9 +78,9 @@ pub(crate) fn use_element<T: ElementComponent>(
                     .unwrap();
                 let html_element: &HtmlElement = elem.as_ref();
                 parent.append_child(html_element.as_ref()).unwrap();
-                WrappedElement(elem)
+                elem
             });
-            elem.0.clone()
+            elem.clone()
         })
         .unwrap();
 
@@ -106,12 +108,12 @@ pub(crate) fn use_element<T: ElementComponent>(
     (reia, elem)
 }
 
-impl<E: ElementComponent> HtmlProps<E> {
+impl<E: HtmlComponent> HtmlProps<E> {
     pub fn new() -> Self {
         Self(Vector::new())
     }
 }
 
-pub fn html_props<E: ElementComponent>() -> HtmlProps<E> {
+pub fn html_props<E: HtmlComponent>() -> HtmlProps<E> {
     HtmlProps::new()
 }

@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlAreaElement;
 
 #[allow(non_camel_case_types)]
@@ -25,10 +25,12 @@ pub enum AreaProp {
     hash(String),
 }
 
-impl ElementComponent for HtmlAreaElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlAreaElement {
     type PropEnum = AreaProp;
 }
-impl PropEnum<HtmlAreaElement> for AreaProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlAreaElement> for AreaProp {
     fn unset_on(&self, elem: &HtmlAreaElement) {
         match self {
             AreaProp::alt(_) => elem.remove_attribute("alt").unwrap(),

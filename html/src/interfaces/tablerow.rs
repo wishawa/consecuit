@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlTableRowElement;
 
 #[allow(non_camel_case_types)]
@@ -11,10 +11,12 @@ pub enum TableRowProp {
     bg_color(String),
 }
 
-impl ElementComponent for HtmlTableRowElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlTableRowElement {
     type PropEnum = TableRowProp;
 }
-impl PropEnum<HtmlTableRowElement> for TableRowProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlTableRowElement> for TableRowProp {
     fn unset_on(&self, elem: &HtmlTableRowElement) {
         match self {
             TableRowProp::align(_) => elem.remove_attribute("align").unwrap(),

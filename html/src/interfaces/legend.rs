@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlLegendElement;
 
 #[allow(non_camel_case_types)]
@@ -7,10 +7,12 @@ pub enum LegendProp {
     align(String),
 }
 
-impl ElementComponent for HtmlLegendElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlLegendElement {
     type PropEnum = LegendProp;
 }
-impl PropEnum<HtmlLegendElement> for LegendProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlLegendElement> for LegendProp {
     fn unset_on(&self, elem: &HtmlLegendElement) {
         match self {
             LegendProp::align(_) => elem.remove_attribute("align").unwrap(),

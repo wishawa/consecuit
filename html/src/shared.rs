@@ -2,7 +2,7 @@ use web_sys::HtmlElement;
 
 use crate::{
     callback::Callback,
-    elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum},
+    elem::{HtmlComponent, HtmlProp, HtmlProps},
 };
 
 #[allow(non_camel_case_types)]
@@ -120,7 +120,8 @@ pub(crate) enum SharedProp {
     ontouchcancel(Callback),
 }
 
-impl PropEnum<HtmlElement> for SharedProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlElement> for SharedProp {
     fn set_on(&self, elem: &HtmlElement) {
         match self {
             SharedProp::node_value(v) => elem.set_node_value(Some(v)),
@@ -385,7 +386,7 @@ impl PropEnum<HtmlElement> for SharedProp {
     }
 }
 
-impl<E: ElementComponent> HtmlProps<E> {
+impl<E: HtmlComponent> HtmlProps<E> {
     pub fn node_value(mut self, val: String) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::node_value(val)));
@@ -917,11 +918,13 @@ impl<E: ElementComponent> HtmlProps<E> {
 #[derive(Clone, PartialEq)]
 pub enum EmptyPropEnum {}
 
-impl PropEnum<HtmlElement> for EmptyPropEnum {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlElement> for EmptyPropEnum {
     fn set_on(&self, _elem: &HtmlElement) {}
     fn unset_on(&self, _elem: &HtmlElement) {}
 }
 
-impl ElementComponent for HtmlElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlElement {
     type PropEnum = EmptyPropEnum;
 }

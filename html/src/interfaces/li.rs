@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlLiElement;
 
 #[allow(non_camel_case_types)]
@@ -8,10 +8,12 @@ pub enum LiProp {
     r#type(String),
 }
 
-impl ElementComponent for HtmlLiElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlLiElement {
     type PropEnum = LiProp;
 }
-impl PropEnum<HtmlLiElement> for LiProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlLiElement> for LiProp {
     fn unset_on(&self, elem: &HtmlLiElement) {
         match self {
             LiProp::value(_) => elem.remove_attribute("value").unwrap(),

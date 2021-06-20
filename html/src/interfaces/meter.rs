@@ -1,4 +1,4 @@
-use crate::elem::{ElementComponent, HtmlProp, HtmlProps, PropEnum};
+use crate::elem::{HtmlProp, HtmlProps};
 use web_sys::HtmlMeterElement;
 
 #[allow(non_camel_case_types)]
@@ -12,10 +12,12 @@ pub enum MeterProp {
     optimum(f64),
 }
 
-impl ElementComponent for HtmlMeterElement {
+#[sealed::sealed]
+impl crate::elem::HtmlComponent for HtmlMeterElement {
     type PropEnum = MeterProp;
 }
-impl PropEnum<HtmlMeterElement> for MeterProp {
+#[sealed::sealed]
+impl crate::elem::PropEnum<HtmlMeterElement> for MeterProp {
     fn unset_on(&self, elem: &HtmlMeterElement) {
         match self {
             MeterProp::value(_) => elem.remove_attribute("value").unwrap(),
