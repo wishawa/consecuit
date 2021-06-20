@@ -1,4 +1,4 @@
-use crate::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
 use web_sys::HtmlTableCaptionElement;
 
 #[allow(non_camel_case_types)]

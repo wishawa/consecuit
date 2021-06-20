@@ -1,4 +1,7 @@
-use crate::{callback::Callback, ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::{
+    callback::Callback,
+    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+};
 use web_sys::HtmlMediaElement;
 
 #[allow(non_camel_case_types)]

@@ -1,4 +1,4 @@
-use crate::{ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, ElementProp, ElementProps, PropEnum};
 use web_sys::HtmlFormElement;
 
 #[allow(non_camel_case_types)]

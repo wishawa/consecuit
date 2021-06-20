@@ -1,4 +1,4 @@
-use crate::{use_element, ElementProps, UseElementArgs};
+use crate::elem::{use_element, ElementProps, UseElementArgs};
 use reia::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlBodyElement;
 pub fn body(reia: ComponentBuilder, props: ElementProps<HtmlBodyElement>) -> impl ContainerReturn {

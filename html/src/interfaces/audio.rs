@@ -1,4 +1,4 @@
-use crate::{ElementComponent, ElementProps, PropEnum};
+use crate::elem::{ElementComponent, ElementProps, PropEnum};
 use web_sys::HtmlAudioElement;
 
 #[allow(non_camel_case_types)]

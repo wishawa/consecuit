@@ -1,6 +1,9 @@
 use web_sys::HtmlElement;
 
-use crate::{callback::Callback, ElementComponent, ElementProp, ElementProps, PropEnum};
+use crate::{
+    callback::Callback,
+    elem::{ElementComponent, ElementProp, ElementProps, PropEnum},
+};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
