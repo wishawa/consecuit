@@ -1,5 +1,6 @@
 use std::{cell::RefCell, ops::DerefMut};
 
+use im_rc::Vector;
 use web_sys::Element;
 
 use crate::{
@@ -132,7 +133,7 @@ where
     pub fn vec_comps(
         self,
         func: ComponentFunc<Ret, Props>,
-        mut props: Vec<Props>,
+        mut props: Vector<Props>,
     ) -> ComponentConstruction<RestStores, EntireStores, NoHoleNode, CompHole> {
         let ComponentConstruction {
             hook_stores,

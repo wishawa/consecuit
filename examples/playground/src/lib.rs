@@ -1,5 +1,5 @@
 use reia::{
-    hooks::{use_effect, use_function, use_state, CallbackFunction, StateSetter},
+    hooks::{use_callback, use_effect, use_state, CallbackFunction, StateSetter},
     ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
     HookReturn,
 };
@@ -44,11 +44,11 @@ fn use_counter(
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let count_setter_1 = count_setter.clone();
-    let (reia, increment) = reia.hook(use_function, move || {
+    let (reia, increment) = reia.hook(use_callback, move || {
         count_setter_1.update_with(|value| value + 1);
     });
     let count_setter_2 = count_setter.clone();
-    let (reia, decrement) = reia.hook(use_function, move || {
+    let (reia, decrement) = reia.hook(use_callback, move || {
         count_setter_2.update_with(|value| value - 1);
     });
     let (reia, _) = reia.hook(

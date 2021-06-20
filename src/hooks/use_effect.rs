@@ -4,36 +4,35 @@ use crate::{HookBuilder, HookReturn};
 
 use super::{use_ref, ReiaRef};
 
-pub trait RunOnDrop: 'static {
-    fn run(self);
-}
-
-impl<F: FnOnce() + 'static> RunOnDrop for F {
-    fn run(self) {
-        self();
-    }
-}
-
-impl RunOnDrop for () {
-    fn run(self) {}
-}
-
 struct StoredEffect<Args, OnDrop>
 where
-    OnDrop: RunOnDrop,
+    OnDrop: FnOnce() + 'static,
     Args: PartialEq + Clone + 'static,
 {
     args: Args,
     on_drop: Option<OnDrop>,
 }
 
-pub fn use_effect<Args, OnDrop>(
+impl<Args, OnDrop> Drop for StoredEffect<Args, OnDrop>
+where
+    OnDrop: FnOnce() + 'static,
+    Args: PartialEq + Clone + 'static,
+{
+    fn drop(&mut self) {
+        if let Some(od) = self.on_drop.take() {
+            od();
+        }
+    }
+}
+
+pub fn use_effect_relaxed<Args, OnDrop, Eff>(
     reia: HookBuilder,
-    (func, args): (fn(Args) -> OnDrop, Args),
+    (func, args): (Eff, Args),
 ) -> impl HookReturn<()>
 where
-    OnDrop: RunOnDrop,
+    OnDrop: FnOnce() + 'static,
     Args: PartialEq + Clone + 'static,
+    Eff: FnOnce(Args) -> OnDrop,
 {
     let reia = reia.init();
     let (reia, store): (_, ReiaRef<Option<StoredEffect<Args, OnDrop>>>) = reia.hook(use_ref, ());
@@ -61,11 +60,22 @@ where
             .visit_mut_with(|opt| {
                 let stored = opt.as_mut().unwrap().borrow_mut();
                 if let Some(od) = stored.on_drop.take() {
-                    od.run();
+                    od();
                 }
                 stored.on_drop = Some(func(stored.args.clone()));
             })
             .unwrap();
     }
     (reia, ())
+}
+
+pub fn use_effect<Args, OnDrop>(
+    reia: HookBuilder,
+    (func, args): (fn(Args) -> OnDrop, Args),
+) -> impl HookReturn<()>
+where
+    OnDrop: FnOnce() + 'static,
+    Args: PartialEq + Clone + 'static,
+{
+    use_effect_relaxed(reia, (func, args))
 }

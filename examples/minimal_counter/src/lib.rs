@@ -1,5 +1,5 @@
 use reia::{
-    hooks::{use_function, use_state, CallbackFunction},
+    hooks::{use_callback, use_state, CallbackFunction},
     ComponentBuilder, ComponentReturn, HookBuilder, HookReturn,
 };
 use reia_html::components::{button, div, text_node, ButtonProps, DivProps};
@@ -29,10 +29,10 @@ fn use_counter(
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, initial);
     let count_setter_1 = count_setter.clone();
-    let (reia, increment) = reia.hook(use_function, move || {
+    let (reia, increment) = reia.hook(use_callback, move || {
         count_setter_1.update_with(|value| value + 1);
     });
-    let (reia, decrement) = reia.hook(use_function, move || {
+    let (reia, decrement) = reia.hook(use_callback, move || {
         count_setter.update_with(|value| value - 1);
     });
     (reia, (count, increment, decrement))
