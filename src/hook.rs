@@ -33,11 +33,13 @@ pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList>
 
 type EmptyHookStores<Entire> = HookConstruction<StoreConsEnd, Entire>;
 
+#[sealed::sealed]
 pub trait HookReturn<Value> {
     type StoresList: StoresList;
     fn get_val(self) -> Value;
 }
 
+#[sealed::sealed]
 impl<UsedStores, Value> HookReturn<Value> for (EmptyHookStores<UsedStores>, Value)
 where
     UsedStores: StoresList,

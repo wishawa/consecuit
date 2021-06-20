@@ -10,6 +10,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+sealed = "0.3.0"
 wasm-bindgen = "0.2.74"
 im-rc = "15.0.0"
 

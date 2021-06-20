@@ -1,3 +1,4 @@
+#[sealed::sealed]
 pub trait StoresList: Sized + Default + 'static {
     type Head: Sized;
     type Tail: Sized + StoresList;
@@ -8,6 +9,7 @@ pub struct StoreCons<H: Default, T: Default>(pub(crate) H, pub(crate) T);
 #[derive(Default)]
 pub struct StoreConsEnd;
 
+#[sealed::sealed]
 impl<H: Default + 'static, T: Default + 'static> StoresList for StoreCons<H, T>
 where
     T: StoresList,
@@ -19,6 +21,7 @@ where
     }
 }
 
+#[sealed::sealed]
 impl StoresList for StoreConsEnd {
     type Head = Self;
     type Tail = Self;

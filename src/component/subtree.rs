@@ -36,11 +36,13 @@ where
     }
 }
 
+#[sealed::sealed]
 pub trait Subtree {
     type Props;
     fn re_render(&self, props: Self::Props);
 }
 
+#[sealed::sealed]
 impl<Ret, Props> Subtree for SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,

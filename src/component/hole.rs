@@ -4,12 +4,15 @@ use crate::stores::StoresList;
 
 use super::ComponentConstruction;
 
+#[sealed::sealed]
 pub trait MaybeHoleNode: 'static + Clone {}
 #[derive(Clone)]
 pub struct NoHoleNode;
+#[sealed::sealed]
 impl MaybeHoleNode for NoHoleNode {}
 #[derive(Clone)]
 pub struct YesHoleNode(pub Element);
+#[sealed::sealed]
 impl MaybeHoleNode for YesHoleNode {}
 
 impl<Stores, EntireStores> ComponentConstruction<Stores, EntireStores, YesHoleNode, NoHoleNode>
