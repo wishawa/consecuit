@@ -1,8 +1,11 @@
-use web_sys::HtmlElement;
-
 use crate::{
     callback::Callback,
     elem::{HtmlComponent, HtmlProp, HtmlProps},
+};
+use web_sys::HtmlElement;
+use web_sys::{
+    AnimationEvent, DragEvent, Event, FocusEvent, InputEvent, KeyboardEvent, MouseEvent,
+    PointerEvent, TouchEvent, TransitionEvent, UiEvent, WheelEvent,
 };
 
 #[allow(non_camel_case_types)]
@@ -32,92 +35,92 @@ pub(crate) enum SharedProp {
     oncut(Callback),
     onpaste(Callback),
     onabort(Callback),
-    onblur(Callback),
-    onfocus(Callback),
-    onauxclick(Callback),
+    onblur(Callback<FocusEvent>),
+    onfocus(Callback<FocusEvent>),
+    onauxclick(Callback<MouseEvent>),
     oncanplay(Callback),
-    oncanplaythrough(Callback),
-    onchange(Callback),
-    onclick(Callback),
-    onclose(Callback),
-    oncontextmenu(Callback),
-    ondblclick(Callback),
-    ondrag(Callback),
-    ondragend(Callback),
-    ondragenter(Callback),
+    oncanplaythrough(Callback<Event>),
+    onchange(Callback<Event>),
+    onclick(Callback<MouseEvent>),
+    onclose(Callback<Event>),
+    oncontextmenu(Callback<MouseEvent>),
+    ondblclick(Callback<MouseEvent>),
+    ondrag(Callback<DragEvent>),
+    ondragend(Callback<DragEvent>),
+    ondragenter(Callback<DragEvent>),
     ondragexit(Callback),
-    ondragleave(Callback),
-    ondragover(Callback),
-    ondragstart(Callback),
-    ondrop(Callback),
+    ondragleave(Callback<DragEvent>),
+    ondragover(Callback<DragEvent>),
+    ondragstart(Callback<DragEvent>),
+    ondrop(Callback<DragEvent>),
     ondurationchange(Callback),
     onemptied(Callback),
     onended(Callback),
-    oninput(Callback),
-    oninvalid(Callback),
-    onkeydown(Callback),
-    onkeypress(Callback),
-    onkeyup(Callback),
-    onload(Callback),
+    oninput(Callback<InputEvent>),
+    oninvalid(Callback<Event>),
+    onkeydown(Callback<KeyboardEvent>),
+    onkeypress(Callback<KeyboardEvent>),
+    onkeyup(Callback<KeyboardEvent>),
+    onload(Callback<Event>),
     onloadeddata(Callback),
     onloadedmetadata(Callback),
     onloadend(Callback),
     onloadstart(Callback),
-    onmousedown(Callback),
-    onmouseenter(Callback),
-    onmouseleave(Callback),
-    onmousemove(Callback),
-    onmouseout(Callback),
-    onmouseover(Callback),
-    onmouseup(Callback),
-    onwheel(Callback),
+    onmousedown(Callback<MouseEvent>),
+    onmouseenter(Callback<MouseEvent>),
+    onmouseleave(Callback<MouseEvent>),
+    onmousemove(Callback<MouseEvent>),
+    onmouseout(Callback<MouseEvent>),
+    onmouseover(Callback<MouseEvent>),
+    onmouseup(Callback<MouseEvent>),
+    onwheel(Callback<WheelEvent>),
     onpause(Callback),
     onplay(Callback),
     onplaying(Callback),
     onprogress(Callback),
     onratechange(Callback),
-    onreset(Callback),
-    onresize(Callback),
-    onscroll(Callback),
+    onreset(Callback<Event>),
+    onresize(Callback<UiEvent>),
+    onscroll(Callback<Event>),
     onseeked(Callback),
     onseeking(Callback),
-    onselect(Callback),
-    onshow(Callback),
+    onselect(Callback<UiEvent>),
+    onshow(Callback<Event>),
     onstalled(Callback),
     onsubmit(Callback),
     onsuspend(Callback),
     ontimeupdate(Callback),
     onvolumechange(Callback),
     onwaiting(Callback),
-    onselectstart(Callback),
+    onselectstart(Callback<FocusEvent>),
     ontoggle(Callback),
-    onpointercancel(Callback),
-    onpointerdown(Callback),
-    onpointerup(Callback),
-    onpointermove(Callback),
-    onpointerout(Callback),
-    onpointerover(Callback),
-    onpointerenter(Callback),
-    onpointerleave(Callback),
-    ongotpointercapture(Callback),
-    onlostpointercapture(Callback),
-    onanimationcancel(Callback),
-    onanimationend(Callback),
-    onanimationiteration(Callback),
-    onanimationstart(Callback),
-    ontransitioncancel(Callback),
-    ontransitionend(Callback),
-    ontransitionrun(Callback),
-    ontransitionstart(Callback),
+    onpointercancel(Callback<PointerEvent>),
+    onpointerdown(Callback<PointerEvent>),
+    onpointerup(Callback<PointerEvent>),
+    onpointermove(Callback<PointerEvent>),
+    onpointerout(Callback<PointerEvent>),
+    onpointerover(Callback<PointerEvent>),
+    onpointerenter(Callback<PointerEvent>),
+    onpointerleave(Callback<PointerEvent>),
+    ongotpointercapture(Callback<PointerEvent>),
+    onlostpointercapture(Callback<PointerEvent>),
+    onanimationcancel(Callback<AnimationEvent>),
+    onanimationend(Callback<AnimationEvent>),
+    onanimationiteration(Callback<AnimationEvent>),
+    onanimationstart(Callback<AnimationEvent>),
+    ontransitioncancel(Callback<TransitionEvent>),
+    ontransitionend(Callback<TransitionEvent>),
+    ontransitionrun(Callback<TransitionEvent>),
+    ontransitionstart(Callback<TransitionEvent>),
     onwebkitanimationend(Callback),
     onwebkitanimationiteration(Callback),
     onwebkitanimationstart(Callback),
     onwebkittransitionend(Callback),
-    onerror(Callback),
-    ontouchstart(Callback),
-    ontouchend(Callback),
-    ontouchmove(Callback),
-    ontouchcancel(Callback),
+    onerror(Callback<Event>),
+    ontouchstart(Callback<TouchEvent>),
+    ontouchend(Callback<TouchEvent>),
+    ontouchmove(Callback<TouchEvent>),
+    ontouchcancel(Callback<TouchEvent>),
 }
 
 #[sealed::sealed]
@@ -510,15 +513,15 @@ impl<E: HtmlComponent> HtmlProps<E> {
         self.0.push_back(HtmlProp::Shared(SharedProp::onabort(val)));
         self
     }
-    pub fn onblur(mut self, val: Callback) -> Self {
+    pub fn onblur(mut self, val: Callback<FocusEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onblur(val)));
         self
     }
-    pub fn onfocus(mut self, val: Callback) -> Self {
+    pub fn onfocus(mut self, val: Callback<FocusEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onfocus(val)));
         self
     }
-    pub fn onauxclick(mut self, val: Callback) -> Self {
+    pub fn onauxclick(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onauxclick(val)));
         self
@@ -528,44 +531,44 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::oncanplay(val)));
         self
     }
-    pub fn oncanplaythrough(mut self, val: Callback) -> Self {
+    pub fn oncanplaythrough(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::oncanplaythrough(val)));
         self
     }
-    pub fn onchange(mut self, val: Callback) -> Self {
+    pub fn onchange(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onchange(val)));
         self
     }
-    pub fn onclick(mut self, val: Callback) -> Self {
+    pub fn onclick(mut self, val: Callback<MouseEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onclick(val)));
         self
     }
-    pub fn onclose(mut self, val: Callback) -> Self {
+    pub fn onclose(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onclose(val)));
         self
     }
-    pub fn oncontextmenu(mut self, val: Callback) -> Self {
+    pub fn oncontextmenu(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::oncontextmenu(val)));
         self
     }
-    pub fn ondblclick(mut self, val: Callback) -> Self {
+    pub fn ondblclick(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondblclick(val)));
         self
     }
-    pub fn ondrag(mut self, val: Callback) -> Self {
+    pub fn ondrag(mut self, val: Callback<DragEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::ondrag(val)));
         self
     }
-    pub fn ondragend(mut self, val: Callback) -> Self {
+    pub fn ondragend(mut self, val: Callback<DragEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondragend(val)));
         self
     }
-    pub fn ondragenter(mut self, val: Callback) -> Self {
+    pub fn ondragenter(mut self, val: Callback<DragEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondragenter(val)));
         self
@@ -575,22 +578,22 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::ondragexit(val)));
         self
     }
-    pub fn ondragleave(mut self, val: Callback) -> Self {
+    pub fn ondragleave(mut self, val: Callback<DragEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondragleave(val)));
         self
     }
-    pub fn ondragover(mut self, val: Callback) -> Self {
+    pub fn ondragover(mut self, val: Callback<DragEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondragover(val)));
         self
     }
-    pub fn ondragstart(mut self, val: Callback) -> Self {
+    pub fn ondragstart(mut self, val: Callback<DragEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ondragstart(val)));
         self
     }
-    pub fn ondrop(mut self, val: Callback) -> Self {
+    pub fn ondrop(mut self, val: Callback<DragEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::ondrop(val)));
         self
     }
@@ -608,30 +611,30 @@ impl<E: HtmlComponent> HtmlProps<E> {
         self.0.push_back(HtmlProp::Shared(SharedProp::onended(val)));
         self
     }
-    pub fn oninput(mut self, val: Callback) -> Self {
+    pub fn oninput(mut self, val: Callback<InputEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::oninput(val)));
         self
     }
-    pub fn oninvalid(mut self, val: Callback) -> Self {
+    pub fn oninvalid(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::oninvalid(val)));
         self
     }
-    pub fn onkeydown(mut self, val: Callback) -> Self {
+    pub fn onkeydown(mut self, val: Callback<KeyboardEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onkeydown(val)));
         self
     }
-    pub fn onkeypress(mut self, val: Callback) -> Self {
+    pub fn onkeypress(mut self, val: Callback<KeyboardEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onkeypress(val)));
         self
     }
-    pub fn onkeyup(mut self, val: Callback) -> Self {
+    pub fn onkeyup(mut self, val: Callback<KeyboardEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onkeyup(val)));
         self
     }
-    pub fn onload(mut self, val: Callback) -> Self {
+    pub fn onload(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onload(val)));
         self
     }
@@ -655,42 +658,42 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::onloadstart(val)));
         self
     }
-    pub fn onmousedown(mut self, val: Callback) -> Self {
+    pub fn onmousedown(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmousedown(val)));
         self
     }
-    pub fn onmouseenter(mut self, val: Callback) -> Self {
+    pub fn onmouseenter(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmouseenter(val)));
         self
     }
-    pub fn onmouseleave(mut self, val: Callback) -> Self {
+    pub fn onmouseleave(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmouseleave(val)));
         self
     }
-    pub fn onmousemove(mut self, val: Callback) -> Self {
+    pub fn onmousemove(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmousemove(val)));
         self
     }
-    pub fn onmouseout(mut self, val: Callback) -> Self {
+    pub fn onmouseout(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmouseout(val)));
         self
     }
-    pub fn onmouseover(mut self, val: Callback) -> Self {
+    pub fn onmouseover(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmouseover(val)));
         self
     }
-    pub fn onmouseup(mut self, val: Callback) -> Self {
+    pub fn onmouseup(mut self, val: Callback<MouseEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onmouseup(val)));
         self
     }
-    pub fn onwheel(mut self, val: Callback) -> Self {
+    pub fn onwheel(mut self, val: Callback<WheelEvent>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onwheel(val)));
         self
     }
@@ -717,16 +720,16 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::onratechange(val)));
         self
     }
-    pub fn onreset(mut self, val: Callback) -> Self {
+    pub fn onreset(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onreset(val)));
         self
     }
-    pub fn onresize(mut self, val: Callback) -> Self {
+    pub fn onresize(mut self, val: Callback<UiEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onresize(val)));
         self
     }
-    pub fn onscroll(mut self, val: Callback) -> Self {
+    pub fn onscroll(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onscroll(val)));
         self
@@ -741,12 +744,12 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::onseeking(val)));
         self
     }
-    pub fn onselect(mut self, val: Callback) -> Self {
+    pub fn onselect(mut self, val: Callback<UiEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onselect(val)));
         self
     }
-    pub fn onshow(mut self, val: Callback) -> Self {
+    pub fn onshow(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onshow(val)));
         self
     }
@@ -780,7 +783,7 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::onwaiting(val)));
         self
     }
-    pub fn onselectstart(mut self, val: Callback) -> Self {
+    pub fn onselectstart(mut self, val: Callback<FocusEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onselectstart(val)));
         self
@@ -790,92 +793,92 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::ontoggle(val)));
         self
     }
-    pub fn onpointercancel(mut self, val: Callback) -> Self {
+    pub fn onpointercancel(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointercancel(val)));
         self
     }
-    pub fn onpointerdown(mut self, val: Callback) -> Self {
+    pub fn onpointerdown(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerdown(val)));
         self
     }
-    pub fn onpointerup(mut self, val: Callback) -> Self {
+    pub fn onpointerup(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerup(val)));
         self
     }
-    pub fn onpointermove(mut self, val: Callback) -> Self {
+    pub fn onpointermove(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointermove(val)));
         self
     }
-    pub fn onpointerout(mut self, val: Callback) -> Self {
+    pub fn onpointerout(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerout(val)));
         self
     }
-    pub fn onpointerover(mut self, val: Callback) -> Self {
+    pub fn onpointerover(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerover(val)));
         self
     }
-    pub fn onpointerenter(mut self, val: Callback) -> Self {
+    pub fn onpointerenter(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerenter(val)));
         self
     }
-    pub fn onpointerleave(mut self, val: Callback) -> Self {
+    pub fn onpointerleave(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onpointerleave(val)));
         self
     }
-    pub fn ongotpointercapture(mut self, val: Callback) -> Self {
+    pub fn ongotpointercapture(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ongotpointercapture(val)));
         self
     }
-    pub fn onlostpointercapture(mut self, val: Callback) -> Self {
+    pub fn onlostpointercapture(mut self, val: Callback<PointerEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onlostpointercapture(val)));
         self
     }
-    pub fn onanimationcancel(mut self, val: Callback) -> Self {
+    pub fn onanimationcancel(mut self, val: Callback<AnimationEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onanimationcancel(val)));
         self
     }
-    pub fn onanimationend(mut self, val: Callback) -> Self {
+    pub fn onanimationend(mut self, val: Callback<AnimationEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onanimationend(val)));
         self
     }
-    pub fn onanimationiteration(mut self, val: Callback) -> Self {
+    pub fn onanimationiteration(mut self, val: Callback<AnimationEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onanimationiteration(val)));
         self
     }
-    pub fn onanimationstart(mut self, val: Callback) -> Self {
+    pub fn onanimationstart(mut self, val: Callback<AnimationEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::onanimationstart(val)));
         self
     }
-    pub fn ontransitioncancel(mut self, val: Callback) -> Self {
+    pub fn ontransitioncancel(mut self, val: Callback<TransitionEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontransitioncancel(val)));
         self
     }
-    pub fn ontransitionend(mut self, val: Callback) -> Self {
+    pub fn ontransitionend(mut self, val: Callback<TransitionEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontransitionend(val)));
         self
     }
-    pub fn ontransitionrun(mut self, val: Callback) -> Self {
+    pub fn ontransitionrun(mut self, val: Callback<TransitionEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontransitionrun(val)));
         self
     }
-    pub fn ontransitionstart(mut self, val: Callback) -> Self {
+    pub fn ontransitionstart(mut self, val: Callback<TransitionEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontransitionstart(val)));
         self
@@ -902,26 +905,26 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::onwebkittransitionend(val)));
         self
     }
-    pub fn onerror(mut self, val: Callback) -> Self {
+    pub fn onerror(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Shared(SharedProp::onerror(val)));
         self
     }
-    pub fn ontouchstart(mut self, val: Callback) -> Self {
+    pub fn ontouchstart(mut self, val: Callback<TouchEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontouchstart(val)));
         self
     }
-    pub fn ontouchend(mut self, val: Callback) -> Self {
+    pub fn ontouchend(mut self, val: Callback<TouchEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontouchend(val)));
         self
     }
-    pub fn ontouchmove(mut self, val: Callback) -> Self {
+    pub fn ontouchmove(mut self, val: Callback<TouchEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontouchmove(val)));
         self
     }
-    pub fn ontouchcancel(mut self, val: Callback) -> Self {
+    pub fn ontouchcancel(mut self, val: Callback<TouchEvent>) -> Self {
         self.0
             .push_back(HtmlProp::Shared(SharedProp::ontouchcancel(val)));
         self

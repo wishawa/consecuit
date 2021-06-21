@@ -1,9 +1,6 @@
 use crate::shared::SharedProp;
 use im_rc::Vector;
-use reia::{
-    hooks::{use_ref, ReiaRef},
-    HookBuilder, HookReturn,
-};
+use reia::*;
 use web_sys::{window, Element, HtmlElement};
 
 use wasm_bindgen::JsCast;

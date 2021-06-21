@@ -2,20 +2,25 @@ use std::{ops::Deref, rc::Rc};
 
 use js_sys::Function;
 use reia::batch_updates;
-use wasm_bindgen::{prelude::Closure, JsCast};
+use wasm_bindgen::{convert::FromWasmAbi, prelude::Closure, JsCast};
+use web_sys::Event;
 
 #[derive(Clone)]
-pub struct Callback(Rc<Closure<dyn Fn()>>);
+pub struct Callback<E: FromWasmAbi + 'static = Event>(Rc<Closure<dyn Fn(E)>>);
 
-impl PartialEq for Callback {
+impl<E: FromWasmAbi + 'static> PartialEq for Callback<E> {
     fn eq(&self, other: &Self) -> bool {
         Rc::ptr_eq(&self.0, &other.0)
     }
 }
 
-impl Callback {
-    pub fn new<F: Fn() + 'static>(f: F) -> Self {
-        Self(Rc::new(Closure::wrap(Box::new(move || batch_updates(&f)))))
+impl<E: FromWasmAbi + 'static> Callback<E> {
+    pub fn new<F: Fn(E) + 'static>(f: F) -> Self {
+        Self(Rc::new(Closure::wrap(Box::new(move |e: E| {
+            batch_updates(|| {
+                f(e);
+            })
+        }))))
     }
     pub fn as_websys_function(&self) -> &Function {
         self.0.deref().as_ref().unchecked_ref()
