@@ -90,33 +90,39 @@ impl crate::elem::PropEnum<HtmlAnchorElement> for AnchorProp {
 }
 
 impl HtmlProps<HtmlAnchorElement> {
-    pub fn target(mut self, val: String) -> Self {
+    pub fn target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::target(val)));
         self
     }
 
-    pub fn download(mut self, val: String) -> Self {
+    pub fn download(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::download(val)));
         self
     }
 
-    pub fn ping(mut self, val: String) -> Self {
+    pub fn ping(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::ping(val)));
         self
     }
 
-    pub fn rel(mut self, val: String) -> Self {
+    pub fn rel(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::rel(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: String) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(AnchorProp::referrer_policy(val)));
         self
     }
 
-    pub fn hreflang(mut self, val: String) -> Self {
+    pub fn hreflang(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::hreflang(val)));
         self
     }
@@ -126,77 +132,92 @@ impl HtmlProps<HtmlAnchorElement> {
         self
     }
 
-    pub fn coords(mut self, val: String) -> Self {
+    pub fn coords(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::coords(val)));
         self
     }
 
-    pub fn charset(mut self, val: String) -> Self {
+    pub fn charset(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::charset(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::name(val)));
         self
     }
 
-    pub fn rev(mut self, val: String) -> Self {
+    pub fn rev(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::rev(val)));
         self
     }
 
-    pub fn shape(mut self, val: String) -> Self {
+    pub fn shape(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::shape(val)));
         self
     }
 
-    pub fn href(mut self, val: String) -> Self {
+    pub fn href(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::href(val)));
         self
     }
 
-    pub fn protocol(mut self, val: String) -> Self {
+    pub fn protocol(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::protocol(val)));
         self
     }
 
-    pub fn username(mut self, val: String) -> Self {
+    pub fn username(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::username(val)));
         self
     }
 
-    pub fn password(mut self, val: String) -> Self {
+    pub fn password(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::password(val)));
         self
     }
 
-    pub fn host(mut self, val: String) -> Self {
+    pub fn host(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::host(val)));
         self
     }
 
-    pub fn hostname(mut self, val: String) -> Self {
+    pub fn hostname(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::hostname(val)));
         self
     }
 
-    pub fn port(mut self, val: String) -> Self {
+    pub fn port(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::port(val)));
         self
     }
 
-    pub fn pathname(mut self, val: String) -> Self {
+    pub fn pathname(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::pathname(val)));
         self
     }
 
-    pub fn search(mut self, val: String) -> Self {
+    pub fn search(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::search(val)));
         self
     }
 
-    pub fn hash(mut self, val: String) -> Self {
+    pub fn hash(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AnchorProp::hash(val)));
         self
     }

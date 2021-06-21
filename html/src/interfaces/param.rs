@@ -36,12 +36,14 @@ impl crate::elem::PropEnum<HtmlParamElement> for ParamProp {
 }
 
 impl HtmlProps<HtmlParamElement> {
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::name(val)));
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::value(val)));
         self
     }
@@ -51,7 +53,8 @@ impl HtmlProps<HtmlParamElement> {
         self
     }
 
-    pub fn value_type(mut self, val: String) -> Self {
+    pub fn value_type(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::value_type(val)));
         self
     }

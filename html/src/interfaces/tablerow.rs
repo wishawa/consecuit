@@ -39,27 +39,32 @@ impl crate::elem::PropEnum<HtmlTableRowElement> for TableRowProp {
 }
 
 impl HtmlProps<HtmlTableRowElement> {
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableRowProp::align(val)));
         self
     }
 
-    pub fn ch(mut self, val: String) -> Self {
+    pub fn ch(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableRowProp::ch(val)));
         self
     }
 
-    pub fn ch_off(mut self, val: String) -> Self {
+    pub fn ch_off(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableRowProp::ch_off(val)));
         self
     }
 
-    pub fn v_align(mut self, val: String) -> Self {
+    pub fn v_align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableRowProp::v_align(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: String) -> Self {
+    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableRowProp::bg_color(val)));
         self
     }

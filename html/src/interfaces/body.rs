@@ -89,32 +89,38 @@ impl crate::elem::PropEnum<HtmlBodyElement> for BodyProp {
 }
 
 impl HtmlProps<HtmlBodyElement> {
-    pub fn text(mut self, val: String) -> Self {
+    pub fn text(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::text(val)));
         self
     }
 
-    pub fn link(mut self, val: String) -> Self {
+    pub fn link(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::link(val)));
         self
     }
 
-    pub fn v_link(mut self, val: String) -> Self {
+    pub fn v_link(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::v_link(val)));
         self
     }
 
-    pub fn a_link(mut self, val: String) -> Self {
+    pub fn a_link(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::a_link(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: String) -> Self {
+    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::bg_color(val)));
         self
     }
 
-    pub fn background(mut self, val: String) -> Self {
+    pub fn background(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::background(val)));
         self
     }

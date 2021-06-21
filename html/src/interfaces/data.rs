@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlDataElement> for DataProp {
 }
 
 impl HtmlProps<HtmlDataElement> {
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(DataProp::value(val)));
         self
     }

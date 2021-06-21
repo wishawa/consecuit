@@ -30,12 +30,14 @@ impl crate::elem::PropEnum<HtmlBaseElement> for BaseProp {
 }
 
 impl HtmlProps<HtmlBaseElement> {
-    pub fn href(mut self, val: String) -> Self {
+    pub fn href(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BaseProp::href(val)));
         self
     }
 
-    pub fn target(mut self, val: String) -> Self {
+    pub fn target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BaseProp::target(val)));
         self
     }

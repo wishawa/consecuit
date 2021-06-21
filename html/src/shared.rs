@@ -387,21 +387,25 @@ impl crate::elem::PropEnum<HtmlElement> for SharedProp {
 }
 
 impl<E: HtmlComponent> HtmlProps<E> {
-    pub fn node_value(mut self, val: String) -> Self {
+    pub fn node_value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::node_value(val)));
         self
     }
-    pub fn text_content(mut self, val: String) -> Self {
+    pub fn text_content(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::text_content(val)));
         self
     }
-    pub fn id(mut self, val: String) -> Self {
+    pub fn id(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::id(val)));
         self
     }
-    pub fn class_name(mut self, val: String) -> Self {
+    pub fn class_name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::class_name(val)));
         self
@@ -416,21 +420,25 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::scroll_left(val)));
         self
     }
-    pub fn inner_html(mut self, val: String) -> Self {
+    pub fn inner_html(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::inner_html(val)));
         self
     }
-    pub fn outer_html(mut self, val: String) -> Self {
+    pub fn outer_html(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::outer_html(val)));
         self
     }
-    pub fn slot(mut self, val: String) -> Self {
+    pub fn slot(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::slot(val)));
         self
     }
-    pub fn title(mut self, val: String) -> Self {
+    pub fn title(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::title(val)));
         self
     }
@@ -439,15 +447,18 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::scroll_height(val)));
         self
     }
-    pub fn lang(mut self, val: String) -> Self {
+    pub fn lang(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::lang(val)));
         self
     }
-    pub fn dir(mut self, val: String) -> Self {
+    pub fn dir(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::dir(val)));
         self
     }
-    pub fn inner_text(mut self, val: String) -> Self {
+    pub fn inner_text(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::inner_text(val)));
         self
@@ -461,7 +472,8 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::tab_index(val)));
         self
     }
-    pub fn access_key(mut self, val: String) -> Self {
+    pub fn access_key(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::access_key(val)));
         self
@@ -471,7 +483,8 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::draggable(val)));
         self
     }
-    pub fn content_editable(mut self, val: String) -> Self {
+    pub fn content_editable(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::content_editable(val)));
         self

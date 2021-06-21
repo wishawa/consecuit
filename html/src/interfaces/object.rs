@@ -75,7 +75,8 @@ impl crate::elem::PropEnum<HtmlObjectElement> for ObjectProp {
 }
 
 impl HtmlProps<HtmlObjectElement> {
-    pub fn data(mut self, val: String) -> Self {
+    pub fn data(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::data(val)));
         self
     }
@@ -91,37 +92,44 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::name(val)));
         self
     }
 
-    pub fn use_map(mut self, val: String) -> Self {
+    pub fn use_map(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::use_map(val)));
         self
     }
 
-    pub fn width(mut self, val: String) -> Self {
+    pub fn width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::width(val)));
         self
     }
 
-    pub fn height(mut self, val: String) -> Self {
+    pub fn height(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::height(val)));
         self
     }
 
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::align(val)));
         self
     }
 
-    pub fn archive(mut self, val: String) -> Self {
+    pub fn archive(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::archive(val)));
         self
     }
 
-    pub fn code(mut self, val: String) -> Self {
+    pub fn code(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code(val)));
         self
     }
@@ -136,7 +144,8 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn standby(mut self, val: String) -> Self {
+    pub fn standby(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::standby(val)));
         self
     }
@@ -146,17 +155,20 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn code_base(mut self, val: String) -> Self {
+    pub fn code_base(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code_base(val)));
         self
     }
 
-    pub fn code_type(mut self, val: String) -> Self {
+    pub fn code_type(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code_type(val)));
         self
     }
 
-    pub fn border(mut self, val: String) -> Self {
+    pub fn border(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::border(val)));
         self
     }

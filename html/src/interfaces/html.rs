@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlHtmlElement> for HtmlProp {
 }
 
 impl HtmlProps<HtmlHtmlElement> {
-    pub fn version(mut self, val: String) -> Self {
+    pub fn version(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(CrateHtmlProp::Own(HtmlProp::version(val)));
         self
     }

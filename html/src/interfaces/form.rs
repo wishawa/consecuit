@@ -51,38 +51,45 @@ impl crate::elem::PropEnum<HtmlFormElement> for FormProp {
 }
 
 impl HtmlProps<HtmlFormElement> {
-    pub fn accept_charset(mut self, val: String) -> Self {
+    pub fn accept_charset(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FormProp::accept_charset(val)));
         self
     }
 
-    pub fn action(mut self, val: String) -> Self {
+    pub fn action(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::action(val)));
         self
     }
 
-    pub fn autocomplete(mut self, val: String) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::autocomplete(val)));
         self
     }
 
-    pub fn enctype(mut self, val: String) -> Self {
+    pub fn enctype(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::enctype(val)));
         self
     }
 
-    pub fn encoding(mut self, val: String) -> Self {
+    pub fn encoding(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::encoding(val)));
         self
     }
 
-    pub fn method(mut self, val: String) -> Self {
+    pub fn method(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::method(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::name(val)));
         self
     }
@@ -92,7 +99,8 @@ impl HtmlProps<HtmlFormElement> {
         self
     }
 
-    pub fn target(mut self, val: String) -> Self {
+    pub fn target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FormProp::target(val)));
         self
     }

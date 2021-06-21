@@ -81,12 +81,14 @@ impl crate::elem::PropEnum<HtmlFrameSetElement> for FrameSetProp {
 }
 
 impl HtmlProps<HtmlFrameSetElement> {
-    pub fn cols(mut self, val: String) -> Self {
+    pub fn cols(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameSetProp::cols(val)));
         self
     }
 
-    pub fn rows(mut self, val: String) -> Self {
+    pub fn rows(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameSetProp::rows(val)));
         self
     }

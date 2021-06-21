@@ -48,28 +48,33 @@ impl crate::elem::PropEnum<HtmlFrameElement> for FrameProp {
 }
 
 impl HtmlProps<HtmlFrameElement> {
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::name(val)));
         self
     }
 
-    pub fn scrolling(mut self, val: String) -> Self {
+    pub fn scrolling(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::scrolling(val)));
         self
     }
 
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::src(val)));
         self
     }
 
-    pub fn frame_border(mut self, val: String) -> Self {
+    pub fn frame_border(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::frame_border(val)));
         self
     }
 
-    pub fn long_desc(mut self, val: String) -> Self {
+    pub fn long_desc(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::long_desc(val)));
         self
     }
@@ -79,13 +84,15 @@ impl HtmlProps<HtmlFrameElement> {
         self
     }
 
-    pub fn margin_height(mut self, val: String) -> Self {
+    pub fn margin_height(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::margin_height(val)));
         self
     }
 
-    pub fn margin_width(mut self, val: String) -> Self {
+    pub fn margin_width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::margin_width(val)));
         self

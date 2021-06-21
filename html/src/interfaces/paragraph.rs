@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlParagraphElement> for ParagraphProp {
 }
 
 impl HtmlProps<HtmlParagraphElement> {
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ParagraphProp::align(val)));
         self
     }

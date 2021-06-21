@@ -81,42 +81,50 @@ impl crate::elem::PropEnum<HtmlAreaElement> for AreaProp {
 }
 
 impl HtmlProps<HtmlAreaElement> {
-    pub fn alt(mut self, val: String) -> Self {
+    pub fn alt(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::alt(val)));
         self
     }
 
-    pub fn coords(mut self, val: String) -> Self {
+    pub fn coords(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::coords(val)));
         self
     }
 
-    pub fn shape(mut self, val: String) -> Self {
+    pub fn shape(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::shape(val)));
         self
     }
 
-    pub fn target(mut self, val: String) -> Self {
+    pub fn target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::target(val)));
         self
     }
 
-    pub fn download(mut self, val: String) -> Self {
+    pub fn download(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::download(val)));
         self
     }
 
-    pub fn ping(mut self, val: String) -> Self {
+    pub fn ping(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::ping(val)));
         self
     }
 
-    pub fn rel(mut self, val: String) -> Self {
+    pub fn rel(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::rel(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: String) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(AreaProp::referrer_policy(val)));
         self
@@ -127,52 +135,62 @@ impl HtmlProps<HtmlAreaElement> {
         self
     }
 
-    pub fn href(mut self, val: String) -> Self {
+    pub fn href(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::href(val)));
         self
     }
 
-    pub fn protocol(mut self, val: String) -> Self {
+    pub fn protocol(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::protocol(val)));
         self
     }
 
-    pub fn username(mut self, val: String) -> Self {
+    pub fn username(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::username(val)));
         self
     }
 
-    pub fn password(mut self, val: String) -> Self {
+    pub fn password(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::password(val)));
         self
     }
 
-    pub fn host(mut self, val: String) -> Self {
+    pub fn host(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::host(val)));
         self
     }
 
-    pub fn hostname(mut self, val: String) -> Self {
+    pub fn hostname(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::hostname(val)));
         self
     }
 
-    pub fn port(mut self, val: String) -> Self {
+    pub fn port(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::port(val)));
         self
     }
 
-    pub fn pathname(mut self, val: String) -> Self {
+    pub fn pathname(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::pathname(val)));
         self
     }
 
-    pub fn search(mut self, val: String) -> Self {
+    pub fn search(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::search(val)));
         self
     }
 
-    pub fn hash(mut self, val: String) -> Self {
+    pub fn hash(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(AreaProp::hash(val)));
         self
     }

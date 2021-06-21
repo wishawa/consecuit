@@ -35,7 +35,8 @@ impl HtmlProps<HtmlDialogElement> {
         self
     }
 
-    pub fn return_value(mut self, val: String) -> Self {
+    pub fn return_value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(DialogProp::return_value(val)));
         self

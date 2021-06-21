@@ -59,7 +59,8 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn autocomplete(mut self, val: String) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(SelectProp::autocomplete(val)));
         self
@@ -75,7 +76,8 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SelectProp::name(val)));
         self
     }
@@ -101,7 +103,8 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SelectProp::value(val)));
         self
     }

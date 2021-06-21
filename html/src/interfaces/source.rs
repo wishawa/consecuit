@@ -39,7 +39,8 @@ impl crate::elem::PropEnum<HtmlSourceElement> for SourceProp {
 }
 
 impl HtmlProps<HtmlSourceElement> {
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::src(val)));
         self
     }
@@ -49,17 +50,20 @@ impl HtmlProps<HtmlSourceElement> {
         self
     }
 
-    pub fn srcset(mut self, val: String) -> Self {
+    pub fn srcset(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::srcset(val)));
         self
     }
 
-    pub fn sizes(mut self, val: String) -> Self {
+    pub fn sizes(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::sizes(val)));
         self
     }
 
-    pub fn media(mut self, val: String) -> Self {
+    pub fn media(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::media(val)));
         self
     }

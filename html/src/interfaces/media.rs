@@ -74,7 +74,8 @@ impl crate::elem::PropEnum<HtmlMediaElement> for MediaProp {
 }
 
 impl HtmlProps<HtmlMediaElement> {
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MediaProp::src(val)));
         self
     }
@@ -84,13 +85,15 @@ impl HtmlProps<HtmlMediaElement> {
         self
     }
 
-    pub fn cross_origin(mut self, val: String) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(MediaProp::cross_origin(val)));
         self
     }
 
-    pub fn preload(mut self, val: String) -> Self {
+    pub fn preload(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MediaProp::preload(val)));
         self
     }

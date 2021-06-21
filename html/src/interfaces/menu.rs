@@ -38,7 +38,8 @@ impl HtmlProps<HtmlMenuElement> {
         self
     }
 
-    pub fn label(mut self, val: String) -> Self {
+    pub fn label(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuProp::label(val)));
         self
     }

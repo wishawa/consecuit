@@ -43,7 +43,8 @@ impl HtmlProps<HtmlVideoElement> {
         self
     }
 
-    pub fn poster(mut self, val: String) -> Self {
+    pub fn poster(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(VideoProp::poster(val)));
         self
     }

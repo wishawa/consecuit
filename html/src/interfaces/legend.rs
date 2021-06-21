@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlLegendElement> for LegendProp {
 }
 
 impl HtmlProps<HtmlLegendElement> {
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LegendProp::align(val)));
         self
     }

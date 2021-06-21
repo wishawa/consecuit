@@ -30,12 +30,14 @@ impl crate::elem::PropEnum<HtmlModElement> for ModProp {
 }
 
 impl HtmlProps<HtmlModElement> {
-    pub fn cite(mut self, val: String) -> Self {
+    pub fn cite(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ModProp::cite(val)));
         self
     }
 
-    pub fn date_time(mut self, val: String) -> Self {
+    pub fn date_time(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ModProp::date_time(val)));
         self
     }

@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlTimeElement> for TimeProp {
 }
 
 impl HtmlProps<HtmlTimeElement> {
-    pub fn date_time(mut self, val: String) -> Self {
+    pub fn date_time(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TimeProp::date_time(val)));
         self
     }

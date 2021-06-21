@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlLabelElement> for LabelProp {
 }
 
 impl HtmlProps<HtmlLabelElement> {
-    pub fn html_for(mut self, val: String) -> Self {
+    pub fn html_for(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LabelProp::html_for(val)));
         self
     }

@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlDivElement> for DivProp {
 }
 
 impl HtmlProps<HtmlDivElement> {
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(DivProp::align(val)));
         self
     }

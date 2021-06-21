@@ -33,18 +33,21 @@ impl crate::elem::PropEnum<HtmlOutputElement> for OutputProp {
 }
 
 impl HtmlProps<HtmlOutputElement> {
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(OutputProp::name(val)));
         self
     }
 
-    pub fn default_value(mut self, val: String) -> Self {
+    pub fn default_value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(OutputProp::default_value(val)));
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(OutputProp::value(val)));
         self
     }

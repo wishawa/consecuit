@@ -68,17 +68,20 @@ impl crate::elem::PropEnum<HtmlIFrameElement> for IFrameProp {
 }
 
 impl HtmlProps<HtmlIFrameElement> {
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::src(val)));
         self
     }
 
-    pub fn srcdoc(mut self, val: String) -> Self {
+    pub fn srcdoc(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::srcdoc(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::name(val)));
         self
     }
@@ -95,50 +98,59 @@ impl HtmlProps<HtmlIFrameElement> {
         self
     }
 
-    pub fn width(mut self, val: String) -> Self {
+    pub fn width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::width(val)));
         self
     }
 
-    pub fn height(mut self, val: String) -> Self {
+    pub fn height(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::height(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: String) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(IFrameProp::referrer_policy(val)));
         self
     }
 
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::align(val)));
         self
     }
 
-    pub fn scrolling(mut self, val: String) -> Self {
+    pub fn scrolling(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::scrolling(val)));
         self
     }
 
-    pub fn frame_border(mut self, val: String) -> Self {
+    pub fn frame_border(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(IFrameProp::frame_border(val)));
         self
     }
 
-    pub fn long_desc(mut self, val: String) -> Self {
+    pub fn long_desc(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(IFrameProp::long_desc(val)));
         self
     }
 
-    pub fn margin_height(mut self, val: String) -> Self {
+    pub fn margin_height(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(IFrameProp::margin_height(val)));
         self
     }
 
-    pub fn margin_width(mut self, val: String) -> Self {
+    pub fn margin_width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(IFrameProp::margin_width(val)));
         self

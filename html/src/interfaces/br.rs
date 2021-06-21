@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlBrElement> for BrProp {
 }
 
 impl HtmlProps<HtmlBrElement> {
-    pub fn clear(mut self, val: String) -> Self {
+    pub fn clear(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(BrProp::clear(val)));
         self
     }

@@ -47,7 +47,8 @@ impl HtmlProps<HtmlOptionElement> {
         self
     }
 
-    pub fn label(mut self, val: String) -> Self {
+    pub fn label(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::label(val)));
         self
     }
@@ -63,12 +64,14 @@ impl HtmlProps<HtmlOptionElement> {
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::value(val)));
         self
     }
 
-    pub fn text(mut self, val: String) -> Self {
+    pub fn text(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::text(val)));
         self
     }

@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlSlotElement> for SlotProp {
 }
 
 impl HtmlProps<HtmlSlotElement> {
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(SlotProp::name(val)));
         self
     }

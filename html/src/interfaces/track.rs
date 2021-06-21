@@ -39,22 +39,26 @@ impl crate::elem::PropEnum<HtmlTrackElement> for TrackProp {
 }
 
 impl HtmlProps<HtmlTrackElement> {
-    pub fn kind(mut self, val: String) -> Self {
+    pub fn kind(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::kind(val)));
         self
     }
 
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::src(val)));
         self
     }
 
-    pub fn srclang(mut self, val: String) -> Self {
+    pub fn srclang(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::srclang(val)));
         self
     }
 
-    pub fn label(mut self, val: String) -> Self {
+    pub fn label(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::label(val)));
         self
     }

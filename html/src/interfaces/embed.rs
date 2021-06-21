@@ -42,7 +42,8 @@ impl crate::elem::PropEnum<HtmlEmbedElement> for EmbedProp {
 }
 
 impl HtmlProps<HtmlEmbedElement> {
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::src(val)));
         self
     }
@@ -52,22 +53,26 @@ impl HtmlProps<HtmlEmbedElement> {
         self
     }
 
-    pub fn width(mut self, val: String) -> Self {
+    pub fn width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::width(val)));
         self
     }
 
-    pub fn height(mut self, val: String) -> Self {
+    pub fn height(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::height(val)));
         self
     }
 
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::align(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::name(val)));
         self
     }

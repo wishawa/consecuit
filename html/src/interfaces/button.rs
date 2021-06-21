@@ -64,19 +64,22 @@ impl HtmlProps<HtmlButtonElement> {
         self
     }
 
-    pub fn form_action(mut self, val: String) -> Self {
+    pub fn form_action(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_action(val)));
         self
     }
 
-    pub fn form_enctype(mut self, val: String) -> Self {
+    pub fn form_enctype(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_enctype(val)));
         self
     }
 
-    pub fn form_method(mut self, val: String) -> Self {
+    pub fn form_method(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_method(val)));
         self
@@ -88,13 +91,15 @@ impl HtmlProps<HtmlButtonElement> {
         self
     }
 
-    pub fn form_target(mut self, val: String) -> Self {
+    pub fn form_target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_target(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ButtonProp::name(val)));
         self
     }
@@ -104,7 +109,8 @@ impl HtmlProps<HtmlButtonElement> {
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ButtonProp::value(val)));
         self
     }

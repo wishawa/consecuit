@@ -75,48 +75,57 @@ impl HtmlProps<HtmlTableElement> {
         self
     }
 
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::align(val)));
         self
     }
 
-    pub fn border(mut self, val: String) -> Self {
+    pub fn border(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::border(val)));
         self
     }
 
-    pub fn frame(mut self, val: String) -> Self {
+    pub fn frame(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::frame(val)));
         self
     }
 
-    pub fn rules(mut self, val: String) -> Self {
+    pub fn rules(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::rules(val)));
         self
     }
 
-    pub fn summary(mut self, val: String) -> Self {
+    pub fn summary(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::summary(val)));
         self
     }
 
-    pub fn width(mut self, val: String) -> Self {
+    pub fn width(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::width(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: String) -> Self {
+    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::bg_color(val)));
         self
     }
 
-    pub fn cell_padding(mut self, val: String) -> Self {
+    pub fn cell_padding(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableProp::cell_padding(val)));
         self
     }
 
-    pub fn cell_spacing(mut self, val: String) -> Self {
+    pub fn cell_spacing(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableProp::cell_spacing(val)));
         self

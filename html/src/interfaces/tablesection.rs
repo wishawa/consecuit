@@ -36,24 +36,28 @@ impl crate::elem::PropEnum<HtmlTableSectionElement> for TableSectionProp {
 }
 
 impl HtmlProps<HtmlTableSectionElement> {
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::align(val)));
         self
     }
 
-    pub fn ch(mut self, val: String) -> Self {
+    pub fn ch(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TableSectionProp::ch(val)));
         self
     }
 
-    pub fn ch_off(mut self, val: String) -> Self {
+    pub fn ch_off(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::ch_off(val)));
         self
     }
 
-    pub fn v_align(mut self, val: String) -> Self {
+    pub fn v_align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::v_align(val)));
         self

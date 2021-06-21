@@ -36,22 +36,26 @@ impl crate::elem::PropEnum<HtmlMetaElement> for MetaProp {
 }
 
 impl HtmlProps<HtmlMetaElement> {
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::name(val)));
         self
     }
 
-    pub fn http_equiv(mut self, val: String) -> Self {
+    pub fn http_equiv(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::http_equiv(val)));
         self
     }
 
-    pub fn content(mut self, val: String) -> Self {
+    pub fn content(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::content(val)));
         self
     }
 
-    pub fn scheme(mut self, val: String) -> Self {
+    pub fn scheme(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::scheme(val)));
         self
     }

@@ -63,7 +63,8 @@ impl crate::elem::PropEnum<HtmlTextAreaElement> for TextAreaProp {
 }
 
 impl HtmlProps<HtmlTextAreaElement> {
-    pub fn autocomplete(mut self, val: String) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TextAreaProp::autocomplete(val)));
         self
@@ -97,12 +98,14 @@ impl HtmlProps<HtmlTextAreaElement> {
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::name(val)));
         self
     }
 
-    pub fn placeholder(mut self, val: String) -> Self {
+    pub fn placeholder(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TextAreaProp::placeholder(val)));
         self
@@ -124,12 +127,14 @@ impl HtmlProps<HtmlTextAreaElement> {
         self
     }
 
-    pub fn wrap(mut self, val: String) -> Self {
+    pub fn wrap(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::wrap(val)));
         self
     }
 
-    pub fn value(mut self, val: String) -> Self {
+    pub fn value(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::value(val)));
         self
     }

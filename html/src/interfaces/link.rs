@@ -68,27 +68,32 @@ impl HtmlProps<HtmlLinkElement> {
         self
     }
 
-    pub fn href(mut self, val: String) -> Self {
+    pub fn href(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::href(val)));
         self
     }
 
-    pub fn cross_origin(mut self, val: String) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::cross_origin(val)));
         self
     }
 
-    pub fn rel(mut self, val: String) -> Self {
+    pub fn rel(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::rel(val)));
         self
     }
 
-    pub fn media(mut self, val: String) -> Self {
+    pub fn media(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::media(val)));
         self
     }
 
-    pub fn hreflang(mut self, val: String) -> Self {
+    pub fn hreflang(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::hreflang(val)));
         self
     }
@@ -98,28 +103,33 @@ impl HtmlProps<HtmlLinkElement> {
         self
     }
 
-    pub fn referrer_policy(mut self, val: String) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(LinkProp::referrer_policy(val)));
         self
     }
 
-    pub fn charset(mut self, val: String) -> Self {
+    pub fn charset(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::charset(val)));
         self
     }
 
-    pub fn rev(mut self, val: String) -> Self {
+    pub fn rev(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::rev(val)));
         self
     }
 
-    pub fn target(mut self, val: String) -> Self {
+    pub fn target(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::target(val)));
         self
     }
 
-    pub fn integrity(mut self, val: String) -> Self {
+    pub fn integrity(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::integrity(val)));
         self
     }

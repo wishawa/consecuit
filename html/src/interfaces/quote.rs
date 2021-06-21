@@ -27,7 +27,8 @@ impl crate::elem::PropEnum<HtmlQuoteElement> for QuoteProp {
 }
 
 impl HtmlProps<HtmlQuoteElement> {
-    pub fn cite(mut self, val: String) -> Self {
+    pub fn cite(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(QuoteProp::cite(val)));
         self
     }

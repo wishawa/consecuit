@@ -75,33 +75,39 @@ impl crate::elem::PropEnum<HtmlImageElement> for ImageProp {
 }
 
 impl HtmlProps<HtmlImageElement> {
-    pub fn alt(mut self, val: String) -> Self {
+    pub fn alt(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::alt(val)));
         self
     }
 
-    pub fn src(mut self, val: String) -> Self {
+    pub fn src(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::src(val)));
         self
     }
 
-    pub fn srcset(mut self, val: String) -> Self {
+    pub fn srcset(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::srcset(val)));
         self
     }
 
-    pub fn cross_origin(mut self, val: String) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ImageProp::cross_origin(val)));
         self
     }
 
-    pub fn use_map(mut self, val: String) -> Self {
+    pub fn use_map(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::use_map(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: String) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ImageProp::referrer_policy(val)));
         self
@@ -122,17 +128,20 @@ impl HtmlProps<HtmlImageElement> {
         self
     }
 
-    pub fn decoding(mut self, val: String) -> Self {
+    pub fn decoding(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::decoding(val)));
         self
     }
 
-    pub fn name(mut self, val: String) -> Self {
+    pub fn name(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::name(val)));
         self
     }
 
-    pub fn align(mut self, val: String) -> Self {
+    pub fn align(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::align(val)));
         self
     }
@@ -147,17 +156,20 @@ impl HtmlProps<HtmlImageElement> {
         self
     }
 
-    pub fn long_desc(mut self, val: String) -> Self {
+    pub fn long_desc(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::long_desc(val)));
         self
     }
 
-    pub fn border(mut self, val: String) -> Self {
+    pub fn border(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::border(val)));
         self
     }
 
-    pub fn sizes(mut self, val: String) -> Self {
+    pub fn sizes(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::sizes(val)));
         self
     }

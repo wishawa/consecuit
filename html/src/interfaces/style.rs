@@ -38,7 +38,8 @@ impl HtmlProps<HtmlStyleElement> {
         self
     }
 
-    pub fn media(mut self, val: String) -> Self {
+    pub fn media(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(StyleProp::media(val)));
         self
     }

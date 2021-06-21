@@ -50,12 +50,14 @@ impl HtmlProps<HtmlMenuItemElement> {
         self
     }
 
-    pub fn label(mut self, val: String) -> Self {
+    pub fn label(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuItemProp::label(val)));
         self
     }
 
-    pub fn icon(mut self, val: String) -> Self {
+    pub fn icon(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuItemProp::icon(val)));
         self
     }
@@ -70,7 +72,8 @@ impl HtmlProps<HtmlMenuItemElement> {
         self
     }
 
-    pub fn radiogroup(mut self, val: String) -> Self {
+    pub fn radiogroup(mut self, val: impl Into<String>) -> Self {
+        let val = val.into();
         self.0
             .push_back(HtmlProp::Own(MenuItemProp::radiogroup(val)));
         self
