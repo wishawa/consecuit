@@ -8,159 +8,224 @@ struct Todo {
     completed: bool,
 }
 
-type TodosVector = Vector<Todo>;
+#[derive(Clone, PartialEq)]
+struct TodosReducer(StateSetter<Vector<Todo>>);
 
-fn top_box(reia: ComponentBuilder, todos_setter: StateSetter<TodosVector>) -> impl ComponentReturn {
-    let reia = reia.init();
-    let (reia, (text, text_setter)) = reia.hook(use_state, String::new());
-    let (reia, on_input) = reia.hook(
-        use_memo,
-        (
-            |text_setter: StateSetter<String>| {
-                Callback::new(move |ev: web_sys::InputEvent| {
-                    if let Some(new_text) = ev.data() {
-                        text_setter.set(new_text);
-                    }
-                })
-            },
-            text_setter.clone(),
-        ),
-    );
-    let (reia, on_keypress) = reia.hook(
-        use_memo,
-        (
-            |(setter, text): (StateSetter<TodosVector>, String)| {
-                Callback::new(move |ev: web_sys::KeyboardEvent| {
-                    if ev.key_code() == 13 {
-                        setter.update_with(|mut v| {
-                            let todo = Todo {
-                                name: text.clone(),
-                                completed: false,
-                            };
-                            v.push_back(todo);
-                            v
-                        });
-                    }
-                })
-            },
-            (todos_setter.clone(), text.clone()),
-        ),
-    );
-    let (reia, on_blur) = reia.hook(
-        use_memo,
-        (
-            |(setter, text): (StateSetter<TodosVector>, String)| {
-                Callback::new(move |_ev| {
-                    setter.update_with(|mut v| {
-                        let todo = Todo {
-                            name: text.clone(),
-                            completed: false,
-                        };
-                        v.push_back(todo);
-                        v
+enum TodosReduction {
+    Add(String),
+    Remove(usize),
+    Toggle(usize),
+    SetName(usize, String),
+    ToggleAll(),
+}
+
+impl TodosReducer {
+    fn reduce(&self, reduction: TodosReduction) {
+        self.0.update_with(|mut v| {
+            match reduction {
+                TodosReduction::Add(name) => {
+                    v.push_back(Todo {
+                        name,
+                        completed: false,
                     });
-                })
-            },
-            (todos_setter.clone(), text.clone()),
-        ),
-    );
-    let (reia, on_toggle_all) = reia.hook(
-        use_memo,
+                }
+                TodosReduction::Remove(idx) => {
+                    v.remove(idx);
+                }
+                TodosReduction::Toggle(idx) => {
+                    let current = v.get_mut(idx).unwrap();
+                    current.completed = !current.completed;
+                }
+                TodosReduction::SetName(idx, name) => {
+                    let current = v.get_mut(idx).unwrap();
+                    current.name = name;
+                }
+                TodosReduction::ToggleAll() => {
+                    let to = !v.iter().all(|td| td.completed);
+                    for td in v.iter_mut() {
+                        td.completed = to;
+                    }
+                }
+            }
+            v
+        })
+    }
+}
+
+fn use_text_edit(
+    reia: HookBuilder,
+    (submit, escape): (
+        impl Fn(String) + Clone + 'static,
+        impl Fn() + Clone + 'static,
+    ),
+) -> impl HookReturn<HtmlProps<web_sys::HtmlInputElement>> {
+    let reia = reia.init();
+    let (reia, input_ref) = reia.hook(use_ref, ());
+    let cloned_input_ref = input_ref.clone();
+    let submit = move || {
+        let text = cloned_input_ref
+            .visit_with(|opt: &Option<web_sys::HtmlInputElement>| {
+                let inp = opt.as_ref().unwrap();
+                let value = inp.value();
+                inp.set_value("");
+                value
+            })
+            .unwrap();
+        submit(text);
+    };
+    let submit_cloned = submit.clone();
+    let on_keypress = Callback::new(move |ev: web_sys::KeyboardEvent| match ev.key_code() {
+        13 => submit_cloned(),
+        27 => escape(),
+        _ => {}
+    });
+    let submit_cloned = submit.clone();
+    let on_blur = Callback::new(move |_ev| {
+        submit_cloned();
+    });
+    let (reia, _) = reia.hook(
+        use_effect,
         (
-            |setter: StateSetter<TodosVector>| {
-                Callback::new(move |_ev| {
-                    setter.update_with(|v| {
-                        let toggle_to = !v.iter().all(|td| td.completed);
-                        v.into_iter()
-                            .map(|td| Todo {
-                                completed: toggle_to,
-                                ..td
-                            })
-                            .collect()
-                    })
-                })
+            |input_ref: ReiaRef<Option<web_sys::HtmlInputElement>>| {
+                run_later(move || {
+                    input_ref
+                        .visit_with(|opt| opt.as_ref().unwrap().focus().unwrap())
+                        .unwrap();
+                });
+                || {}
             },
-            todos_setter.clone(),
+            input_ref.clone(),
+        ),
+    );
+    let props = HtmlProps::<web_sys::HtmlInputElement>::new()
+        .reference(input_ref)
+        .onkeyup(on_keypress)
+        .onblur(on_blur);
+    (reia, props)
+}
+
+fn top_box(reia: ComponentBuilder, reducer: TodosReducer) -> impl ComponentReturn {
+    let reia = reia.init();
+    let cloned_reducer = reducer.clone();
+    let on_toggle_all = Callback::new(move |_ev| {
+        cloned_reducer.reduce(TodosReduction::ToggleAll());
+    });
+
+    let (reia, input_props) = reia.hook(
+        use_text_edit,
+        (
+            move |text: String| {
+                if !text.is_empty() {
+                    reducer.reduce(TodosReduction::Add(text));
+                }
+            },
+            || {},
         ),
     );
 
-    let input_props: HtmlProps<web_sys::HtmlInputElement> = html_props()
-        .onblur(on_blur)
-        .onkeypress(on_keypress)
-        .oninput(on_input)
-        .class_name("border-2");
-    let input_props = input_props.value(text);
-
-    reia.comp(div, html_props().class_name("flex-row"))
+    reia.comp(div, html_props().class_name("flex flex-row"))
         .child(|r| {
             r.comp(button, html_props().onclick(on_toggle_all))
-                .child(|r| r.comp(text_node, "Toggle"))
+                .child(|r| r.comp(text_node, "⯆"))
                 .comp(input, input_props)
         })
 }
 
-fn todo_view(
+fn one_todo(
     reia: ComponentBuilder,
-    (todo, setter, idx): (Todo, StateSetter<TodosVector>, usize),
+    (todo, reducer, idx): (Todo, TodosReducer, usize),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    let (reia, toggle) = reia.hook(
-        use_memo,
-        (
-            |(setter, idx): (StateSetter<TodosVector>, usize)| {
-                Callback::new(move |_ev| {
-                    setter.update_with(|mut v| {
-                        v[idx].completed = !v[idx].completed;
-                        v
-                    })
-                })
-            },
-            (setter.clone(), idx),
-        ),
-    );
-    let (reia, remove) = reia.hook(
-        use_memo,
-        (
-            |(setter, idx): (StateSetter<TodosVector>, usize)| {
-                Callback::new(move |_ev| {
-                    setter.update_with(|mut v| {
-                        v.remove(idx);
-                        v
-                    })
-                })
-            },
-            (setter, idx),
-        ),
-    );
+    let reducer_cloned = reducer.clone();
+    let toggle = Callback::new(move |_ev| {
+        reducer_cloned.reduce(TodosReduction::Toggle(idx));
+    });
+    let reducer_cloned = reducer.clone();
+    let remove = Callback::new(move |_ev| {
+        reducer_cloned.reduce(TodosReduction::Remove(idx));
+    });
+    let (reia, (edit, edit_setter)) = reia.hook(use_state, false);
+    let edit_setter_cloned = edit_setter.clone();
+    let enter_edit = Callback::new(move |_ev| {
+        edit_setter_cloned.set(true);
+    });
     reia.comp(div, html_props().class_name("border-2"))
         .child(|r| {
-            r.comp(button, html_props().onclick(toggle))
-                .child(|r| r.comp(text_node, if todo.completed { "☑" } else { "☐" }))
-                .comp(text_node, todo.name)
-                .comp(button, html_props().onclick(remove))
-                .child(|r| r.comp(text_node, "␡"))
+            r.comp(
+                div,
+                html_props().class_name(if edit {
+                    "hidden"
+                } else {
+                    "flex flex-row justify-between"
+                }),
+            )
+            .child(|r| {
+                r.comp(button, html_props().onclick(toggle))
+                    .child(|r| r.comp(text_node, if todo.completed { "☑" } else { "☐" }))
+                    .comp(div, html_props().ondblclick(enter_edit))
+                    .child(|r| r.comp(text_node, todo.name.clone()))
+                    .comp(button, html_props().onclick(remove))
+                    .child(|r| r.comp(text_node, "␡"))
+            })
+            .comp(
+                opt_comp,
+                (
+                    todo_edit,
+                    if edit {
+                        Some((todo, reducer, idx, edit_setter))
+                    } else {
+                        None
+                    },
+                ),
+            )
         })
+}
+
+fn todo_edit(
+    reia: ComponentBuilder,
+    (todo, reducer, idx, edit_setter): (Todo, TodosReducer, usize, StateSetter<bool>),
+) -> impl ComponentReturn {
+    let reia = reia.init();
+    let edit_setter_cloned = edit_setter.clone();
+    let (reia, input_props) = reia.hook(
+        use_text_edit,
+        (
+            move |text: String| {
+                reducer.reduce(TodosReduction::SetName(idx, text));
+                edit_setter_cloned.set(false);
+            },
+            move || {
+                edit_setter.set(false);
+            },
+        ),
+    );
+    reia.comp(div, html_props().class_name("flex flex-row"))
+        .child(|r| r.comp(input, input_props.value(todo.name)))
 }
 
 fn main_list(
     reia: ComponentBuilder,
-    (todos, setter): (TodosVector, StateSetter<TodosVector>),
+    (todos, reducer): (Vector<Todo>, TodosReducer),
 ) -> impl ComponentReturn {
     let reia = reia.init();
-    let props: Vector<(Todo, StateSetter<TodosVector>, usize)> = todos
+    let props: Vector<(Todo, TodosReducer, usize)> = todos
         .iter()
         .enumerate()
-        .map(|(idx, td)| (td.clone(), setter.clone(), idx))
+        .map(|(idx, td)| (td.clone(), reducer.clone(), idx))
         .collect();
-    reia.comp(vec_comps, (todo_view, props))
+    reia.comp(vec_comps, (one_todo, props))
+}
+
+fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosReducer)> {
+    let (reia, (todos, setter)) = reia.init().hook(use_state, Vector::new());
+    (reia, (todos, TodosReducer(setter)))
 }
 
 pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let reia = reia.init();
-    let (reia, (todos, todos_setter)) = reia.hook(use_state, Vector::new());
-    //web_sys::console::debug_1(&format!("{:?}", todos).into());
+    let (reia, (todos, reducer)) = reia.hook(use_todos, ());
     reia.comp(div, html_props()).child(|r| {
-        r.comp(top_box, todos_setter.clone())
-            .comp(main_list, (todos, todos_setter.clone()))
+        r.comp(top_box, reducer.clone())
+            .comp(main_list, (todos, reducer.clone()))
     })
 }
