@@ -26,6 +26,14 @@ pub struct HtmlProps<E: HtmlComponent>(pub(crate) Vector<HtmlProp<E>>);
 pub(crate) enum HtmlProp<E: HtmlComponent> {
     Shared(SharedProp),
     Own(E::PropEnum),
+    Ref(ReiaRef<Option<E>>),
+}
+
+impl<E: HtmlComponent> HtmlProps<E> {
+    pub fn reference(mut self, reference: ReiaRef<Option<E>>) -> Self {
+        self.0.push_back(HtmlProp::Ref(reference));
+        self
+    }
 }
 
 impl<E: HtmlComponent> PartialEq for HtmlProp<E> {
@@ -89,6 +97,9 @@ pub(crate) fn use_element<T: HtmlComponent>(
                     match old_prop {
                         HtmlProp::Shared(shared) => shared.unset_on(elem.as_ref()),
                         HtmlProp::Own(own) => own.unset_on(&elem),
+                        HtmlProp::Ref(r) => {
+                            r.visit_mut_with(|opt| *opt = None).unwrap();
+                        }
                     }
                 }
             }
@@ -96,6 +107,9 @@ pub(crate) fn use_element<T: HtmlComponent>(
                 match new_prop {
                     HtmlProp::Shared(shared) => shared.set_on(elem.as_ref()),
                     HtmlProp::Own(own) => own.set_on(&elem),
+                    HtmlProp::Ref(r) => {
+                        r.visit_mut_with(|opt| *opt = Some(elem.clone())).unwrap();
+                    }
                 }
             }
             *opt = Some(props.0);
