@@ -22,15 +22,8 @@ version = "0.3.51"
 features = [
 	'Document',
 	'Element',
-	'DomTokenList',
 	'Window',
 	'Node',
-	'Text',
-	'HtmlElement',
-	'HtmlDivElement',
-	'HtmlButtonElement',
-	'HtmlSpanElement',
-	'HtmlParagraphElement',
 	'CssStyleDeclaration',
 	'console',
 ]
@@ -39,5 +32,6 @@ features = [
 members = [
 	"html/",
 	"examples/minimal_counter/",
-	"examples/playground/"
+	"examples/playground/",
+	"examples/todomvc"
 ]

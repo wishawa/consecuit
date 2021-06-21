@@ -1,9 +1,5 @@
-use reia::{
-    hooks::{use_effect, use_memo, use_state, StateSetter},
-    vec_comps, ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
-    HookReturn,
-};
-use reia_html::prelude::*;
+use reia::*;
+use reia_html::prelude::{web_sys::MouseEvent, *};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -24,12 +20,13 @@ fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.comp(div, HtmlProps::new().class_name("hello world")).hole_here()
+    reia.comp(div, HtmlProps::new().class_name("hello world"))
+        .hole_here()
 }
 
 fn count_button(
     reia: ComponentBuilder,
-    (increment, decrement): (Callback, Callback),
+    (increment, decrement): (Callback<MouseEvent>, Callback<MouseEvent>),
 ) -> impl ComponentReturn {
     let reia = reia.init();
     reia.comp(button, HtmlProps::new().onclick(increment))
@@ -49,14 +46,14 @@ fn count_button(
 fn use_counter(
     reia: HookBuilder,
     level_setter: StateSetter<i32>,
-) -> impl HookReturn<(i32, Callback, Callback)> {
+) -> impl HookReturn<(i32, Callback<MouseEvent>, Callback<MouseEvent>)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let (reia, increment) = reia.hook(
         use_memo,
         (
             |count_setter: StateSetter<i32>| {
-                Callback::new(move || {
+                Callback::new(move |_| {
                     count_setter.update_with(|value| value + 1);
                 })
             },
@@ -67,7 +64,7 @@ fn use_counter(
         use_memo,
         (
             |count_setter: StateSetter<i32>| {
-                Callback::new(move || {
+                Callback::new(move |_| {
                     count_setter.update_with(|value| value - 1);
                 })
             },
