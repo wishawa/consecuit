@@ -16,7 +16,7 @@ impl<T> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(value))
             .unwrap();
-        self.rerender_task.enqueue_self();
+        self.rerender_task.clone().enqueue();
     }
 }
 impl<T: Clone> StateSetter<T> {
@@ -24,7 +24,7 @@ impl<T: Clone> StateSetter<T> {
         self.state
             .visit_mut_with(|state| *state = Some(func(state.clone().unwrap())))
             .unwrap();
-        self.rerender_task.enqueue_self();
+        self.rerender_task.clone().enqueue();
     }
 }
 

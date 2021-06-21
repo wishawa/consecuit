@@ -22,4 +22,7 @@ impl UnmountedLock {
     pub(crate) fn unmount(&self) {
         self.0.store(false, Ordering::Release)
     }
+    pub(crate) fn as_ptr(&self) -> *const AtomicBool {
+        Rc::as_ptr(&self.0)
+    }
 }

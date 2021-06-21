@@ -16,13 +16,20 @@ pub(crate) struct RerenderTask {
 }
 
 impl RerenderTask {
+    fn hash(&self) -> (*const dyn ComponentStore, *const AtomicBool) {
+        (self.comp, self.lock.as_ptr())
+    }
     pub(crate) fn new(comp: &'static dyn ComponentStore, lock: UnmountedLock) -> Self {
         Self { comp, lock }
     }
-    pub(crate) fn enqueue_self(&self) {
-        LOCAL_EXECUTOR.with(|l| l.enqueue(self.clone()))
+    pub(crate) fn enqueue(self) {
+        PENDING_RERENDERS.with(|p| {
+            if p.borrow_mut().insert(self.hash()) {
+                EXECUTOR.with(|l| l.enqueue(ExecutorTask::Rerender(self)))
+            }
+        });
     }
-    pub(crate) fn render(&self) {
+    fn execute(&self) {
         if self.lock.is_mounted() {
             self.comp.render();
         } else {
@@ -31,39 +38,70 @@ impl RerenderTask {
                     .into(),
             );
         }
+        PENDING_RERENDERS.with(|p| {
+            p.borrow_mut().remove(&self.hash());
+        })
     }
 }
 
 impl PartialEq for RerenderTask {
     fn eq(&self, other: &RerenderTask) -> bool {
-        self.comp as *const _ == other.comp as *const _
+        (self.comp as *const _ == other.comp as *const _) && (self.lock == other.lock)
+    }
+}
+
+thread_local! {
+    static PENDING_RERENDERS: RefCell<HashSet<(*const dyn ComponentStore, *const AtomicBool)>> = RefCell::new(HashSet::new());
+}
+
+pub struct RunTask {
+    run: Box<dyn FnOnce()>,
+}
+
+impl RunTask {
+    pub fn new<F: FnOnce() + 'static>(func: F) -> Self {
+        Self {
+            run: Box::new(func),
+        }
+    }
+    pub fn enqueue(self) {
+        EXECUTOR.with(|l| l.enqueue(ExecutorTask::Run(self)))
+    }
+    fn execute(self) {
+        (self.run)();
+    }
+}
+
+enum ExecutorTask {
+    Rerender(RerenderTask),
+    Run(RunTask),
+}
+
+impl ExecutorTask {
+    fn execute(self) {
+        match self {
+            ExecutorTask::Rerender(rerender) => rerender.execute(),
+            ExecutorTask::Run(run) => run.execute(),
+        }
     }
 }
 
 struct Executor {
-    queue: RefCell<VecDeque<RerenderTask>>,
-    queue_set: RefCell<HashSet<*const dyn ComponentStore>>,
+    queue: RefCell<VecDeque<ExecutorTask>>,
     active: AtomicBool,
     timeout_closure: Closure<dyn Fn()>,
 }
 
 impl Executor {
-    fn enqueue(&self, task: RerenderTask) {
-        if self.queue_set.borrow_mut().insert(task.comp) {
-            self.queue.borrow_mut().push_back(task);
-            self.maybe_batch_updates_with_timeout();
-        }
+    fn enqueue(&self, task: ExecutorTask) {
+        self.queue.borrow_mut().push_back(task);
+        self.maybe_batch_updates_with_timeout();
     }
     fn execute_loop(&self) {
         loop {
             let task_opt = { self.queue.borrow_mut().pop_front() };
             if let Some(task) = task_opt {
-                {
-                    self.queue_set
-                        .borrow_mut()
-                        .remove(&(task.comp as *const dyn ComponentStore))
-                };
-                task.render();
+                task.execute();
             } else {
                 break;
             }
@@ -94,12 +132,11 @@ impl Executor {
 }
 
 thread_local! {
-    static LOCAL_EXECUTOR: Executor = Executor {
+    static EXECUTOR: Executor = Executor {
         active: AtomicBool::new(false),
         queue: RefCell::new(VecDeque::new()),
-        queue_set: RefCell::new(HashSet::new()),
         timeout_closure: Closure::wrap(Box::new(|| {
-            LOCAL_EXECUTOR.with(|l| {
+            EXECUTOR.with(|l| {
                 l.active.store(false, Ordering::SeqCst);
                 l.execute();
             });
@@ -108,5 +145,9 @@ thread_local! {
 }
 
 pub fn batch_updates(f: impl FnOnce()) {
-    LOCAL_EXECUTOR.with(|l| l.batch_updates(f))
+    EXECUTOR.with(|l| l.batch_updates(f))
+}
+
+pub fn run_later(f: impl FnOnce() + 'static) {
+    RunTask::new(f).enqueue();
 }
