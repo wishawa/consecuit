@@ -13,6 +13,7 @@ pub mod subtree;
 pub use subtree::mount;
 mod subtrees;
 mod types;
+pub use subtrees::{opt_comp, vec_comps};
 pub use types::{
     ComponentFunc, ComponentProps, ComponentReturn, ContainerReturn, DynComponentReturn,
 };

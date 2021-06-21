@@ -1,6 +1,6 @@
 use reia::{
     hooks::{use_effect, use_memo, use_state, StateSetter},
-    ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
+    vec_comps, ComponentBuilder, ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder,
     HookReturn,
 };
 use reia_html::prelude::*;
@@ -101,7 +101,7 @@ fn level_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
 fn levels_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
     let reia = reia.init();
     reia.comp(text_node, format!("Current level: {}\nHistory:", level))
-        .vec_comps(level_history, (1..=level.max(0)).collect())
+        .comp(vec_comps, (level_history, (1..=level.max(0)).collect()))
 }
 
 fn dyn_example(reia: ComponentBuilder, props: Vec<i32>) -> DynComponentReturn<Vec<i32>> {
