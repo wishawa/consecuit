@@ -15,3 +15,10 @@ console_error_panic_hook = "0.1.6"
 reia = { path = "../../", version = "0.1.0" }
 reia_html = { path = "../../html/" }
 im-rc = "15.0.0"
+
+[dependencies.web-sys]
+version = "0.3.51"
+features = [
+	'Window',
+	'Location'
+]

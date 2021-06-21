@@ -17,7 +17,10 @@ pub fn run() -> Result<(), JsValue> {
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     reia.init()
-        .comp(div, html_props().class_name("container mx-auto"))
+        .comp(
+            div,
+            html_props().class_name("container mx-auto flex flex-col items-center"),
+        )
         .hole_here()
 }
 
