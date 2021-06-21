@@ -12,21 +12,28 @@ pub fn run() -> Result<(), JsValue> {
 
 fn button_with_text(
     reia: ComponentBuilder,
-    (text, onclick): (String, Callback),
+    (text, onclick): (String, Callback<web_sys::MouseEvent>),
 ) -> impl ComponentReturn {
     let reia = reia.init();
     reia.comp(button, HtmlProps::new().onclick(onclick))
         .child(|reia| reia.comp(text_node, text))
 }
 
-fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, Callback, Callback)> {
+fn use_counter(
+    reia: HookBuilder,
+    initial: i32,
+) -> impl HookReturn<(
+    i32,
+    Callback<web_sys::MouseEvent>,
+    Callback<web_sys::MouseEvent>,
+)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, initial);
     let (reia, increment) = reia.hook(
         use_memo,
         (
             |count_setter: StateSetter<i32>| {
-                Callback::new(move || {
+                Callback::new(move |_ev| {
                     count_setter.update_with(|value| value + 1);
                 })
             },
@@ -37,7 +44,7 @@ fn use_counter(reia: HookBuilder, initial: i32) -> impl HookReturn<(i32, Callbac
         use_memo,
         (
             |count_setter: StateSetter<i32>| {
-                Callback::new(move || {
+                Callback::new(move |_ev| {
                     count_setter.update_with(|value| value - 1);
                 })
             },
