@@ -1,7 +1,7 @@
 mod component;
 mod executor;
 mod hook;
-pub mod hooks;
+mod hooks;
 mod stores;
 mod unmounted_lock;
 
@@ -11,3 +11,4 @@ pub use component::{
 };
 pub use executor::batch_updates;
 pub use hook::{HookBuilder, HookReturn};
+pub use hooks::*;

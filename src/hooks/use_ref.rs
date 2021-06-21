@@ -38,6 +38,17 @@ impl<T: Default + 'static> ReiaRef<T> {
             Err(())
         }
     }
+    pub fn set_in(&self, value: T) -> Result<(), ()> {
+        self.visit_mut_with(|v| {
+            *v = value;
+        })
+    }
+}
+
+impl<T: Clone + Default + 'static> ReiaRef<T> {
+    pub fn clone_out(&self) -> Result<T, ()> {
+        self.visit_with(|v| v.clone())
+    }
 }
 
 pub fn use_ref<T>(reia: HookBuilder, _: ()) -> impl HookReturn<ReiaRef<T>>

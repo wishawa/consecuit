@@ -30,7 +30,7 @@ impl<T: Clone> StateSetter<T> {
 
 pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, StateSetter<T>)>
 where
-    T: Copy + 'static,
+    T: Clone + 'static,
 {
     let reia = reia.init();
     let (reia, state): (_, ReiaRef<Option<T>>) = reia.hook(use_ref::<Option<T>>, ());
