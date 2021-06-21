@@ -28,18 +28,29 @@ impl<T: Clone> StateSetter<T> {
     }
 }
 
-pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, StateSetter<T>)>
+pub fn use_state_from<T, F>(
+    reia: HookBuilder,
+    default_from: F,
+) -> impl HookReturn<(T, StateSetter<T>)>
 where
     T: Clone + 'static,
+    F: FnOnce() -> T,
 {
     let reia = reia.init();
     let (reia, state): (_, ReiaRef<Option<T>>) = reia.hook(use_ref::<Option<T>>, ());
     let value = state
-        .visit_mut_with(|opt| opt.get_or_insert(default_value).clone())
+        .visit_mut_with(|opt| opt.get_or_insert_with(default_from).clone())
         .unwrap();
     let setter = StateSetter {
         state,
         rerender_task: RerenderTask::new(reia.current_component, reia.lock.clone()),
     };
     (reia, (value, setter))
+}
+
+pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, StateSetter<T>)>
+where
+    T: Clone + 'static,
+{
+    use_state_from(reia, || default_value)
 }
