@@ -3,10 +3,9 @@ use std::{ops::Deref, rc::Rc};
 use js_sys::Function;
 use reia::batch_updates;
 use wasm_bindgen::{convert::FromWasmAbi, prelude::Closure, JsCast};
-use web_sys::Event;
 
 #[derive(Clone)]
-pub struct Callback<E: FromWasmAbi + 'static = Event>(Rc<Closure<dyn Fn(E)>>);
+pub struct Callback<E: FromWasmAbi + 'static>(Rc<Closure<dyn Fn(E)>>);
 
 impl<E: FromWasmAbi + 'static> PartialEq for Callback<E> {
     fn eq(&self, other: &Self) -> bool {

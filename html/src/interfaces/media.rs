@@ -2,7 +2,7 @@ use crate::{
     callback::Callback,
     elem::{HtmlProp, HtmlProps},
 };
-use web_sys::HtmlMediaElement;
+use web_sys::{Event, HtmlMediaElement};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
@@ -20,8 +20,8 @@ pub enum MediaProp {
     volume(f64),
     muted(bool),
     default_muted(bool),
-    onencrypted(Callback),
-    onwaitingforkey(Callback),
+    onencrypted(Callback<Event>),
+    onwaitingforkey(Callback<Event>),
 }
 
 #[sealed::sealed]
@@ -147,12 +147,12 @@ impl HtmlProps<HtmlMediaElement> {
         self
     }
 
-    pub fn onencrypted(mut self, val: Callback) -> Self {
+    pub fn onencrypted(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(MediaProp::onencrypted(val)));
         self
     }
 
-    pub fn onwaitingforkey(mut self, val: Callback) -> Self {
+    pub fn onwaitingforkey(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Own(MediaProp::onwaitingforkey(val)));
         self

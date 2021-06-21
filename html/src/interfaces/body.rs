@@ -2,7 +2,7 @@ use crate::{
     callback::Callback,
     elem::{HtmlProp, HtmlProps},
 };
-use web_sys::HtmlBodyElement;
+use web_sys::{Event, HtmlBodyElement};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
@@ -13,20 +13,20 @@ pub enum BodyProp {
     a_link(String),
     bg_color(String),
     background(String),
-    onafterprint(Callback),
-    onbeforeprint(Callback),
-    onbeforeunload(Callback),
-    onhashchange(Callback),
-    onlanguagechange(Callback),
-    onmessage(Callback),
-    onmessageerror(Callback),
-    onoffline(Callback),
-    ononline(Callback),
-    onpagehide(Callback),
-    onpageshow(Callback),
-    onpopstate(Callback),
-    onstorage(Callback),
-    onunload(Callback),
+    onafterprint(Callback<Event>),
+    onbeforeprint(Callback<Event>),
+    onbeforeunload(Callback<Event>),
+    onhashchange(Callback<Event>),
+    onlanguagechange(Callback<Event>),
+    onmessage(Callback<Event>),
+    onmessageerror(Callback<Event>),
+    onoffline(Callback<Event>),
+    ononline(Callback<Event>),
+    onpagehide(Callback<Event>),
+    onpageshow(Callback<Event>),
+    onpopstate(Callback<Event>),
+    onstorage(Callback<Event>),
+    onunload(Callback<Event>),
 }
 
 #[sealed::sealed]
@@ -125,76 +125,76 @@ impl HtmlProps<HtmlBodyElement> {
         self
     }
 
-    pub fn onafterprint(mut self, val: Callback) -> Self {
+    pub fn onafterprint(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onafterprint(val)));
         self
     }
 
-    pub fn onbeforeprint(mut self, val: Callback) -> Self {
+    pub fn onbeforeprint(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Own(BodyProp::onbeforeprint(val)));
         self
     }
 
-    pub fn onbeforeunload(mut self, val: Callback) -> Self {
+    pub fn onbeforeunload(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Own(BodyProp::onbeforeunload(val)));
         self
     }
 
-    pub fn onhashchange(mut self, val: Callback) -> Self {
+    pub fn onhashchange(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onhashchange(val)));
         self
     }
 
-    pub fn onlanguagechange(mut self, val: Callback) -> Self {
+    pub fn onlanguagechange(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Own(BodyProp::onlanguagechange(val)));
         self
     }
 
-    pub fn onmessage(mut self, val: Callback) -> Self {
+    pub fn onmessage(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onmessage(val)));
         self
     }
 
-    pub fn onmessageerror(mut self, val: Callback) -> Self {
+    pub fn onmessageerror(mut self, val: Callback<Event>) -> Self {
         self.0
             .push_back(HtmlProp::Own(BodyProp::onmessageerror(val)));
         self
     }
 
-    pub fn onoffline(mut self, val: Callback) -> Self {
+    pub fn onoffline(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onoffline(val)));
         self
     }
 
-    pub fn ononline(mut self, val: Callback) -> Self {
+    pub fn ononline(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::ononline(val)));
         self
     }
 
-    pub fn onpagehide(mut self, val: Callback) -> Self {
+    pub fn onpagehide(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onpagehide(val)));
         self
     }
 
-    pub fn onpageshow(mut self, val: Callback) -> Self {
+    pub fn onpageshow(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onpageshow(val)));
         self
     }
 
-    pub fn onpopstate(mut self, val: Callback) -> Self {
+    pub fn onpopstate(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onpopstate(val)));
         self
     }
 
-    pub fn onstorage(mut self, val: Callback) -> Self {
+    pub fn onstorage(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onstorage(val)));
         self
     }
 
-    pub fn onunload(mut self, val: Callback) -> Self {
+    pub fn onunload(mut self, val: Callback<Event>) -> Self {
         self.0.push_back(HtmlProp::Own(BodyProp::onunload(val)));
         self
     }
