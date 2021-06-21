@@ -18,13 +18,13 @@ pub fn run() -> Result<(), JsValue> {
 fn title(reia: ComponentBuilder, props: i32) -> impl ComponentReturn {
     let reia = reia.init();
     let label = format!("Counter value: {}", props);
-    reia.comp(h1, HtmlProps::new())
+    reia.comp(h1, HtmlProps::new().class_name("title-h1"))
         .child(|r| r.comp(text_node, label))
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
-    reia.comp(div, HtmlProps::new()).hole_here()
+    reia.comp(div, HtmlProps::new().class_name("hello world")).hole_here()
 }
 
 fn count_button(
@@ -122,6 +122,6 @@ fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         reia.comp(title, count)
             .comp(count_button, (increment.clone(), decrement.clone()))
             .comp(levels_history, level)
-            .comp(dyn_example, vec![3, 4, 5])
+            .comp(dyn_example, (0..level).collect())
     })
 }
