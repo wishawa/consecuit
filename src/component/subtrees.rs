@@ -17,12 +17,12 @@ use super::{
 };
 
 fn get_or_create_container<'a>(opt: &'a mut Option<Element>, parent: Element) -> Element {
-    let container = create_wrapper_div();
     opt.get_or_insert_with(|| {
+        let container = create_wrapper_div();
         parent.append_child(&container).unwrap();
-        container.clone()
-    });
-    container
+        container
+    })
+    .clone()
 }
 
 pub fn opt_comp<Ret, Props>(
