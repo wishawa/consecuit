@@ -1,26 +1,27 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlObjectElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum ObjectProp {
-    data(String),
-    r#type(String),
+    data(Cow<'static, str>),
+    r#type(Cow<'static, str>),
     type_must_match(bool),
-    name(String),
-    use_map(String),
-    width(String),
-    height(String),
-    align(String),
-    archive(String),
-    code(String),
+    name(Cow<'static, str>),
+    use_map(Cow<'static, str>),
+    width(Cow<'static, str>),
+    height(Cow<'static, str>),
+    align(Cow<'static, str>),
+    archive(Cow<'static, str>),
+    code(Cow<'static, str>),
     declare(bool),
     hspace(u32),
-    standby(String),
+    standby(Cow<'static, str>),
     vspace(u32),
-    code_base(String),
-    code_type(String),
-    border(String),
+    code_base(Cow<'static, str>),
+    code_type(Cow<'static, str>),
+    border(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -75,13 +76,13 @@ impl crate::elem::PropEnum<HtmlObjectElement> for ObjectProp {
 }
 
 impl HtmlProps<HtmlObjectElement> {
-    pub fn data(mut self, val: impl Into<String>) -> Self {
+    pub fn data(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::data(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(ObjectProp::r#type(val)));
         self
     }
@@ -92,43 +93,43 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::name(val)));
         self
     }
 
-    pub fn use_map(mut self, val: impl Into<String>) -> Self {
+    pub fn use_map(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::use_map(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::width(val)));
         self
     }
 
-    pub fn height(mut self, val: impl Into<String>) -> Self {
+    pub fn height(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::height(val)));
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::align(val)));
         self
     }
 
-    pub fn archive(mut self, val: impl Into<String>) -> Self {
+    pub fn archive(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::archive(val)));
         self
     }
 
-    pub fn code(mut self, val: impl Into<String>) -> Self {
+    pub fn code(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code(val)));
         self
@@ -144,7 +145,7 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn standby(mut self, val: impl Into<String>) -> Self {
+    pub fn standby(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::standby(val)));
         self
@@ -155,19 +156,19 @@ impl HtmlProps<HtmlObjectElement> {
         self
     }
 
-    pub fn code_base(mut self, val: impl Into<String>) -> Self {
+    pub fn code_base(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code_base(val)));
         self
     }
 
-    pub fn code_type(mut self, val: impl Into<String>) -> Self {
+    pub fn code_type(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::code_type(val)));
         self
     }
 
-    pub fn border(mut self, val: impl Into<String>) -> Self {
+    pub fn border(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ObjectProp::border(val)));
         self

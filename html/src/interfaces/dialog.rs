@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlDialogElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum DialogProp {
     open(bool),
-    return_value(String),
+    return_value(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -35,7 +36,7 @@ impl HtmlProps<HtmlDialogElement> {
         self
     }
 
-    pub fn return_value(mut self, val: impl Into<String>) -> Self {
+    pub fn return_value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(DialogProp::return_value(val)));

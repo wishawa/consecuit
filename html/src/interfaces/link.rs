@@ -1,22 +1,23 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlLinkElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum LinkProp {
     disabled(bool),
-    href(String),
-    cross_origin(String),
-    rel(String),
-    media(String),
-    hreflang(String),
-    r#type(String),
-    referrer_policy(String),
-    charset(String),
-    rev(String),
-    target(String),
-    integrity(String),
-    r#as(String),
+    href(Cow<'static, str>),
+    cross_origin(Cow<'static, str>),
+    rel(Cow<'static, str>),
+    media(Cow<'static, str>),
+    hreflang(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    referrer_policy(Cow<'static, str>),
+    charset(Cow<'static, str>),
+    rev(Cow<'static, str>),
+    target(Cow<'static, str>),
+    integrity(Cow<'static, str>),
+    r#as(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -68,73 +69,73 @@ impl HtmlProps<HtmlLinkElement> {
         self
     }
 
-    pub fn href(mut self, val: impl Into<String>) -> Self {
+    pub fn href(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::href(val)));
         self
     }
 
-    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::cross_origin(val)));
         self
     }
 
-    pub fn rel(mut self, val: impl Into<String>) -> Self {
+    pub fn rel(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::rel(val)));
         self
     }
 
-    pub fn media(mut self, val: impl Into<String>) -> Self {
+    pub fn media(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::media(val)));
         self
     }
 
-    pub fn hreflang(mut self, val: impl Into<String>) -> Self {
+    pub fn hreflang(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::hreflang(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(LinkProp::r#type(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(LinkProp::referrer_policy(val)));
         self
     }
 
-    pub fn charset(mut self, val: impl Into<String>) -> Self {
+    pub fn charset(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::charset(val)));
         self
     }
 
-    pub fn rev(mut self, val: impl Into<String>) -> Self {
+    pub fn rev(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::rev(val)));
         self
     }
 
-    pub fn target(mut self, val: impl Into<String>) -> Self {
+    pub fn target(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::target(val)));
         self
     }
 
-    pub fn integrity(mut self, val: impl Into<String>) -> Self {
+    pub fn integrity(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(LinkProp::integrity(val)));
         self
     }
 
-    pub fn r#as(mut self, val: String) -> Self {
+    pub fn r#as(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(LinkProp::r#as(val)));
         self
     }

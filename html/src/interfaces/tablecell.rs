@@ -1,4 +1,5 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTableCellElement;
 
 #[allow(non_camel_case_types)]
@@ -6,16 +7,16 @@ use web_sys::HtmlTableCellElement;
 pub enum TableCellProp {
     col_span(u32),
     row_span(u32),
-    headers(String),
-    align(String),
-    axis(String),
-    height(String),
-    width(String),
-    ch(String),
-    ch_off(String),
+    headers(Cow<'static, str>),
+    align(Cow<'static, str>),
+    axis(Cow<'static, str>),
+    height(Cow<'static, str>),
+    width(Cow<'static, str>),
+    ch(Cow<'static, str>),
+    ch_off(Cow<'static, str>),
     no_wrap(bool),
-    v_align(String),
-    bg_color(String),
+    v_align(Cow<'static, str>),
+    bg_color(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -72,43 +73,43 @@ impl HtmlProps<HtmlTableCellElement> {
         self
     }
 
-    pub fn headers(mut self, val: impl Into<String>) -> Self {
+    pub fn headers(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::headers(val)));
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::align(val)));
         self
     }
 
-    pub fn axis(mut self, val: impl Into<String>) -> Self {
+    pub fn axis(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::axis(val)));
         self
     }
 
-    pub fn height(mut self, val: impl Into<String>) -> Self {
+    pub fn height(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::height(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::width(val)));
         self
     }
 
-    pub fn ch(mut self, val: impl Into<String>) -> Self {
+    pub fn ch(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::ch(val)));
         self
     }
 
-    pub fn ch_off(mut self, val: impl Into<String>) -> Self {
+    pub fn ch_off(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::ch_off(val)));
         self
@@ -119,13 +120,13 @@ impl HtmlProps<HtmlTableCellElement> {
         self
     }
 
-    pub fn v_align(mut self, val: impl Into<String>) -> Self {
+    pub fn v_align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableCellProp::v_align(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+    pub fn bg_color(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableCellProp::bg_color(val)));

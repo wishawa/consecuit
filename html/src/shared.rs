@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use crate::{
     callback::Callback,
     elem::{HtmlComponent, HtmlProp, HtmlProps},
@@ -11,25 +13,25 @@ use web_sys::{
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub(crate) enum SharedProp {
-    node_value(String),
-    text_content(String),
-    id(String),
-    class_name(String),
+    node_value(Cow<'static, str>),
+    text_content(Cow<'static, str>),
+    id(Cow<'static, str>),
+    class_name(Cow<'static, str>),
     scroll_top(i32),
     scroll_left(i32),
-    inner_html(String),
-    outer_html(String),
-    slot(String),
-    title(String),
+    inner_html(Cow<'static, str>),
+    outer_html(Cow<'static, str>),
+    slot(Cow<'static, str>),
+    title(Cow<'static, str>),
     scroll_height(i32),
-    lang(String),
-    dir(String),
-    inner_text(String),
+    lang(Cow<'static, str>),
+    dir(Cow<'static, str>),
+    inner_text(Cow<'static, str>),
     hidden(bool),
     tab_index(i32),
-    access_key(String),
+    access_key(Cow<'static, str>),
     draggable(bool),
-    content_editable(String),
+    content_editable(Cow<'static, str>),
     spellcheck(bool),
     oncopy(Callback<Event>),
     oncut(Callback<Event>),
@@ -390,24 +392,24 @@ impl crate::elem::PropEnum<HtmlElement> for SharedProp {
 }
 
 impl<E: HtmlComponent> HtmlProps<E> {
-    pub fn node_value(mut self, val: impl Into<String>) -> Self {
+    pub fn node_value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::node_value(val)));
         self
     }
-    pub fn text_content(mut self, val: impl Into<String>) -> Self {
+    pub fn text_content(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::text_content(val)));
         self
     }
-    pub fn id(mut self, val: impl Into<String>) -> Self {
+    pub fn id(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::id(val)));
         self
     }
-    pub fn class_name(mut self, val: impl Into<String>) -> Self {
+    pub fn class_name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::class_name(val)));
@@ -423,24 +425,24 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::scroll_left(val)));
         self
     }
-    pub fn inner_html(mut self, val: impl Into<String>) -> Self {
+    pub fn inner_html(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::inner_html(val)));
         self
     }
-    pub fn outer_html(mut self, val: impl Into<String>) -> Self {
+    pub fn outer_html(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::outer_html(val)));
         self
     }
-    pub fn slot(mut self, val: impl Into<String>) -> Self {
+    pub fn slot(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::slot(val)));
         self
     }
-    pub fn title(mut self, val: impl Into<String>) -> Self {
+    pub fn title(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::title(val)));
         self
@@ -450,17 +452,17 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::scroll_height(val)));
         self
     }
-    pub fn lang(mut self, val: impl Into<String>) -> Self {
+    pub fn lang(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::lang(val)));
         self
     }
-    pub fn dir(mut self, val: impl Into<String>) -> Self {
+    pub fn dir(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Shared(SharedProp::dir(val)));
         self
     }
-    pub fn inner_text(mut self, val: impl Into<String>) -> Self {
+    pub fn inner_text(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::inner_text(val)));
@@ -475,7 +477,7 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::tab_index(val)));
         self
     }
-    pub fn access_key(mut self, val: impl Into<String>) -> Self {
+    pub fn access_key(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::access_key(val)));
@@ -486,7 +488,7 @@ impl<E: HtmlComponent> HtmlProps<E> {
             .push_back(HtmlProp::Shared(SharedProp::draggable(val)));
         self
     }
-    pub fn content_editable(mut self, val: impl Into<String>) -> Self {
+    pub fn content_editable(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Shared(SharedProp::content_editable(val)));

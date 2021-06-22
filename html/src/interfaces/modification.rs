@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlModElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum ModProp {
-    cite(String),
-    date_time(String),
+    cite(Cow<'static, str>),
+    date_time(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -30,13 +31,13 @@ impl crate::elem::PropEnum<HtmlModElement> for ModProp {
 }
 
 impl HtmlProps<HtmlModElement> {
-    pub fn cite(mut self, val: impl Into<String>) -> Self {
+    pub fn cite(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ModProp::cite(val)));
         self
     }
 
-    pub fn date_time(mut self, val: impl Into<String>) -> Self {
+    pub fn date_time(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ModProp::date_time(val)));
         self

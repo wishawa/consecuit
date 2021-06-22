@@ -2,15 +2,16 @@ use crate::{
     callback::Callback,
     elem::{HtmlProp, HtmlProps},
 };
+use std::borrow::Cow;
 use web_sys::{Event, HtmlMediaElement};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum MediaProp {
-    src(String),
+    src(Cow<'static, str>),
     src_object(web_sys::MediaStream),
-    cross_origin(String),
-    preload(String),
+    cross_origin(Cow<'static, str>),
+    preload(Cow<'static, str>),
     current_time(f64),
     default_playback_rate(f64),
     playback_rate(f64),
@@ -74,7 +75,7 @@ impl crate::elem::PropEnum<HtmlMediaElement> for MediaProp {
 }
 
 impl HtmlProps<HtmlMediaElement> {
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MediaProp::src(val)));
         self
@@ -85,14 +86,14 @@ impl HtmlProps<HtmlMediaElement> {
         self
     }
 
-    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(MediaProp::cross_origin(val)));
         self
     }
 
-    pub fn preload(mut self, val: impl Into<String>) -> Self {
+    pub fn preload(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MediaProp::preload(val)));
         self

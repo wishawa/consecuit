@@ -1,12 +1,13 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlOutputElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum OutputProp {
-    name(String),
-    default_value(String),
-    value(String),
+    name(Cow<'static, str>),
+    default_value(Cow<'static, str>),
+    value(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -33,20 +34,20 @@ impl crate::elem::PropEnum<HtmlOutputElement> for OutputProp {
 }
 
 impl HtmlProps<HtmlOutputElement> {
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OutputProp::name(val)));
         self
     }
 
-    pub fn default_value(mut self, val: impl Into<String>) -> Self {
+    pub fn default_value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(OutputProp::default_value(val)));
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OutputProp::value(val)));
         self

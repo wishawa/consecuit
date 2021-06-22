@@ -1,15 +1,16 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlEmbedElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum EmbedProp {
-    src(String),
-    r#type(String),
-    width(String),
-    height(String),
-    align(String),
-    name(String),
+    src(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    width(Cow<'static, str>),
+    height(Cow<'static, str>),
+    align(Cow<'static, str>),
+    name(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -42,36 +43,36 @@ impl crate::elem::PropEnum<HtmlEmbedElement> for EmbedProp {
 }
 
 impl HtmlProps<HtmlEmbedElement> {
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::src(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(EmbedProp::r#type(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::width(val)));
         self
     }
 
-    pub fn height(mut self, val: impl Into<String>) -> Self {
+    pub fn height(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::height(val)));
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::align(val)));
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(EmbedProp::name(val)));
         self

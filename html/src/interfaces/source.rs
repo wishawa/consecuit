@@ -1,14 +1,15 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlSourceElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum SourceProp {
-    src(String),
-    r#type(String),
-    srcset(String),
-    sizes(String),
-    media(String),
+    src(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    srcset(Cow<'static, str>),
+    sizes(Cow<'static, str>),
+    media(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -39,30 +40,30 @@ impl crate::elem::PropEnum<HtmlSourceElement> for SourceProp {
 }
 
 impl HtmlProps<HtmlSourceElement> {
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::src(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(SourceProp::r#type(val)));
         self
     }
 
-    pub fn srcset(mut self, val: impl Into<String>) -> Self {
+    pub fn srcset(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::srcset(val)));
         self
     }
 
-    pub fn sizes(mut self, val: impl Into<String>) -> Self {
+    pub fn sizes(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::sizes(val)));
         self
     }
 
-    pub fn media(mut self, val: impl Into<String>) -> Self {
+    pub fn media(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SourceProp::media(val)));
         self

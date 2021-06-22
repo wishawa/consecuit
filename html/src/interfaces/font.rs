@@ -1,12 +1,13 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlFontElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum FontProp {
-    color(String),
-    face(String),
-    size(String),
+    color(Cow<'static, str>),
+    face(Cow<'static, str>),
+    size(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -33,19 +34,19 @@ impl crate::elem::PropEnum<HtmlFontElement> for FontProp {
 }
 
 impl HtmlProps<HtmlFontElement> {
-    pub fn color(mut self, val: impl Into<String>) -> Self {
+    pub fn color(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FontProp::color(val)));
         self
     }
 
-    pub fn face(mut self, val: impl Into<String>) -> Self {
+    pub fn face(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FontProp::face(val)));
         self
     }
 
-    pub fn size(mut self, val: impl Into<String>) -> Self {
+    pub fn size(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FontProp::size(val)));
         self

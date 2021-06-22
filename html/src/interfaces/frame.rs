@@ -1,17 +1,18 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlFrameElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum FrameProp {
-    name(String),
-    scrolling(String),
-    src(String),
-    frame_border(String),
-    long_desc(String),
+    name(Cow<'static, str>),
+    scrolling(Cow<'static, str>),
+    src(Cow<'static, str>),
+    frame_border(Cow<'static, str>),
+    long_desc(Cow<'static, str>),
     no_resize(bool),
-    margin_height(String),
-    margin_width(String),
+    margin_height(Cow<'static, str>),
+    margin_width(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -48,32 +49,32 @@ impl crate::elem::PropEnum<HtmlFrameElement> for FrameProp {
 }
 
 impl HtmlProps<HtmlFrameElement> {
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::name(val)));
         self
     }
 
-    pub fn scrolling(mut self, val: impl Into<String>) -> Self {
+    pub fn scrolling(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::scrolling(val)));
         self
     }
 
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::src(val)));
         self
     }
 
-    pub fn frame_border(mut self, val: impl Into<String>) -> Self {
+    pub fn frame_border(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::frame_border(val)));
         self
     }
 
-    pub fn long_desc(mut self, val: impl Into<String>) -> Self {
+    pub fn long_desc(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameProp::long_desc(val)));
         self
@@ -84,14 +85,14 @@ impl HtmlProps<HtmlFrameElement> {
         self
     }
 
-    pub fn margin_height(mut self, val: impl Into<String>) -> Self {
+    pub fn margin_height(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::margin_height(val)));
         self
     }
 
-    pub fn margin_width(mut self, val: impl Into<String>) -> Self {
+    pub fn margin_width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(FrameProp::margin_width(val)));

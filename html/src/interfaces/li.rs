@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlLiElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum LiProp {
     value(i32),
-    r#type(String),
+    r#type(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -35,7 +36,7 @@ impl HtmlProps<HtmlLiElement> {
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(LiProp::r#type(val)));
         self
     }

@@ -1,13 +1,14 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlMetaElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum MetaProp {
-    name(String),
-    http_equiv(String),
-    content(String),
-    scheme(String),
+    name(Cow<'static, str>),
+    http_equiv(Cow<'static, str>),
+    content(Cow<'static, str>),
+    scheme(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -36,25 +37,25 @@ impl crate::elem::PropEnum<HtmlMetaElement> for MetaProp {
 }
 
 impl HtmlProps<HtmlMetaElement> {
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::name(val)));
         self
     }
 
-    pub fn http_equiv(mut self, val: impl Into<String>) -> Self {
+    pub fn http_equiv(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::http_equiv(val)));
         self
     }
 
-    pub fn content(mut self, val: impl Into<String>) -> Self {
+    pub fn content(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::content(val)));
         self
     }
 
-    pub fn scheme(mut self, val: impl Into<String>) -> Self {
+    pub fn scheme(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MetaProp::scheme(val)));
         self

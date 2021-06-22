@@ -1,12 +1,13 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlStyleElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum StyleProp {
     disabled(bool),
-    media(String),
-    r#type(String),
+    media(Cow<'static, str>),
+    r#type(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -38,13 +39,13 @@ impl HtmlProps<HtmlStyleElement> {
         self
     }
 
-    pub fn media(mut self, val: impl Into<String>) -> Self {
+    pub fn media(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(StyleProp::media(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(StyleProp::r#type(val)));
         self
     }

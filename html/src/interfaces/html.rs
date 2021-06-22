@@ -1,10 +1,11 @@
 use crate::elem::{HtmlProp as CrateHtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlHtmlElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum HtmlProp {
-    version(String),
+    version(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -27,7 +28,7 @@ impl crate::elem::PropEnum<HtmlHtmlElement> for HtmlProp {
 }
 
 impl HtmlProps<HtmlHtmlElement> {
-    pub fn version(mut self, val: impl Into<String>) -> Self {
+    pub fn version(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(CrateHtmlProp::Own(HtmlProp::version(val)));
         self

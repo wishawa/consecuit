@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlOptGroupElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum OptGroupProp {
     disabled(bool),
-    label(String),
+    label(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -35,7 +36,7 @@ impl HtmlProps<HtmlOptGroupElement> {
         self
     }
 
-    pub fn label(mut self, val: impl Into<String>) -> Self {
+    pub fn label(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OptGroupProp::label(val)));
         self

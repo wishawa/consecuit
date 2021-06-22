@@ -2,13 +2,14 @@ use crate::{
     callback::Callback,
     elem::{HtmlProp, HtmlProps},
 };
+use std::borrow::Cow;
 use web_sys::{Event, HtmlFrameSetElement};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum FrameSetProp {
-    cols(String),
-    rows(String),
+    cols(Cow<'static, str>),
+    rows(Cow<'static, str>),
     onafterprint(Callback<Event>),
     onbeforeprint(Callback<Event>),
     onbeforeunload(Callback<Event>),
@@ -81,13 +82,13 @@ impl crate::elem::PropEnum<HtmlFrameSetElement> for FrameSetProp {
 }
 
 impl HtmlProps<HtmlFrameSetElement> {
-    pub fn cols(mut self, val: impl Into<String>) -> Self {
+    pub fn cols(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameSetProp::cols(val)));
         self
     }
 
-    pub fn rows(mut self, val: impl Into<String>) -> Self {
+    pub fn rows(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FrameSetProp::rows(val)));
         self

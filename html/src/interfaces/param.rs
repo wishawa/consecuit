@@ -1,13 +1,14 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlParamElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum ParamProp {
-    name(String),
-    value(String),
-    r#type(String),
-    value_type(String),
+    name(Cow<'static, str>),
+    value(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    value_type(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -36,24 +37,24 @@ impl crate::elem::PropEnum<HtmlParamElement> for ParamProp {
 }
 
 impl HtmlProps<HtmlParamElement> {
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::name(val)));
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::value(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(ParamProp::r#type(val)));
         self
     }
 
-    pub fn value_type(mut self, val: impl Into<String>) -> Self {
+    pub fn value_type(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ParamProp::value_type(val)));
         self

@@ -2,17 +2,18 @@ use crate::{
     callback::Callback,
     elem::{HtmlProp, HtmlProps},
 };
+use std::borrow::Cow;
 use web_sys::{Event, HtmlBodyElement};
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum BodyProp {
-    text(String),
-    link(String),
-    v_link(String),
-    a_link(String),
-    bg_color(String),
-    background(String),
+    text(Cow<'static, str>),
+    link(Cow<'static, str>),
+    v_link(Cow<'static, str>),
+    a_link(Cow<'static, str>),
+    bg_color(Cow<'static, str>),
+    background(Cow<'static, str>),
     onafterprint(Callback<Event>),
     onbeforeprint(Callback<Event>),
     onbeforeunload(Callback<Event>),
@@ -89,37 +90,37 @@ impl crate::elem::PropEnum<HtmlBodyElement> for BodyProp {
 }
 
 impl HtmlProps<HtmlBodyElement> {
-    pub fn text(mut self, val: impl Into<String>) -> Self {
+    pub fn text(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::text(val)));
         self
     }
 
-    pub fn link(mut self, val: impl Into<String>) -> Self {
+    pub fn link(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::link(val)));
         self
     }
 
-    pub fn v_link(mut self, val: impl Into<String>) -> Self {
+    pub fn v_link(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::v_link(val)));
         self
     }
 
-    pub fn a_link(mut self, val: impl Into<String>) -> Self {
+    pub fn a_link(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::a_link(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+    pub fn bg_color(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::bg_color(val)));
         self
     }
 
-    pub fn background(mut self, val: impl Into<String>) -> Self {
+    pub fn background(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BodyProp::background(val)));
         self

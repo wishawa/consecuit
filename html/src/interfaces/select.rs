@@ -1,19 +1,20 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlSelectElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum SelectProp {
     autofocus(bool),
-    autocomplete(String),
+    autocomplete(Cow<'static, str>),
     disabled(bool),
     multiple(bool),
-    name(String),
+    name(Cow<'static, str>),
     required(bool),
     size(u32),
     length(u32),
     selected_index(i32),
-    value(String),
+    value(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -59,7 +60,7 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(SelectProp::autocomplete(val)));
@@ -76,7 +77,7 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SelectProp::name(val)));
         self
@@ -103,7 +104,7 @@ impl HtmlProps<HtmlSelectElement> {
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(SelectProp::value(val)));
         self

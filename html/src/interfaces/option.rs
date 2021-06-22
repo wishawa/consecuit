@@ -1,15 +1,16 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlOptionElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum OptionProp {
     disabled(bool),
-    label(String),
+    label(Cow<'static, str>),
     default_selected(bool),
     selected(bool),
-    value(String),
-    text(String),
+    value(Cow<'static, str>),
+    text(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -47,7 +48,7 @@ impl HtmlProps<HtmlOptionElement> {
         self
     }
 
-    pub fn label(mut self, val: impl Into<String>) -> Self {
+    pub fn label(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::label(val)));
         self
@@ -64,13 +65,13 @@ impl HtmlProps<HtmlOptionElement> {
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::value(val)));
         self
     }
 
-    pub fn text(mut self, val: impl Into<String>) -> Self {
+    pub fn text(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(OptionProp::text(val)));
         self

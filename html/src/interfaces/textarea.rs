@@ -1,22 +1,23 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTextAreaElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TextAreaProp {
-    autocomplete(String),
+    autocomplete(Cow<'static, str>),
     autofocus(bool),
     cols(u32),
     disabled(bool),
     max_length(i32),
     min_length(i32),
-    name(String),
-    placeholder(String),
+    name(Cow<'static, str>),
+    placeholder(Cow<'static, str>),
     read_only(bool),
     required(bool),
     rows(u32),
-    wrap(String),
-    value(String),
+    wrap(Cow<'static, str>),
+    value(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -63,7 +64,7 @@ impl crate::elem::PropEnum<HtmlTextAreaElement> for TextAreaProp {
 }
 
 impl HtmlProps<HtmlTextAreaElement> {
-    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TextAreaProp::autocomplete(val)));
@@ -98,13 +99,13 @@ impl HtmlProps<HtmlTextAreaElement> {
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::name(val)));
         self
     }
 
-    pub fn placeholder(mut self, val: impl Into<String>) -> Self {
+    pub fn placeholder(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TextAreaProp::placeholder(val)));
@@ -127,13 +128,13 @@ impl HtmlProps<HtmlTextAreaElement> {
         self
     }
 
-    pub fn wrap(mut self, val: impl Into<String>) -> Self {
+    pub fn wrap(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::wrap(val)));
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TextAreaProp::value(val)));
         self

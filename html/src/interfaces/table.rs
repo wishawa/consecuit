@@ -1,4 +1,5 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTableElement;
 
 #[allow(non_camel_case_types)]
@@ -7,15 +8,15 @@ pub enum TableProp {
     caption(web_sys::HtmlTableCaptionElement),
     t_head(web_sys::HtmlTableSectionElement),
     t_foot(web_sys::HtmlTableSectionElement),
-    align(String),
-    border(String),
-    frame(String),
-    rules(String),
-    summary(String),
-    width(String),
-    bg_color(String),
-    cell_padding(String),
-    cell_spacing(String),
+    align(Cow<'static, str>),
+    border(Cow<'static, str>),
+    frame(Cow<'static, str>),
+    rules(Cow<'static, str>),
+    summary(Cow<'static, str>),
+    width(Cow<'static, str>),
+    bg_color(Cow<'static, str>),
+    cell_padding(Cow<'static, str>),
+    cell_spacing(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -75,56 +76,56 @@ impl HtmlProps<HtmlTableElement> {
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::align(val)));
         self
     }
 
-    pub fn border(mut self, val: impl Into<String>) -> Self {
+    pub fn border(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::border(val)));
         self
     }
 
-    pub fn frame(mut self, val: impl Into<String>) -> Self {
+    pub fn frame(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::frame(val)));
         self
     }
 
-    pub fn rules(mut self, val: impl Into<String>) -> Self {
+    pub fn rules(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::rules(val)));
         self
     }
 
-    pub fn summary(mut self, val: impl Into<String>) -> Self {
+    pub fn summary(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::summary(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::width(val)));
         self
     }
 
-    pub fn bg_color(mut self, val: impl Into<String>) -> Self {
+    pub fn bg_color(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableProp::bg_color(val)));
         self
     }
 
-    pub fn cell_padding(mut self, val: impl Into<String>) -> Self {
+    pub fn cell_padding(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableProp::cell_padding(val)));
         self
     }
 
-    pub fn cell_spacing(mut self, val: impl Into<String>) -> Self {
+    pub fn cell_spacing(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableProp::cell_spacing(val)));

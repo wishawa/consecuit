@@ -1,10 +1,11 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlQuoteElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum QuoteProp {
-    cite(String),
+    cite(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -27,7 +28,7 @@ impl crate::elem::PropEnum<HtmlQuoteElement> for QuoteProp {
 }
 
 impl HtmlProps<HtmlQuoteElement> {
-    pub fn cite(mut self, val: impl Into<String>) -> Self {
+    pub fn cite(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(QuoteProp::cite(val)));
         self

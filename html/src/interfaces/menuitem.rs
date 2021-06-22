@@ -1,15 +1,16 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlMenuItemElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum MenuItemProp {
-    r#type(String),
-    label(String),
-    icon(String),
+    r#type(Cow<'static, str>),
+    label(Cow<'static, str>),
+    icon(Cow<'static, str>),
     disabled(bool),
     checked(bool),
-    radiogroup(String),
+    radiogroup(Cow<'static, str>),
     default_checked(bool),
 }
 
@@ -45,18 +46,18 @@ impl crate::elem::PropEnum<HtmlMenuItemElement> for MenuItemProp {
 }
 
 impl HtmlProps<HtmlMenuItemElement> {
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(MenuItemProp::r#type(val)));
         self
     }
 
-    pub fn label(mut self, val: impl Into<String>) -> Self {
+    pub fn label(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuItemProp::label(val)));
         self
     }
 
-    pub fn icon(mut self, val: impl Into<String>) -> Self {
+    pub fn icon(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuItemProp::icon(val)));
         self
@@ -72,7 +73,7 @@ impl HtmlProps<HtmlMenuItemElement> {
         self
     }
 
-    pub fn radiogroup(mut self, val: impl Into<String>) -> Self {
+    pub fn radiogroup(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(MenuItemProp::radiogroup(val)));

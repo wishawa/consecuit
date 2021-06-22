@@ -1,10 +1,11 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlBrElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum BrProp {
-    clear(String),
+    clear(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -27,7 +28,7 @@ impl crate::elem::PropEnum<HtmlBrElement> for BrProp {
 }
 
 impl HtmlProps<HtmlBrElement> {
-    pub fn clear(mut self, val: impl Into<String>) -> Self {
+    pub fn clear(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(BrProp::clear(val)));
         self

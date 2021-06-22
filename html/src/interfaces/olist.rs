@@ -1,4 +1,5 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlOListElement;
 
 #[allow(non_camel_case_types)]
@@ -6,7 +7,7 @@ use web_sys::HtmlOListElement;
 pub enum OListProp {
     reversed(bool),
     start(i32),
-    r#type(String),
+    r#type(Cow<'static, str>),
     compact(bool),
 }
 
@@ -46,7 +47,7 @@ impl HtmlProps<HtmlOListElement> {
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(OListProp::r#type(val)));
         self
     }

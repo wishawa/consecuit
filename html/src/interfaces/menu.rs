@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlMenuElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum MenuProp {
-    r#type(String),
-    label(String),
+    r#type(Cow<'static, str>),
+    label(Cow<'static, str>),
     compact(bool),
 }
 
@@ -33,12 +34,12 @@ impl crate::elem::PropEnum<HtmlMenuElement> for MenuProp {
 }
 
 impl HtmlProps<HtmlMenuElement> {
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(MenuProp::r#type(val)));
         self
     }
 
-    pub fn label(mut self, val: impl Into<String>) -> Self {
+    pub fn label(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(MenuProp::label(val)));
         self

@@ -1,19 +1,20 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlScriptElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum ScriptProp {
-    src(String),
-    r#type(String),
+    src(Cow<'static, str>),
+    r#type(Cow<'static, str>),
     no_module(bool),
-    charset(String),
+    charset(Cow<'static, str>),
     r#async(bool),
     defer(bool),
-    cross_origin(String),
-    event(String),
-    html_for(String),
-    integrity(String),
+    cross_origin(Cow<'static, str>),
+    event(Cow<'static, str>),
+    html_for(Cow<'static, str>),
+    integrity(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -54,13 +55,13 @@ impl crate::elem::PropEnum<HtmlScriptElement> for ScriptProp {
 }
 
 impl HtmlProps<HtmlScriptElement> {
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ScriptProp::src(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(ScriptProp::r#type(val)));
         self
     }
@@ -70,7 +71,7 @@ impl HtmlProps<HtmlScriptElement> {
         self
     }
 
-    pub fn charset(mut self, val: impl Into<String>) -> Self {
+    pub fn charset(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ScriptProp::charset(val)));
         self
@@ -86,26 +87,26 @@ impl HtmlProps<HtmlScriptElement> {
         self
     }
 
-    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ScriptProp::cross_origin(val)));
         self
     }
 
-    pub fn event(mut self, val: impl Into<String>) -> Self {
+    pub fn event(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ScriptProp::event(val)));
         self
     }
 
-    pub fn html_for(mut self, val: impl Into<String>) -> Self {
+    pub fn html_for(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ScriptProp::html_for(val)));
         self
     }
 
-    pub fn integrity(mut self, val: impl Into<String>) -> Self {
+    pub fn integrity(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ScriptProp::integrity(val)));
         self

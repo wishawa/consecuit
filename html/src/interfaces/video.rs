@@ -1,4 +1,5 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlVideoElement;
 
 #[allow(non_camel_case_types)]
@@ -6,7 +7,7 @@ use web_sys::HtmlVideoElement;
 pub enum VideoProp {
     width(u32),
     height(u32),
-    poster(String),
+    poster(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -43,7 +44,7 @@ impl HtmlProps<HtmlVideoElement> {
         self
     }
 
-    pub fn poster(mut self, val: impl Into<String>) -> Self {
+    pub fn poster(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(VideoProp::poster(val)));
         self

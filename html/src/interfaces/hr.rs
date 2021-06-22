@@ -1,14 +1,15 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlHrElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum HrProp {
-    align(String),
-    color(String),
+    align(Cow<'static, str>),
+    color(Cow<'static, str>),
     no_shade(bool),
-    size(String),
-    width(String),
+    size(Cow<'static, str>),
+    width(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -39,13 +40,13 @@ impl crate::elem::PropEnum<HtmlHrElement> for HrProp {
 }
 
 impl HtmlProps<HtmlHrElement> {
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(HrProp::align(val)));
         self
     }
 
-    pub fn color(mut self, val: impl Into<String>) -> Self {
+    pub fn color(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(HrProp::color(val)));
         self
@@ -56,13 +57,13 @@ impl HtmlProps<HtmlHrElement> {
         self
     }
 
-    pub fn size(mut self, val: impl Into<String>) -> Self {
+    pub fn size(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(HrProp::size(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(HrProp::width(val)));
         self

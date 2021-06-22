@@ -1,45 +1,46 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlInputElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum InputProp {
-    accept(String),
-    alt(String),
-    autocomplete(String),
+    accept(Cow<'static, str>),
+    alt(Cow<'static, str>),
+    autocomplete(Cow<'static, str>),
     autofocus(bool),
     default_checked(bool),
     checked(bool),
     disabled(bool),
     files(web_sys::FileList),
-    form_action(String),
-    form_enctype(String),
-    form_method(String),
+    form_action(Cow<'static, str>),
+    form_enctype(Cow<'static, str>),
+    form_method(Cow<'static, str>),
     form_no_validate(bool),
-    form_target(String),
+    form_target(Cow<'static, str>),
     height(u32),
     indeterminate(bool),
-    input_mode(String),
-    max(String),
+    input_mode(Cow<'static, str>),
+    max(Cow<'static, str>),
     max_length(i32),
-    min(String),
+    min(Cow<'static, str>),
     min_length(i32),
     multiple(bool),
-    name(String),
-    pattern(String),
-    placeholder(String),
+    name(Cow<'static, str>),
+    pattern(Cow<'static, str>),
+    placeholder(Cow<'static, str>),
     read_only(bool),
     required(bool),
     size(u32),
-    src(String),
-    step(String),
-    r#type(String),
-    default_value(String),
-    value(String),
+    src(Cow<'static, str>),
+    step(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    default_value(Cow<'static, str>),
+    value(Cow<'static, str>),
     value_as_number(f64),
     width(u32),
-    align(String),
-    use_map(String),
+    align(Cow<'static, str>),
+    use_map(Cow<'static, str>),
     webkitdirectory(bool),
 }
 
@@ -135,19 +136,19 @@ impl crate::elem::PropEnum<HtmlInputElement> for InputProp {
 }
 
 impl HtmlProps<HtmlInputElement> {
-    pub fn accept(mut self, val: impl Into<String>) -> Self {
+    pub fn accept(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::accept(val)));
         self
     }
 
-    pub fn alt(mut self, val: impl Into<String>) -> Self {
+    pub fn alt(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::alt(val)));
         self
     }
 
-    pub fn autocomplete(mut self, val: impl Into<String>) -> Self {
+    pub fn autocomplete(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(InputProp::autocomplete(val)));
@@ -180,20 +181,20 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn form_action(mut self, val: impl Into<String>) -> Self {
+    pub fn form_action(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::form_action(val)));
         self
     }
 
-    pub fn form_enctype(mut self, val: impl Into<String>) -> Self {
+    pub fn form_enctype(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(InputProp::form_enctype(val)));
         self
     }
 
-    pub fn form_method(mut self, val: impl Into<String>) -> Self {
+    pub fn form_method(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::form_method(val)));
         self
@@ -205,7 +206,7 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn form_target(mut self, val: impl Into<String>) -> Self {
+    pub fn form_target(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::form_target(val)));
         self
@@ -222,13 +223,13 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn input_mode(mut self, val: impl Into<String>) -> Self {
+    pub fn input_mode(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::input_mode(val)));
         self
     }
 
-    pub fn max(mut self, val: impl Into<String>) -> Self {
+    pub fn max(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::max(val)));
         self
@@ -239,7 +240,7 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn min(mut self, val: impl Into<String>) -> Self {
+    pub fn min(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::min(val)));
         self
@@ -255,19 +256,19 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::name(val)));
         self
     }
 
-    pub fn pattern(mut self, val: impl Into<String>) -> Self {
+    pub fn pattern(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::pattern(val)));
         self
     }
 
-    pub fn placeholder(mut self, val: impl Into<String>) -> Self {
+    pub fn placeholder(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::placeholder(val)));
         self
@@ -288,31 +289,31 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::src(val)));
         self
     }
 
-    pub fn step(mut self, val: impl Into<String>) -> Self {
+    pub fn step(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::step(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(InputProp::r#type(val)));
         self
     }
 
-    pub fn default_value(mut self, val: impl Into<String>) -> Self {
+    pub fn default_value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(InputProp::default_value(val)));
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::value(val)));
         self
@@ -329,13 +330,13 @@ impl HtmlProps<HtmlInputElement> {
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::align(val)));
         self
     }
 
-    pub fn use_map(mut self, val: impl Into<String>) -> Self {
+    pub fn use_map(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(InputProp::use_map(val)));
         self

@@ -1,4 +1,5 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlButtonElement;
 
 #[allow(non_camel_case_types)]
@@ -6,14 +7,14 @@ use web_sys::HtmlButtonElement;
 pub enum ButtonProp {
     autofocus(bool),
     disabled(bool),
-    form_action(String),
-    form_enctype(String),
-    form_method(String),
+    form_action(Cow<'static, str>),
+    form_enctype(Cow<'static, str>),
+    form_method(Cow<'static, str>),
     form_no_validate(bool),
-    form_target(String),
-    name(String),
-    r#type(String),
-    value(String),
+    form_target(Cow<'static, str>),
+    name(Cow<'static, str>),
+    r#type(Cow<'static, str>),
+    value(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -64,21 +65,21 @@ impl HtmlProps<HtmlButtonElement> {
         self
     }
 
-    pub fn form_action(mut self, val: impl Into<String>) -> Self {
+    pub fn form_action(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_action(val)));
         self
     }
 
-    pub fn form_enctype(mut self, val: impl Into<String>) -> Self {
+    pub fn form_enctype(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_enctype(val)));
         self
     }
 
-    pub fn form_method(mut self, val: impl Into<String>) -> Self {
+    pub fn form_method(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_method(val)));
@@ -91,25 +92,25 @@ impl HtmlProps<HtmlButtonElement> {
         self
     }
 
-    pub fn form_target(mut self, val: impl Into<String>) -> Self {
+    pub fn form_target(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ButtonProp::form_target(val)));
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ButtonProp::name(val)));
         self
     }
 
-    pub fn r#type(mut self, val: String) -> Self {
+    pub fn r#type(mut self, val: Cow<'static, str>) -> Self {
         self.0.push_back(HtmlProp::Own(ButtonProp::r#type(val)));
         self
     }
 
-    pub fn value(mut self, val: impl Into<String>) -> Self {
+    pub fn value(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ButtonProp::value(val)));
         self

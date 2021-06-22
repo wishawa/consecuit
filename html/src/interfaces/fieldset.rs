@@ -1,11 +1,12 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlFieldSetElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum FieldSetProp {
     disabled(bool),
-    name(String),
+    name(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -35,7 +36,7 @@ impl HtmlProps<HtmlFieldSetElement> {
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(FieldSetProp::name(val)));
         self

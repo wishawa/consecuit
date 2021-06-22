@@ -1,10 +1,11 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTimeElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TimeProp {
-    date_time(String),
+    date_time(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -27,7 +28,7 @@ impl crate::elem::PropEnum<HtmlTimeElement> for TimeProp {
 }
 
 impl HtmlProps<HtmlTimeElement> {
-    pub fn date_time(mut self, val: impl Into<String>) -> Self {
+    pub fn date_time(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TimeProp::date_time(val)));
         self

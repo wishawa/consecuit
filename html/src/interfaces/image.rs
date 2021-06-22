@@ -1,26 +1,27 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlImageElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum ImageProp {
-    alt(String),
-    src(String),
-    srcset(String),
-    cross_origin(String),
-    use_map(String),
-    referrer_policy(String),
+    alt(Cow<'static, str>),
+    src(Cow<'static, str>),
+    srcset(Cow<'static, str>),
+    cross_origin(Cow<'static, str>),
+    use_map(Cow<'static, str>),
+    referrer_policy(Cow<'static, str>),
     is_map(bool),
     width(u32),
     height(u32),
-    decoding(String),
-    name(String),
-    align(String),
+    decoding(Cow<'static, str>),
+    name(Cow<'static, str>),
+    align(Cow<'static, str>),
     hspace(u32),
     vspace(u32),
-    long_desc(String),
-    border(String),
-    sizes(String),
+    long_desc(Cow<'static, str>),
+    border(Cow<'static, str>),
+    sizes(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -75,38 +76,38 @@ impl crate::elem::PropEnum<HtmlImageElement> for ImageProp {
 }
 
 impl HtmlProps<HtmlImageElement> {
-    pub fn alt(mut self, val: impl Into<String>) -> Self {
+    pub fn alt(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::alt(val)));
         self
     }
 
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::src(val)));
         self
     }
 
-    pub fn srcset(mut self, val: impl Into<String>) -> Self {
+    pub fn srcset(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::srcset(val)));
         self
     }
 
-    pub fn cross_origin(mut self, val: impl Into<String>) -> Self {
+    pub fn cross_origin(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ImageProp::cross_origin(val)));
         self
     }
 
-    pub fn use_map(mut self, val: impl Into<String>) -> Self {
+    pub fn use_map(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::use_map(val)));
         self
     }
 
-    pub fn referrer_policy(mut self, val: impl Into<String>) -> Self {
+    pub fn referrer_policy(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(ImageProp::referrer_policy(val)));
@@ -128,19 +129,19 @@ impl HtmlProps<HtmlImageElement> {
         self
     }
 
-    pub fn decoding(mut self, val: impl Into<String>) -> Self {
+    pub fn decoding(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::decoding(val)));
         self
     }
 
-    pub fn name(mut self, val: impl Into<String>) -> Self {
+    pub fn name(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::name(val)));
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::align(val)));
         self
@@ -156,19 +157,19 @@ impl HtmlProps<HtmlImageElement> {
         self
     }
 
-    pub fn long_desc(mut self, val: impl Into<String>) -> Self {
+    pub fn long_desc(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::long_desc(val)));
         self
     }
 
-    pub fn border(mut self, val: impl Into<String>) -> Self {
+    pub fn border(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::border(val)));
         self
     }
 
-    pub fn sizes(mut self, val: impl Into<String>) -> Self {
+    pub fn sizes(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(ImageProp::sizes(val)));
         self

@@ -1,15 +1,16 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTableColElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TableColProp {
     span(u32),
-    align(String),
-    ch(String),
-    ch_off(String),
-    v_align(String),
-    width(String),
+    align(Cow<'static, str>),
+    ch(Cow<'static, str>),
+    ch_off(Cow<'static, str>),
+    v_align(Cow<'static, str>),
+    width(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -47,31 +48,31 @@ impl HtmlProps<HtmlTableColElement> {
         self
     }
 
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableColProp::align(val)));
         self
     }
 
-    pub fn ch(mut self, val: impl Into<String>) -> Self {
+    pub fn ch(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableColProp::ch(val)));
         self
     }
 
-    pub fn ch_off(mut self, val: impl Into<String>) -> Self {
+    pub fn ch_off(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableColProp::ch_off(val)));
         self
     }
 
-    pub fn v_align(mut self, val: impl Into<String>) -> Self {
+    pub fn v_align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableColProp::v_align(val)));
         self
     }
 
-    pub fn width(mut self, val: impl Into<String>) -> Self {
+    pub fn width(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableColProp::width(val)));
         self

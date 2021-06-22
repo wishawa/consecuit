@@ -1,13 +1,14 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTrackElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TrackProp {
-    kind(String),
-    src(String),
-    srclang(String),
-    label(String),
+    kind(Cow<'static, str>),
+    src(Cow<'static, str>),
+    srclang(Cow<'static, str>),
+    label(Cow<'static, str>),
     default(bool),
 }
 
@@ -39,25 +40,25 @@ impl crate::elem::PropEnum<HtmlTrackElement> for TrackProp {
 }
 
 impl HtmlProps<HtmlTrackElement> {
-    pub fn kind(mut self, val: impl Into<String>) -> Self {
+    pub fn kind(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::kind(val)));
         self
     }
 
-    pub fn src(mut self, val: impl Into<String>) -> Self {
+    pub fn src(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::src(val)));
         self
     }
 
-    pub fn srclang(mut self, val: impl Into<String>) -> Self {
+    pub fn srclang(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::srclang(val)));
         self
     }
 
-    pub fn label(mut self, val: impl Into<String>) -> Self {
+    pub fn label(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TrackProp::label(val)));
         self

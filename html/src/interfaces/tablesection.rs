@@ -1,13 +1,14 @@
 use crate::elem::{HtmlProp, HtmlProps};
+use std::borrow::Cow;
 use web_sys::HtmlTableSectionElement;
 
 #[allow(non_camel_case_types)]
 #[derive(Clone, PartialEq)]
 pub enum TableSectionProp {
-    align(String),
-    ch(String),
-    ch_off(String),
-    v_align(String),
+    align(Cow<'static, str>),
+    ch(Cow<'static, str>),
+    ch_off(Cow<'static, str>),
+    v_align(Cow<'static, str>),
 }
 
 #[sealed::sealed]
@@ -36,27 +37,27 @@ impl crate::elem::PropEnum<HtmlTableSectionElement> for TableSectionProp {
 }
 
 impl HtmlProps<HtmlTableSectionElement> {
-    pub fn align(mut self, val: impl Into<String>) -> Self {
+    pub fn align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::align(val)));
         self
     }
 
-    pub fn ch(mut self, val: impl Into<String>) -> Self {
+    pub fn ch(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0.push_back(HtmlProp::Own(TableSectionProp::ch(val)));
         self
     }
 
-    pub fn ch_off(mut self, val: impl Into<String>) -> Self {
+    pub fn ch_off(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::ch_off(val)));
         self
     }
 
-    pub fn v_align(mut self, val: impl Into<String>) -> Self {
+    pub fn v_align(mut self, val: impl Into<Cow<'static, str>>) -> Self {
         let val = val.into();
         self.0
             .push_back(HtmlProp::Own(TableSectionProp::v_align(val)));
