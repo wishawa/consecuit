@@ -340,7 +340,7 @@ fn bottom_controls(
     })
 }
 
-static TODOS_STORAGE_KEY: &str = "@todos";
+static TODOS_STORAGE_KEY: &str = "todos-reia";
 
 fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosReducer)> {
     let (reia, (todos, setter)) = reia.init().hook(use_state_from, || {
