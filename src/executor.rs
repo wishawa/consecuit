@@ -16,7 +16,7 @@ pub(crate) struct RerenderTask {
 }
 
 impl RerenderTask {
-    fn hash(&self) -> (*const dyn ComponentStore, *const AtomicBool) {
+    fn to_hashable(&self) -> (*const dyn ComponentStore, *const AtomicBool) {
         (self.comp, self.lock.as_ptr())
     }
     pub(crate) fn new(comp: &'static dyn ComponentStore, lock: UnmountedLock) -> Self {
@@ -24,14 +24,14 @@ impl RerenderTask {
     }
     pub(crate) fn enqueue(self) {
         PENDING_RERENDERS.with(|p| {
-            if p.borrow_mut().insert(self.hash()) {
+            if p.borrow_mut().insert(self.to_hashable()) {
                 EXECUTOR.with(|l| l.enqueue(ExecutorTask::Rerender(self)))
             }
         });
     }
     fn execute(&self) {
         PENDING_RERENDERS.with(|p| {
-            p.borrow_mut().remove(&self.hash());
+            p.borrow_mut().remove(&self.to_hashable());
         });
         if self.lock.is_mounted() {
             self.comp.render();
