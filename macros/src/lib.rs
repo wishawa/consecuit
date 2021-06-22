@@ -21,6 +21,7 @@ struct ReiaNode {
     func: ExprPath,
     props: ExprBlock,
     children: ReiaNodes,
+    hole: bool,
 }
 
 impl Parse for ReiaNodes {
@@ -44,6 +45,7 @@ impl TryFrom<Node> for ReiaNode {
                 func,
                 props,
                 children: ReiaNodes(Vec::new()),
+                hole: false,
             }
         }
 
@@ -62,22 +64,43 @@ impl TryFrom<Node> for ReiaNode {
                 } else {
                     Err(syn::Error::new(name.span(), "Invalid component"))
                 }?;
-                let props = if let Some(attribute) = attributes.get(0) {
-                    if let syn::Expr::Block(block) = attribute.value.clone().unwrap() {
-                        Ok(block)
-                    } else {
-                        Err(syn::Error::new(name.span(), "Invalid props"))
-                    }
-                } else {
-                    Ok(parse_quote!({ ::std::default::Default::default() }))
-                }?;
+
                 let children: syn::Result<Vec<Self>> =
                     children.into_iter().map(ReiaNode::try_from).collect();
                 let children = ReiaNodes(children?);
-                Self {
+
+                let mut props = None;
+                let mut hole = false;
+                for attribute in attributes.iter() {
+                    match attribute.node_type {
+                        syn_rsx::NodeType::Block => {
+                            if let syn::Expr::Block(block) = attribute.value.clone().unwrap() {
+                                props = Some(block);
+                            } else {
+                                panic!()
+                            }
+                        }
+                        syn_rsx::NodeType::Attribute => {
+                            if attribute.name_as_string() == Some("HOLE".to_string()) {
+                                hole = true;
+                                if !children.0.is_empty() {
+                                    return Err(syn::Error::new(
+                                        attribute.name_span().unwrap(),
+                                        "Only childless elements can be hole.",
+                                    ));
+                                }
+                            }
+                        }
+                        _ => panic!(),
+                    }
+                }
+                let props =
+                    props.unwrap_or_else(|| parse_quote!({ ::std::default::Default::default() }));
+                ReiaNode {
                     func,
                     props,
                     children,
+                    hole,
                 }
             }
             syn_rsx::NodeType::Attribute => panic!(),
@@ -96,28 +119,40 @@ impl ReiaNodes {
         let tokens = self.build();
         quote! {
             #[allow(unused_braces)]
-            #tokens
+            reia#tokens
         }
     }
     fn build(&self) -> TokenStream {
-        let func = self.0.iter().map(|n| &n.func);
-        let props = self.0.iter().map(|n| &n.props);
-        let children = self.0.iter().map(|n| {
-            let child_nodes = &n.children;
-            if child_nodes.0.is_empty() {
-                quote! {}
+        let tokens = self.0.iter().map(|n| {
+            let ReiaNode {
+                func,
+                props,
+                children,
+                hole,
+            } = n;
+            let child_part = if children.0.is_empty() {
+                if *hole {
+                    quote! {
+                        .hole_here()
+                    }
+                } else {
+                    quote! {}
+                }
             } else {
-                let inner = child_nodes.build();
+                let inner = children.build();
                 quote! {
                     .child(|reia| {
+                        reia
                         #inner
                     })
                 }
+            };
+            quote! {
+                .comp(#func, #props)#child_part
             }
         });
         quote! {
-            reia
-            #(.comp(#func, #props)#children)*
+            #(#tokens)*
         }
     }
 }
