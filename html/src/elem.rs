@@ -52,6 +52,22 @@ impl<E: HtmlComponent> PartialEq for HtmlProps<E> {
     }
 }
 
+impl<E: HtmlComponent> Default for HtmlProps<E> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<E: HtmlComponent> HtmlProps<E> {
+    pub fn new() -> Self {
+        Self(Vector::new())
+    }
+}
+
+pub fn html_props<E: HtmlComponent>() -> HtmlProps<E> {
+    HtmlProps::new()
+}
+
 pub(crate) struct UseElementArgs<T>
 where
     T: HtmlComponent,
@@ -117,14 +133,4 @@ pub(crate) fn use_element<T: HtmlComponent>(
         .unwrap();
 
     (reia, elem)
-}
-
-impl<E: HtmlComponent> HtmlProps<E> {
-    pub fn new() -> Self {
-        Self(Vector::new())
-    }
-}
-
-pub fn html_props<E: HtmlComponent>() -> HtmlProps<E> {
-    HtmlProps::new()
 }

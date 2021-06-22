@@ -12,3 +12,4 @@ pub use component::{
 pub use executor::{batch_updates, run_later};
 pub use hook::{HookBuilder, HookReturn};
 pub use hooks::*;
+pub use reia_macros::reia_tree;

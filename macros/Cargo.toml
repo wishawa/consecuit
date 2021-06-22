@@ -1,5 +1,5 @@
 [package]
-name = "playground"
+name = "reia_macros"
 version = "0.1.0"
 authors = ["Wisha Wa <wisha.wa@yandex.com>"]
 edition = "2018"
@@ -7,10 +7,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+proc-macro = true
 
 [dependencies]
-wasm-bindgen = "0.2.74"
-console_error_panic_hook = "0.1.6"
-reia = { path = "../../", version = "0.1.0" }
-reia_html = { path = "../../html/" }
+proc-macro2 = "1"
+quote = "1"
+syn = "1"
+syn-rsx = "0.8.0"

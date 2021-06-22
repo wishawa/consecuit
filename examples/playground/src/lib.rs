@@ -97,8 +97,13 @@ fn level_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
 
 fn levels_history(reia: ComponentBuilder, level: i32) -> impl ComponentReturn {
     let reia = reia.init();
-    reia.comp(text_node, format!("Current level: {}\nHistory:", level))
-        .comp(vec_comps, (level_history, (1..=level.max(0)).collect()))
+
+    reia_tree!(
+        {format!("Current level: {} - History:", level)}
+        <div {html_props().class_name("HELLO LOOK AT ME")}>
+            <vec_comps {(level_history, (1..=level.max(0)).collect())} />
+        </div>
+    )
 }
 
 fn dyn_example(reia: ComponentBuilder, props: Vec<i32>) -> DynComponentReturn<Vec<i32>> {
