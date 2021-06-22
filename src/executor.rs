@@ -30,6 +30,9 @@ impl RerenderTask {
         });
     }
     fn execute(&self) {
+        PENDING_RERENDERS.with(|p| {
+            p.borrow_mut().remove(&self.hash());
+        });
         if self.lock.is_mounted() {
             self.comp.render();
         } else {
@@ -38,9 +41,6 @@ impl RerenderTask {
                     .into(),
             );
         }
-        PENDING_RERENDERS.with(|p| {
-            p.borrow_mut().remove(&self.hash());
-        })
     }
 }
 
