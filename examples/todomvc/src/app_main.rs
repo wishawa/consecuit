@@ -98,7 +98,7 @@ fn top_box(
             .comp(
                 input,
                 input_props
-                    .class_name("flex-1 p-2 placeholder-gray-300")
+                    .class_name("flex-1 min-w-0 p-2 placeholder-gray-300")
                     .placeholder("What needs to be done?"),
             )
         })
@@ -124,7 +124,7 @@ fn one_todo(
     });
     reia.comp(
         div,
-        html_props().class_name("border-t-2 border-gray-100 text-2xl h-14"),
+        html_props().class_name("border-t-2 border-gray-100 text-2xl"),
     )
     .child(|r| {
         r.comp(
@@ -132,7 +132,7 @@ fn one_todo(
             html_props().class_name(if edit {
                 "hidden"
             } else {
-                "h-full flex flex-row group"
+                "flex flex-row group"
             }),
         )
         .child(|r| {
@@ -140,9 +140,9 @@ fn one_todo(
                 button,
                 html_props().onclick(toggle).class_name({
                     if todo.completed {
-                        "w-12 text-green-500"
+                        "flex-shrink-0 w-12 text-green-500"
                     } else {
-                        "w-12 text-gray-400"
+                        "flex-shrink-0 w-12 text-gray-400"
                     }
                 }),
             )
@@ -150,19 +150,20 @@ fn one_todo(
             .comp(
                 label,
                 html_props().ondblclick(enter_edit).class_name({
+                    const SHARED_CLASS: &str = "flex-1 min-w-0 flex items-center break-all p-2";
                     if todo.completed {
-                        "flex items-center flex-1 p-2 text-gray-500 line-through"
+                        format!("{} text-gray-500 line-through", SHARED_CLASS)
                     } else {
-                        "flex items-center flex-1 p-2 text-gray-800"
+                        format!("{} text-gray-800", SHARED_CLASS)
                     }
                 }),
             )
             .child(|r| r.comp(text_node, todo.name.clone()))
             .comp(
                 button,
-                html_props()
-                    .onclick(remove)
-                    .class_name("w-12 text-red-700 opacity-0 group-hover:opacity-100"),
+                html_props().onclick(remove).class_name(
+                    "flex-shrink-0 w-12 text-red-700 opacity-0 group-hover:opacity-100",
+                ),
             )
             .child(|r| r.comp(text_node, "🗴"))
         })
@@ -202,7 +203,7 @@ fn todo_edit(
             },
         ),
     );
-    reia.comp(div, html_props().class_name("h-full flex flex-row"))
+    reia.comp(div, html_props().class_name("flex flex-row"))
         .child(|r| {
             r.comp(div, html_props().class_name("w-12")).comp(
                 input,
@@ -249,8 +250,10 @@ fn filter_button(
     reia: ComponentBuilder,
     (this, current): (ListFilter, ListFilter),
 ) -> impl ComponentReturn {
-    const SELECTED_CLASSES: &str = "rounded border-2 border-red-900 px-1 mx-2";
-    const UNSELECTED_CLASSES: &str = "rounded border-2 border-transparent hover:border-red-900 hover:border-opacity-30 px-1 mx-2";
+    const SHARED_CLASS: &str = "rounded border px-1 mx-2";
+    let selected_classes: String = format!("{} border-red-900", SHARED_CLASS);
+    let unselected_classes: String =
+        format!("{} border-transparent hover:border-red-900", SHARED_CLASS);
     let reia = reia.init();
     let href = match this {
         ListFilter::All => "#/all",
@@ -267,9 +270,9 @@ fn filter_button(
         HtmlProps::<web_sys::HtmlAnchorElement>::new()
             .href(href)
             .class_name(if this == current {
-                SELECTED_CLASSES
+                selected_classes
             } else {
-                UNSELECTED_CLASSES
+                unselected_classes
             }),
     )
     .child(|r| r.comp(text_node, text))
@@ -286,7 +289,7 @@ fn bottom_controls(
     reia.comp(
         div,
         html_props().class_name(if !todos.is_empty() {
-            "flex flex-row items-center p-2 font-light border-t-2 border-gray-100"
+            "flex flex-row items-center flex-wrap p-2 font-light border-t-2 border-gray-100"
         } else {
             "hidden"
         }),
@@ -294,7 +297,7 @@ fn bottom_controls(
     .child(|r| {
         r.comp(
             div,
-            html_props().class_name("flex-1 flex flex-row justify-start"),
+            html_props().class_name("flex-1 flex flex-row justify-start order-1"),
         )
         .child(|r| {
             r.comp(text_node, {
@@ -308,16 +311,7 @@ fn bottom_controls(
         })
         .comp(
             div,
-            html_props().class_name("flex-1 flex flex-row justify-center"),
-        )
-        .child(|r| {
-            r.comp(filter_button, (ListFilter::All, filter))
-                .comp(filter_button, (ListFilter::Active, filter))
-                .comp(filter_button, (ListFilter::Completed, filter))
-        })
-        .comp(
-            div,
-            html_props().class_name("flex-1 flex flex-row justify-end"),
+            html_props().class_name("flex-1 flex flex-row justify-end order-2 sm:order-3"),
         )
         .child(|r| {
             r.comp(
@@ -331,6 +325,17 @@ fn bottom_controls(
                 }),
             )
             .child(|r| r.comp(text_node, "Clear Completed"))
+        })
+        .comp(
+            div,
+            html_props().class_name(
+                "flex-1 flex flex-row justify-center order-3 sm:order-2 min-w-full sm:min-w-min",
+            ),
+        )
+        .child(|r| {
+            r.comp(filter_button, (ListFilter::All, filter))
+                .comp(filter_button, (ListFilter::Active, filter))
+                .comp(filter_button, (ListFilter::Completed, filter))
         })
     })
 }
