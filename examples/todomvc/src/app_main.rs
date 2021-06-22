@@ -2,57 +2,7 @@ use im_rc::Vector;
 use reia::*;
 use reia_html::prelude::*;
 
-#[derive(Clone, PartialEq, Debug)]
-struct Todo {
-    name: String,
-    completed: bool,
-}
-
-#[derive(Clone, PartialEq)]
-struct TodosReducer(StateSetter<Vector<Todo>>);
-
-enum TodosReduction {
-    Add(String),
-    Remove(usize),
-    Toggle(usize),
-    SetName(usize, String),
-    ToggleAll(),
-    ClearCompleted(),
-}
-
-impl TodosReducer {
-    fn reduce(&self, reduction: TodosReduction) {
-        self.0.update_with(|mut v| {
-            match reduction {
-                TodosReduction::Add(name) => {
-                    v.push_back(Todo {
-                        name,
-                        completed: false,
-                    });
-                }
-                TodosReduction::Remove(idx) => {
-                    v.remove(idx);
-                }
-                TodosReduction::Toggle(idx) => {
-                    let current = v.get_mut(idx).unwrap();
-                    current.completed = !current.completed;
-                }
-                TodosReduction::SetName(idx, name) => {
-                    let current = v.get_mut(idx).unwrap();
-                    current.name = name;
-                }
-                TodosReduction::ToggleAll() => {
-                    let to = !v.iter().all(|td| td.completed);
-                    for td in v.iter_mut() {
-                        td.completed = to;
-                    }
-                }
-                TodosReduction::ClearCompleted() => v.retain(|td| !td.completed),
-            }
-            v
-        })
-    }
-}
+use crate::model::{todos_from_str, todos_to_string, Todo, TodosReducer, TodosReduction};
 
 fn use_text_edit(
     reia: HookBuilder,
@@ -70,7 +20,7 @@ fn use_text_edit(
                 let inp = opt.as_ref().unwrap();
                 let value = inp.value();
                 inp.set_value("");
-                value
+                value.trim().to_string()
             })
             .unwrap();
         submit(text);
@@ -106,11 +56,16 @@ fn use_text_edit(
     (reia, props)
 }
 
-fn top_box(reia: ComponentBuilder, reducer: TodosReducer) -> impl ComponentReturn {
+fn top_box(
+    reia: ComponentBuilder,
+    (todos, reducer): (Vector<Todo>, TodosReducer),
+) -> impl ComponentReturn {
     let reia = reia.init();
     let cloned_reducer = reducer.clone();
+    let is_empty = todos.is_empty();
+    let all_completed = todos.iter().all(|td| td.completed);
     let on_toggle_all = Callback::new(move |_ev| {
-        cloned_reducer.reduce(TodosReduction::ToggleAll());
+        cloned_reducer.reduce(TodosReduction::ToggleAll(!all_completed));
     });
 
     let (reia, input_props) = reia.hook(
@@ -125,17 +80,25 @@ fn top_box(reia: ComponentBuilder, reducer: TodosReducer) -> impl ComponentRetur
         ),
     );
 
-    reia.comp(div, html_props().class_name("flex flex-row text-2xl"))
+    reia.comp(div, html_props().class_name("flex flex-row text-2xl h-16"))
         .child(|r| {
             r.comp(
                 button,
-                html_props().onclick(on_toggle_all).class_name("w-12"),
+                html_props().onclick(on_toggle_all).class_name({
+                    if is_empty {
+                        "w-12 invisible disabled"
+                    } else if all_completed {
+                        "w-12 text-green-500"
+                    } else {
+                        "w-12 text-gray-400"
+                    }
+                }),
             )
-            .child(|r| r.comp(text_node, "⯆"))
+            .child(|r| r.comp(text_node, if all_completed { "▼" } else { "▽" }))
             .comp(
                 input,
                 input_props
-                    .class_name("flex-1 m-2 p-2")
+                    .class_name("flex-1 p-2 placeholder-gray-300")
                     .placeholder("What needs to be done?"),
             )
         })
@@ -159,39 +122,62 @@ fn one_todo(
     let enter_edit = Callback::new(move |_ev| {
         edit_setter_cloned.set(true);
     });
-    reia.comp(div, html_props().class_name("border-t-2 text-2xl"))
+    reia.comp(
+        div,
+        html_props().class_name("border-t-2 border-gray-100 text-2xl h-14"),
+    )
+    .child(|r| {
+        r.comp(
+            div,
+            html_props().class_name(if edit {
+                "hidden"
+            } else {
+                "h-full flex flex-row group"
+            }),
+        )
         .child(|r| {
             r.comp(
-                div,
-                html_props().class_name(if edit {
-                    "hidden"
-                } else {
-                    "flex flex-row justify-between"
+                button,
+                html_props().onclick(toggle).class_name({
+                    if todo.completed {
+                        "w-12 text-green-500"
+                    } else {
+                        "w-12 text-gray-400"
+                    }
                 }),
             )
-            .child(|r| {
-                r.comp(button, html_props().onclick(toggle).class_name("w-12"))
-                    .child(|r| r.comp(text_node, if todo.completed { "☑" } else { "☐" }))
-                    .comp(
-                        div,
-                        html_props().ondblclick(enter_edit).class_name("flex-1 p-2"),
-                    )
-                    .child(|r| r.comp(text_node, todo.name.clone()))
-                    .comp(button, html_props().onclick(remove).class_name("w-12"))
-                    .child(|r| r.comp(text_node, "🗴"))
-            })
+            .child(|r| r.comp(text_node, if todo.completed { "☑" } else { "☐" }))
             .comp(
-                opt_comp,
-                (
-                    todo_edit,
-                    if edit {
-                        Some((todo, reducer, idx, edit_setter))
+                label,
+                html_props().ondblclick(enter_edit).class_name({
+                    if todo.completed {
+                        "flex items-center flex-1 p-2 text-gray-500 line-through"
                     } else {
-                        None
-                    },
-                ),
+                        "flex items-center flex-1 p-2 text-gray-800"
+                    }
+                }),
             )
+            .child(|r| r.comp(text_node, todo.name.clone()))
+            .comp(
+                button,
+                html_props()
+                    .onclick(remove)
+                    .class_name("w-12 text-red-700 opacity-0 group-hover:opacity-100"),
+            )
+            .child(|r| r.comp(text_node, "🗴"))
         })
+        .comp(
+            opt_comp,
+            (
+                todo_edit,
+                if edit {
+                    Some((todo, reducer, idx, edit_setter))
+                } else {
+                    None
+                },
+            ),
+        )
+    })
 }
 
 fn todo_edit(
@@ -204,7 +190,11 @@ fn todo_edit(
         use_text_edit,
         (
             move |text: String| {
-                reducer.reduce(TodosReduction::SetName(idx, text));
+                if text.is_empty() {
+                    reducer.reduce(TodosReduction::Remove(idx));
+                } else {
+                    reducer.reduce(TodosReduction::SetName(idx, text));
+                }
                 edit_setter_cloned.set(false);
             },
             move || {
@@ -212,10 +202,14 @@ fn todo_edit(
             },
         ),
     );
-    reia.comp(div, html_props().class_name("flex flex-row"))
+    reia.comp(div, html_props().class_name("h-full flex flex-row"))
         .child(|r| {
-            r.comp(div, html_props().class_name("w-12"))
-                .comp(input, input_props.value(todo.name).class_name("flex-1 p-2"))
+            r.comp(div, html_props().class_name("w-12")).comp(
+                input,
+                input_props
+                    .value(todo.name)
+                    .class_name("flex-1 p-2 shadow-inner"),
+            )
         })
 }
 
@@ -251,6 +245,36 @@ fn main_list(
     reia.comp(vec_comps, (one_todo, props))
 }
 
+fn filter_button(
+    reia: ComponentBuilder,
+    (this, current): (ListFilter, ListFilter),
+) -> impl ComponentReturn {
+    const SELECTED_CLASSES: &str = "rounded border-2 border-red-900 px-1 mx-2";
+    const UNSELECTED_CLASSES: &str = "rounded border-2 border-transparent hover:border-red-900 hover:border-opacity-30 px-1 mx-2";
+    let reia = reia.init();
+    let href = match this {
+        ListFilter::All => "#/all",
+        ListFilter::Active => "#/active",
+        ListFilter::Completed => "#/completed",
+    };
+    let text = match this {
+        ListFilter::All => "All",
+        ListFilter::Active => "Active",
+        ListFilter::Completed => "Completed",
+    };
+    reia.comp(
+        a,
+        HtmlProps::<web_sys::HtmlAnchorElement>::new()
+            .href(href)
+            .class_name(if this == current {
+                SELECTED_CLASSES
+            } else {
+                UNSELECTED_CLASSES
+            }),
+    )
+    .child(|r| r.comp(text_node, text))
+}
+
 fn bottom_controls(
     reia: ComponentBuilder,
     (todos, reducer, filter): (Vector<Todo>, TodosReducer, ListFilter),
@@ -259,64 +283,83 @@ fn bottom_controls(
     let on_clear = Callback::new(move |_ev| {
         reducer.reduce(TodosReduction::ClearCompleted());
     });
-    let (c_all, c_active, c_completed) = match filter {
-        ListFilter::All => ("ring-2 ring-red-600 m-2 p-2", "m-2 p-2", "m-2 p-2"),
-        ListFilter::Active => ("m-2 p-2", "ring-2 ring-red-600 m-2 p-2", "m-2 p-2"),
-        ListFilter::Completed => ("m-2 p-2", "m-2 p-2", "ring-2 ring-red-600 m-2 p-2"),
-    };
     reia.comp(
         div,
         html_props().class_name(if !todos.is_empty() {
-            "flex flex-row justify-between p-2 border-t-2"
+            "flex flex-row items-center p-2 font-light border-t-2 border-gray-100"
         } else {
             "hidden"
         }),
     )
     .child(|r| {
-        r.comp(div, html_props())
-            .child(|r| {
-                r.comp(
-                    text_node,
-                    format!(
-                        "{} items left",
-                        todos.iter().filter(|td| !td.completed).count()
-                    ),
+        r.comp(
+            div,
+            html_props().class_name("flex-1 flex flex-row justify-start"),
+        )
+        .child(|r| {
+            r.comp(text_node, {
+                let count = todos.iter().filter(|td| !td.completed).count();
+                format!(
+                    "{} {} left",
+                    count,
+                    if count == 1 { "item" } else { "items" }
                 )
             })
-            .comp(div, html_props())
-            .child(|r| {
-                r.comp(
-                    a,
-                    HtmlProps::<web_sys::HtmlAnchorElement>::new()
-                        .href("#/all")
-                        .class_name(c_all),
-                )
-                .child(|r| r.comp(text_node, "All"))
-                .comp(
-                    a,
-                    HtmlProps::<web_sys::HtmlAnchorElement>::new()
-                        .href("#/active")
-                        .class_name(c_active),
-                )
-                .child(|r| r.comp(text_node, "Active"))
-                .comp(
-                    a,
-                    HtmlProps::<web_sys::HtmlAnchorElement>::new()
-                        .href("#/completed")
-                        .class_name(c_completed),
-                )
-                .child(|r| r.comp(text_node, "Completed"))
-            })
-            .comp(div, html_props())
-            .child(|r| {
-                r.comp(button, html_props().onclick(on_clear))
-                    .child(|r| r.comp(text_node, "Clear Completed"))
-            })
+        })
+        .comp(
+            div,
+            html_props().class_name("flex-1 flex flex-row justify-center"),
+        )
+        .child(|r| {
+            r.comp(filter_button, (ListFilter::All, filter))
+                .comp(filter_button, (ListFilter::Active, filter))
+                .comp(filter_button, (ListFilter::Completed, filter))
+        })
+        .comp(
+            div,
+            html_props().class_name("flex-1 flex flex-row justify-end"),
+        )
+        .child(|r| {
+            r.comp(
+                button,
+                html_props().onclick(on_clear).class_name({
+                    if todos.iter().filter(|td| td.completed).count() > 0 {
+                        "font-light hover:underline"
+                    } else {
+                        "invisible disabled"
+                    }
+                }),
+            )
+            .child(|r| r.comp(text_node, "Clear Completed"))
+        })
     })
 }
 
+static TODOS_STORAGE_KEY: &str = "@todos";
+
 fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosReducer)> {
-    let (reia, (todos, setter)) = reia.init().hook(use_state, Vector::new());
+    let (reia, (todos, setter)) = reia.init().hook(use_state_from, || {
+        if let Some(storage) = web_sys::window().unwrap().local_storage().unwrap() {
+            if let Some(s) = storage.get_item(TODOS_STORAGE_KEY).unwrap() {
+                return todos_from_str(&s);
+            }
+        }
+        Vector::new()
+    });
+    let (reia, _) = reia.hook(
+        use_effect,
+        (
+            |todos: Vector<Todo>| {
+                if let Some(storage) = web_sys::window().unwrap().local_storage().unwrap() {
+                    storage
+                        .set_item(TODOS_STORAGE_KEY, &todos_to_string(&todos))
+                        .unwrap();
+                }
+                || {}
+            },
+            todos.clone(),
+        ),
+    );
     (reia, (todos, TodosReducer(setter)))
 }
 
@@ -348,10 +391,10 @@ pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     );
     reia.comp(
         main,
-        html_props().class_name("shadow-xl w-full max-w-prose"),
+        html_props().class_name("mt-8 shadow-xl w-full max-w-prose bg-white"),
     )
     .child(|r| {
-        r.comp(top_box, reducer.clone())
+        r.comp(top_box, (todos.clone(), reducer.clone()))
             .comp(main_list, (todos.clone(), reducer.clone(), filter))
             .comp(bottom_controls, (todos.clone(), reducer.clone(), filter))
     })
