@@ -251,7 +251,7 @@ where
     pub fn child<Builder, ChildLastNode, ChildHole>(
         self,
         builder: Builder,
-    ) -> ComponentConstruction<RestStores, EntireStores, YesHoleNode, ChildHole>
+    ) -> ComponentConstruction<RestStores, EntireStores, NoHoleNode, ChildHole>
     where
         ChildHole: MaybeHoleNode,
         ChildLastNode: MaybeHoleNode,
@@ -283,7 +283,7 @@ where
         ComponentConstruction {
             hook_stores: rest_stores,
             parent_node,
-            last_node,
+            last_node: NoHoleNode,
             ret_node: built.ret_node,
         }
     }

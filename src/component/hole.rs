@@ -20,9 +20,7 @@ where
     Stores: StoresList,
     EntireStores: StoresList,
 {
-    pub fn hole_here(
-        self,
-    ) -> ComponentConstruction<Stores, EntireStores, YesHoleNode, YesHoleNode> {
+    pub fn hole_here(self) -> ComponentConstruction<Stores, EntireStores, NoHoleNode, YesHoleNode> {
         let ComponentConstruction {
             hook_stores,
             parent_node,
@@ -32,7 +30,7 @@ where
         ComponentConstruction {
             hook_stores,
             parent_node,
-            last_node: last_node.clone(),
+            last_node: NoHoleNode,
             ret_node: last_node,
         }
     }
