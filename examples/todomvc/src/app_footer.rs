@@ -4,8 +4,7 @@ use reia_html::prelude::*;
 fn footer_span(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
     let reia = reia.init();
     reia_tree! (
-        <span {html_props().class_name("m-0.5 text-xs text-center text-gray-500")}>
-        </span>
+        <span {html_props().class_name("m-0.5 text-xs text-center text-gray-500")} HOLE />
     )
 }
 
