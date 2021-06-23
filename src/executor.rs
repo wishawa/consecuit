@@ -115,21 +115,21 @@ impl Executor {
         }
     }
     fn execute(&self) {
-        if !self.active.swap(true, Ordering::SeqCst) {
+        if !self.active.swap(true, Ordering::Acquire) {
             self.execute_loop();
-            self.active.store(false, Ordering::SeqCst);
+            self.active.store(false, Ordering::Release);
         }
     }
     fn batch_updates(&self, f: impl FnOnce()) {
-        let already_running = self.active.swap(true, Ordering::SeqCst);
+        let already_running = self.active.swap(true, Ordering::Acquire);
         f();
         if !already_running {
-            self.active.store(false, Ordering::SeqCst);
+            self.active.store(false, Ordering::Release);
             self.execute();
         }
     }
     fn maybe_batch_updates_with_timeout(&self) {
-        if !self.active.swap(true, Ordering::SeqCst) {
+        if !self.active.swap(true, Ordering::Acquire) {
             window()
                 .unwrap()
                 .set_timeout_with_callback(self.timeout_closure.as_ref().unchecked_ref())
@@ -144,7 +144,7 @@ thread_local! {
         queue: RefCell::new(VecDeque::new()),
         timeout_closure: Closure::wrap(Box::new(|| {
             EXECUTOR.with(|l| {
-                l.active.store(false, Ordering::SeqCst);
+                l.active.store(false, Ordering::Release);
                 l.execute();
             });
         }))
