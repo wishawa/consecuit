@@ -1,11 +1,19 @@
+/** Internal use. Sealed.
+ */
 #[sealed::sealed]
 pub trait StoresList: Sized + Default + 'static {
     type Head: Sized;
     type Tail: Sized + StoresList;
     fn create() -> Self;
 }
+
+/** Internal use.
+ */
 #[derive(Default)]
 pub struct StoreCons<H: Default, T: Default>(pub(crate) H, pub(crate) T);
+
+/** Internal use.
+ */
 #[derive(Default)]
 pub struct StoreConsEnd;
 

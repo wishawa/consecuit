@@ -151,10 +151,37 @@ thread_local! {
     };
 }
 
+/** Batch the state updates started inside the given closure. **READ BEFORE USE**
+
+Reia batch updates using setTimeout anyway, even if you are not using this.
+
+Using this will avoid the setTimeout.
+
+**Updates from inside [crate::use_effect], reia_html's Callback, and [run_later] are already batched.**
+
+*/
 pub fn batch_updates(f: impl FnOnce()) {
     EXECUTOR.with(|l| l.batch_updates(f))
 }
 
+/** Schedule the given closure to run after the current component finishes rendering.
+
+Example use to focus a reia_html's input field:
+
+```
+use reia_html::prelude::*;
+let (reia, input_ref) = reia.hook(use_ref, ());
+let (reia, _) = reia.hook(use_effect, (|input_ref: ReiaRef<Option<web_sys::HtmlInputElement>>| {
+    run_later(move || {
+        input_ref.visit_with(|opt| opt.as_ref().unwrap().focus().unwrap()).unwrap();
+    })
+}, input_ref.clone()))
+reia_tree!(
+    <input html_props().reference(input_ref) />
+)
+
+```
+*/
 pub fn run_later(f: impl FnOnce() + 'static) {
     RunTask::new(f).enqueue();
 }

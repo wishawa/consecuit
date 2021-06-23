@@ -16,6 +16,17 @@ use super::{
 type TreeStores<Ret, Props> =
     StoreCons<ComponentStoreInstance<Ret, Props>, <Ret as ComponentReturn>::StoresList>;
 
+/** A subtree is a part of the app that is mounted and unmounted together.
+
+When mounting the app [`crate::mount_app`], Reia creates a subtree for it.
+
+[`crate::opt_comp`] creates a subtree for its component.
+[`crate::vec_comps`] creates a subtree for each of its components.
+
+A subtree wraps its children in a `<div style="display: contents">`.
+Do take this into account when writing CSS selectors.
+
+ */
 pub struct SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,

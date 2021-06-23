@@ -25,6 +25,48 @@ where
     }
 }
 
+/** Runs the function with the arg as argument when the arg changes.
+
+Takes a single-argument function and the arg.
+
+The arg must be [PartialEq] + [Clone] + `'static`, because we need to store and compare it.
+
+The effect runs as the component renders. Updating states inside `use_effect` will queue another render.
+
+If you want something to run after the component completed rendering, consider using [crate::run_later].
+
+This takes a function rather than a closure, so every dependency must be passed through `args`.
+For React devs, this is equivalent to `react-hooks/exhaustive-deps` being enforced.
+
+Example using this to change the page title when some data change:
+
+```
+let (reia, _) = reia.hook(use_effect, (
+    |deps: (String, u32)| {
+        let title = format!("Profile - {}, age {}", deps.0, deps.1);
+        web_sys::window().unwrap().document().unwrap().set_title(&title);
+    }, (name, number)
+));
+
+```
+
+ */
+pub fn use_effect<Args, OnDrop>(
+    reia: HookBuilder,
+    (func, args): (fn(Args) -> OnDrop, Args),
+) -> impl HookReturn<()>
+where
+    OnDrop: FnOnce() + 'static,
+    Args: PartialEq + Clone + 'static,
+{
+    use_effect_relaxed(reia, (func, args))
+}
+
+/** Like [use_effect], but takes a closure instead of a function.
+
+This mean you don't have to pass every dependency through `args`.
+For React devs, this is equivalent to `react-hooks/exhaustive-deps` not being enforced.
+ */
 pub fn use_effect_relaxed<Args, OnDrop, Eff>(
     reia: HookBuilder,
     (func, args): (Eff, Args),
@@ -67,15 +109,4 @@ where
             .unwrap();
     }
     (reia, ())
-}
-
-pub fn use_effect<Args, OnDrop>(
-    reia: HookBuilder,
-    (func, args): (fn(Args) -> OnDrop, Args),
-) -> impl HookReturn<()>
-where
-    OnDrop: FnOnce() + 'static,
-    Args: PartialEq + Clone + 'static,
-{
-    use_effect_relaxed(reia, (func, args))
 }

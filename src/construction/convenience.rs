@@ -10,6 +10,12 @@ use super::{
 use crate::stores::{StoreCons, StoresList};
 
 impl HookBuilder {
+    /// This is a shortcut that calls `reia.init().hook(...)`
+    ///
+    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every hook function.
+    ///
+    /// See the docs for [`crate`] on how to call hooks.
+    /// See [`HookConstruction`] for the actual `.hook(...)`.
     pub fn hook<Arg, Out, Ret, RestStores>(
         self,
         hook_func: fn(HookBuilder, Arg) -> Ret,
@@ -27,6 +33,12 @@ impl HookBuilder {
 }
 
 impl ComponentBuilder {
+    /// This is a shortcut that calls `reia.init().hook(...)`
+    ///
+    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    ///
+    /// See the docs for [`crate`] on how to call hooks.
+    /// See [`ComponentConstruction`] for the actual `.hook(...)`.
     pub fn hook<Arg, Out, Ret, RestStores>(
         self,
         hook_func: fn(HookBuilder, Arg) -> Ret,
@@ -47,6 +59,12 @@ impl ComponentBuilder {
         self.init().hook(hook_func, hook_arg)
     }
 
+    /// This is a shortcut that calls `reia.init().comp(...)`
+    ///
+    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    ///
+    /// See the docs for [`crate`] on how to compose components.
+    /// See [`ComponentConstruction`] for the actual `.comp(...)`.
     pub fn comp<Props, Ret, RestStores>(
         self,
         component_func: ComponentFunc<Ret, Props>,
@@ -65,6 +83,11 @@ impl ComponentBuilder {
         self.init().comp(component_func, component_props)
     }
 
+    /// This is a shortcut that calls `reia.init().dyn_comp(...)`
+    ///
+    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    ///
+    /// See [`ComponentConstruction`] for the actual `.dyn_comp(...)` for more details.
     pub fn dyn_comp<Props, Ret, RestStores>(
         self,
         component_func: ComponentFunc<Ret, Props>,

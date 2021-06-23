@@ -193,6 +193,27 @@ where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
+    /** Render the given component with the given prop.
+
+    This consumes the `reia` object, and returns a new one.
+
+    This is equivalent to a tag in the [`crate::reia_tree`] macro.
+
+    For example:
+    ```
+    reia_tree!(
+        <div />
+        <footer {html_props().class_name("hi")} />
+    )
+    ```
+
+    is equivalent to
+
+    ```
+    reia.comp(div, Default::default())
+        .comp(footer, html_props().class_name("hi"))
+    ```
+    */
     pub fn comp(
         self,
         component_func: ComponentFunc<Ret, Props>,
@@ -244,6 +265,42 @@ where
     EntireStores: StoresList,
     CompHole: MaybeHoleNode,
 {
+    /** Descend into the hole of the last component with the given closure.
+
+    This consumes the `reia` object, and returns a new one.
+
+    Use this to nest components. For example:
+
+    ```
+    reia.comp(table, html_props())
+        .child(|r| {
+            r.comp(tr, html_props())
+            .child(|r| {
+                r.comp(td, html_props())
+                .child(|r| {
+                    r.comp(text_node, "hello")
+                })
+            })
+        })
+    ```
+
+    The [`crate::reia_tree`] macro equivalent for the above code is:
+
+    ```
+    reia_tree!(
+        <table {html_props()}>
+            <tr {html_props()}>
+                <td {html_props()}>
+                    "hello"
+                </td>
+            </tr>
+        </table>
+    )
+    ```
+
+    Note that this only work on components that returns `impl ContainerReturn`.
+
+     */
     pub fn child<Builder, ChildLastNode, ChildHole>(
         self,
         builder: Builder,

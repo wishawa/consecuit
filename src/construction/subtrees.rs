@@ -27,6 +27,26 @@ fn get_or_create_container(opt: &mut Option<Element>, parent: Element) -> Elemen
     .clone()
 }
 
+/** A wrapper that monuts/unmounts the given component based on the `Option<Props>`.
+
+Takes a tuple of `(the component function, Option<its props>)`.
+
+Component is mounted when props is Some(props).
+Component is unmouned when props is None.
+
+Component loses all state when unmounted.
+
+Use like this
+
+```
+reia_tree!(
+    <opt_comp {(my_comp, Some(my_comp_props))} />
+    <opt_comp {(other_comp, None)} />
+)
+```
+
+Component is mounted/unmouned as its own [Subtree][SubtreeInstance].
+*/
 pub fn opt_comp<Ret, Props>(
     reia: ComponentBuilder,
     (func, props): (ComponentFunc<Ret, Props>, Option<Props>),
@@ -60,6 +80,34 @@ where
         .unwrap();
     reia.bare_leaf_node()
 }
+
+/** A wrapper that monuts/unmounts a number of the given component based on the `Vector<Props>`.
+
+Note that this takes a [`im_rc::Vector`], not a [`std::vec::Vec`].
+
+Takes a tuple of `(the component function, Vector<its props>)`.
+
+For each item in the vector, a component is mounted with the item as props.
+
+If the vector grows, more components are mounted.
+If the vector shrinks, some components are dismounted.
+
+**A note of caution:** Component number i gets props number i.
+Shifting part of the `Vector` won't shift the components' states.
+This is like keying React components in a loop with the index.
+
+Components loses all state when unmounted.
+
+Use like this
+
+```
+reia_tree!(
+    <vec_comps {(my_comp, vector![props1, props2, props3])} />
+)
+```
+
+Each component is mounted/unmouned as its own [Subtree][SubtreeInstance].
+*/
 
 pub fn vec_comps<Ret, Props>(
     reia: ComponentBuilder,
@@ -114,6 +162,31 @@ where
     CompHole: MaybeHoleNode,
     Props: ComponentProps,
 {
+    /** Like `.comp(...)`, but mount the component in a dynamic subtree.
+
+    This hides the components' typing from its parent.
+
+    You can use this to name a component's return type concretely.
+
+    The task is a bit boilerplatey. Copy paste this code:
+
+    ```
+    fn outer_comp(reia: ComponentBuilder, props: MyProp) -> DynComponentReturn<MyProp> {
+        fn inner_comp(reia: ComponentBuilder, props: MyProp) -> impl ComponentReturn {
+            reia_tree!(
+                <div>
+                    "hello, I'm a dynamic component. My props is:"
+                    {props.to_string()}
+                </div>
+            )
+        }
+        reia.dyn_comp(inner_comp, props)
+        // inner_comp doesn't have to be an inner function. a closure works too.
+    }
+    ```
+
+    Then modify `inner_comp` as you like.
+     */
     pub fn dyn_comp<Ret: ComponentReturn>(
         self,
         func: ComponentFunc<Ret, Props>,

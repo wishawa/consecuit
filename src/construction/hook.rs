@@ -14,6 +14,8 @@ pub struct HookBuilder {
 }
 
 impl HookBuilder {
+    /// Make it ready to call `.hook(...)`.
+    /// You shouldn't need this, as we automatically call it in the `hook(...)` method of [HookBuilder].
     pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
         let current: &T = unsafe { &*(self.untyped_stores as *const T) };
         HookConstruction {
@@ -25,6 +27,12 @@ impl HookBuilder {
     }
 }
 
+/** This is the `reia` object in your hook function.
+
+You can use it to call other hooks.
+
+You must return it at the end of your hook function. (See the doc for [`crate`] on how to write hooks).
+ */
 pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList> {
     pub(crate) current: &'static CurrentStores,
     pub(crate) entire: PhantomData<EntireStores>,
@@ -85,6 +93,11 @@ where
     RestStores: StoresList,
     EntireStores: StoresList,
 {
+    /** Use the given hook, with the given arg.
+
+    Consumes `self`. Returns a tuple of `(reia, <return value of hook>)`.
+    You can use the returned `reia` to call more hooks.
+     */
     pub fn hook<Arg, Out, Ret>(
         self,
         hook_func: fn(HookBuilder, Arg) -> Ret,

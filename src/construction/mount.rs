@@ -4,6 +4,11 @@ use crate::{ComponentBuilder, ComponentReturn};
 
 use super::subtree::{mount_subtree, Subtree, SubtreeInstance};
 
+/// Mount the given component on the <body> element. This passes <body> to [`mount_app_at`].
+///
+/// The component must be a Reia component that takes `()` (empty tuple) as props.
+///
+/// See [`crate`] for what a Reia component looks like.
 pub fn mount_app<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
 where
     Ret: ComponentReturn,
@@ -12,14 +17,35 @@ where
     mount_app_at(function, body)
 }
 
+/// Mount the given component on the given [`Element`]. This uses [`mount_app_without_leaking_at`] and leaks the result.
+///
+/// The component must be a Reia component that takes `()` (empty tuple) as props.
+///
+/// See [`crate`] for what a Reia component looks like.
 pub fn mount_app_at<Ret>(function: fn(ComponentBuilder, ()) -> Ret, element: Element)
 where
     Ret: ComponentReturn,
 {
-    Box::leak(Box::new(mount_app_without_leaking_at(function, element)));
+    Box::leak(Box::new(unsafe {
+        mount_app_without_leaking_at(function, element)
+    }));
 }
 
-pub fn mount_app_without_leaking_at<Ret>(
+/// Mount the given component on the given [`Element`], returning a [`SubtreeInstance`] which will unmount the app when dropped.
+///
+/// Normally you should use [`mount_app`] or [`mount_app_at`]. Only use this if you have a way to store the returned value.
+///
+/// The component must be a Reia component that takes `()` (empty tuple) as props.
+///
+/// See [`crate`] for what a Reia component looks like.
+///
+/// This is unsafe because dropping the returned [`SubtreeInstance`] while Reia is rendering could cause unsafe behavior.
+///
+/// If you're going to use it, make sure you keep the [`SubtreeInstance`] forever.
+///
+/// If you're really going to drop it, make sure to NOT do so from inside Reia hooks/components/use_effect/....
+/// Dropping from inside an event callback or [`crate::run_later`] is probably fine.
+pub unsafe fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,
     element: Element,
 ) -> SubtreeInstance<Ret, ()>
