@@ -324,9 +324,7 @@ fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosRe
     (reia, (todos, TodosReducer(setter)))
 }
 
-pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let reia = reia.init();
-    let (reia, (todos, reducer)) = reia.hook(use_todos, ());
+fn use_filter(reia: HookBuilder, _: ()) -> impl HookReturn<ListFilter> {
     let get_filter = || match &web_sys::window().unwrap().location().hash().unwrap() as &str {
         "#/all" => ListFilter::All,
         "#/active" => ListFilter::Active,
@@ -350,6 +348,13 @@ pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
             on_hashchange,
         ),
     );
+    (reia, filter)
+}
+
+pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let reia = reia.init();
+    let (reia, (todos, reducer)) = reia.hook(use_todos, ());
+    let (reia, filter) = reia.hook(use_filter, ());
     reia_tree!(
         <main {html_props().class_name("mt-8 shadow-xl w-full max-w-prose bg-white")}>
             <top_box {(todos.clone(), reducer.clone())} />
