@@ -19,29 +19,25 @@ pub fn run() -> Result<(), JsValue> {
 }
 
 fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
-    reia.init()
-        .comp(
-            div,
-            html_props().class_name("bg-gray-50 min-h-screen font-sans"),
-        )
-        .child(|r| {
-            r.comp(
-                div,
-                html_props().class_name("container mx-auto flex flex-col items-center"),
-            )
-            .hole_here()
-        })
+    reia_tree!(
+        <div {html_props().class_name("bg-gray-50 min-h-screen font-sans")}>
+            <div {html_props().class_name("container mx-auto flex flex-col items-center")} HOLE />
+        </div>
+    )
 }
 
 fn sections(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    reia.init()
-        .comp(app_header, ())
-        .comp(app_main, ())
-        .comp(app_footer, ())
+    reia_tree!(
+        <app_header />
+        <app_main />
+        <app_footer />
+    )
 }
 
 fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    reia.init()
-        .comp(container, ())
-        .child(|r| r.comp(sections, ()))
+    reia_tree!(
+        <container>
+            <sections />
+        </container>
+    )
 }
