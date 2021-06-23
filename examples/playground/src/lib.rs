@@ -76,10 +76,10 @@ fn use_counter(
         (
             |(count, count_setter, level_setter): (i32, Updater<i32>, Updater<i32>)| {
                 if count > 15 {
-                    count_setter.set(0);
+                    count_setter.set_to(0);
                     level_setter.update_with(|lvl| lvl + 1);
                 } else if count < -15 {
-                    count_setter.set(0);
+                    count_setter.set_to(0);
                     level_setter.update_with(|lvl| lvl.max(1) - 1);
                 }
                 || {}

@@ -120,7 +120,7 @@ fn one_todo(
     let (reia, (edit, edit_setter)) = reia.hook(use_state, false);
     let edit_setter_cloned = edit_setter.clone();
     let enter_edit = Callback::new(move |_ev| {
-        edit_setter_cloned.set(true);
+        edit_setter_cloned.set_to(true);
     });
     reia.comp(
         div,
@@ -196,10 +196,10 @@ fn todo_edit(
                 } else {
                     reducer.reduce(TodosReduction::SetName(idx, text));
                 }
-                edit_setter_cloned.set(false);
+                edit_setter_cloned.set_to(false);
             },
             move || {
-                edit_setter.set(false);
+                edit_setter.set_to(false);
             },
         ),
     );
@@ -380,7 +380,7 @@ pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     let (reia, (filter, filter_setter)) = reia.hook(use_state_from, get_filter.clone());
     let on_hashchange = Callback::<web_sys::Event>::new(move |_ev| {
         let filter = get_filter();
-        filter_setter.set(filter);
+        filter_setter.set_to(filter);
     });
     let (reia, _) = reia.hook(
         use_effect,

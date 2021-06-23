@@ -12,17 +12,15 @@ pub struct Updater<T: 'static> {
 }
 
 impl<T> Updater<T> {
-    pub fn set(&self, value: T) {
+    pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
         self.state
-            .visit_mut_with(|state| *state = Some(value))
+            .visit_mut_with(|state| *state = Some(func(state.take().unwrap())))
             .unwrap();
         self.rerender_task.clone().enqueue();
     }
-}
-impl<T: Clone> Updater<T> {
-    pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
+    pub fn set_to(&self, value: T) {
         self.state
-            .visit_mut_with(|state| *state = Some(func(state.clone().unwrap())))
+            .visit_mut_with(|state| *state = Some(value))
             .unwrap();
         self.rerender_task.clone().enqueue();
     }
