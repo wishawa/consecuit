@@ -1,6 +1,6 @@
 pub mod callback;
 pub mod components;
-mod elem;
+pub mod elem;
 mod interfaces;
 pub mod misc_components;
 mod shared;
