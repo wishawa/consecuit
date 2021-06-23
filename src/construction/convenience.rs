@@ -1,10 +1,13 @@
-use crate::stores::{StoreCons, StoresList};
+use std::cell::RefCell;
 
-use super::types::HookReturn;
 use super::{
+    component::{ComponentBuilder, ComponentConstruction, ComponentStoreInstance},
+    hole::NoHoleNode,
     hook::{HookBuilder, HookConstruction},
     subtree::Subtree,
+    types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
 };
+use crate::stores::{StoreCons, StoresList};
 
 impl HookBuilder {
     pub fn hook<Arg, Out, Ret, RestStores>(
@@ -22,12 +25,6 @@ impl HookBuilder {
         self.init().hook(hook_func, hook_arg)
     }
 }
-
-use std::cell::RefCell;
-
-use super::component::{ComponentBuilder, ComponentConstruction, ComponentStoreInstance};
-use super::hole::NoHoleNode;
-use super::types::{ComponentFunc, ComponentProps, ComponentReturn};
 
 impl ComponentBuilder {
     pub fn hook<Arg, Out, Ret, RestStores>(

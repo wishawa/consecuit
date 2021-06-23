@@ -1,4 +1,3 @@
-use super::hook::{HookBuilder, HookConstruction};
 use crate::{
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
@@ -6,9 +5,11 @@ use crate::{
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
 use web_sys::Element;
 
-use super::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
-
-use super::types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn};
+use super::{
+    hole::{MaybeHoleNode, NoHoleNode, YesHoleNode},
+    hook::{HookBuilder, HookConstruction},
+    types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
+};
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,

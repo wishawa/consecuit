@@ -1,10 +1,9 @@
 use std::cell::RefCell;
 
-use super::component::{ComponentBuilder, ComponentConstruction};
-
 use crate::stores::{StoreCons, StoreConsEnd, StoresList};
 
 use super::{
+    component::{ComponentBuilder, ComponentConstruction},
     hole::{MaybeHoleNode, NoHoleNode, YesHoleNode},
     hook::HookConstruction,
     subtree::Subtree,

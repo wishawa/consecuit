@@ -3,12 +3,14 @@ use std::{cell::RefCell, ops::DerefMut};
 use im_rc::Vector;
 use web_sys::Element;
 
-use super::component::{ComponentBuilder, ComponentConstruction};
-use super::hole::{MaybeHoleNode, NoHoleNode};
-
 use crate::{
     hooks::{use_ref, ReiaRef},
     stores::{StoreCons, StoresList},
+};
+
+use super::{
+    component::{ComponentBuilder, ComponentConstruction},
+    hole::{MaybeHoleNode, NoHoleNode},
 };
 
 use super::{

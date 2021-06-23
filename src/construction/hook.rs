@@ -1,11 +1,11 @@
 use std::marker::PhantomData;
 
-use super::component::ComponentStore;
-use super::types::HookReturn;
 use crate::{
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
 };
+
+use super::{component::ComponentStore, types::HookReturn};
 
 pub struct HookBuilder {
     pub(crate) untyped_stores: *const (),
