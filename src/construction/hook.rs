@@ -1,8 +1,9 @@
 use std::{marker::PhantomData, mem::transmute};
 
+use super::component::ComponentStore;
+use super::types::HookReturn;
 use crate::{
-    component::ComponentStore,
-    stores::{StoreCons, StoreConsEnd, StoresList},
+    stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
 };
 
@@ -29,25 +30,6 @@ pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList>
     pub(crate) entire: PhantomData<EntireStores>,
     pub(crate) lock: UnmountedLock,
     pub(crate) current_component: &'static dyn ComponentStore,
-}
-
-type EmptyHookStores<Entire> = HookConstruction<StoreConsEnd, Entire>;
-
-#[sealed::sealed]
-pub trait HookReturn<Value> {
-    type StoresList: StoresList;
-    fn get_val(self) -> Value;
-}
-
-#[sealed::sealed]
-impl<UsedStores, Value> HookReturn<Value> for (EmptyHookStores<UsedStores>, Value)
-where
-    UsedStores: StoresList,
-{
-    type StoresList = UsedStores;
-    fn get_val(self) -> Value {
-        self.1
-    }
 }
 
 impl<ThisStore, RestStores, EntireStores>

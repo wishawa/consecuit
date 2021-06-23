@@ -1,6 +1,6 @@
 use crate::{
+    construction::{HookBuilder, HookReturn},
     executor::RerenderTask,
-    hook::{HookBuilder, HookReturn},
 };
 
 use super::use_ref::{use_ref, ReiaRef};

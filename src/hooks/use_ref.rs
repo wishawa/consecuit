@@ -4,7 +4,7 @@ use std::{
 };
 
 use crate::{
-    hook::{HookBuilder, HookReturn},
+    construction::{HookBuilder, HookReturn},
     unmounted_lock::UnmountedLock,
 };
 

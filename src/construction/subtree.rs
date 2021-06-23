@@ -1,14 +1,16 @@
 use web_sys::{window, Element, HtmlElement};
 
+use super::component::{
+    ComponentBuilder, ComponentConstruction, ComponentStore, ComponentStoreInstance,
+};
+use super::hole::NoHoleNode;
+use super::hook::HookConstruction;
+use super::types::{ComponentFunc, ComponentProps, ComponentReturn};
 use crate::{
-    component::{ComponentConstruction, ComponentStore, NoHoleNode},
-    hook::HookConstruction,
     stores::{StoreCons, StoresList},
     unmounted_lock::UnmountedLock,
-    ComponentBuilder, ComponentReturn,
 };
 
-use super::{ComponentFunc, ComponentProps, ComponentStoreInstance};
 use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
 
 type TreeStores<Ret, Props> =

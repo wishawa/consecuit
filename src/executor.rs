@@ -1,13 +1,15 @@
 use std::{
     cell::RefCell,
     collections::{HashSet, VecDeque},
+    hash::Hash,
     sync::atomic::{AtomicBool, Ordering},
 };
 
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::{console, window};
 
-use crate::{component::ComponentStore, unmounted_lock::UnmountedLock};
+use crate::construction::ComponentStore;
+use crate::unmounted_lock::UnmountedLock;
 
 #[derive(Clone)]
 pub(crate) struct RerenderTask {
@@ -15,23 +17,34 @@ pub(crate) struct RerenderTask {
     pub(crate) lock: UnmountedLock,
 }
 
-impl RerenderTask {
-    fn to_hashable(&self) -> (*const dyn ComponentStore, *const AtomicBool) {
-        (self.comp, self.lock.as_ptr())
+impl Hash for RerenderTask {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        (self.comp as *const dyn ComponentStore, self.lock.as_ptr()).hash(state)
     }
+}
+
+impl PartialEq for RerenderTask {
+    fn eq(&self, other: &RerenderTask) -> bool {
+        (self.comp as *const _ == other.comp as *const _) && (self.lock == other.lock)
+    }
+}
+
+impl Eq for RerenderTask {}
+
+impl RerenderTask {
     pub(crate) fn new(comp: &'static dyn ComponentStore, lock: UnmountedLock) -> Self {
         Self { comp, lock }
     }
     pub(crate) fn enqueue(self) {
         PENDING_RERENDERS.with(|p| {
-            if p.borrow_mut().insert(self.to_hashable()) {
+            if p.borrow_mut().insert(self.clone()) {
                 EXECUTOR.with(|l| l.enqueue(ExecutorTask::Rerender(self)))
             }
         });
     }
     fn execute(&self) {
         PENDING_RERENDERS.with(|p| {
-            p.borrow_mut().remove(&self.to_hashable());
+            p.borrow_mut().remove(&self);
         });
         if self.lock.is_mounted() {
             self.comp.render();
@@ -44,14 +57,8 @@ impl RerenderTask {
     }
 }
 
-impl PartialEq for RerenderTask {
-    fn eq(&self, other: &RerenderTask) -> bool {
-        (self.comp as *const _ == other.comp as *const _) && (self.lock == other.lock)
-    }
-}
-
 thread_local! {
-    static PENDING_RERENDERS: RefCell<HashSet<(*const dyn ComponentStore, *const AtomicBool)>> = RefCell::new(HashSet::new());
+    static PENDING_RERENDERS: RefCell<HashSet<RerenderTask>> = RefCell::new(HashSet::new());
 }
 
 pub struct RunTask {

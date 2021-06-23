@@ -3,17 +3,17 @@ use std::{cell::RefCell, ops::DerefMut};
 use im_rc::Vector;
 use web_sys::Element;
 
+use super::component::{ComponentBuilder, ComponentConstruction};
+use super::hole::{MaybeHoleNode, NoHoleNode};
+
 use crate::{
     hooks::{use_ref, ReiaRef},
     stores::{StoreCons, StoresList},
-    ComponentBuilder, ComponentReturn,
 };
 
 use super::{
-    hole::{MaybeHoleNode, NoHoleNode},
     subtree::{create_wrapper_div, mount_subtree, Subtree, SubtreeInstance},
-    types::{ComponentFunc, ComponentProps},
-    ComponentConstruction,
+    types::{ComponentFunc, ComponentProps, ComponentReturn},
 };
 
 fn get_or_create_container<'a>(opt: &'a mut Option<Element>, parent: Element) -> Element {

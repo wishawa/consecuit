@@ -2,10 +2,8 @@ use web_sys::Element;
 
 use crate::stores::{StoreConsEnd, StoresList};
 
-use super::{
-    hole::{NoHoleNode, YesHoleNode},
-    ComponentConstruction,
-};
+use super::component::ComponentConstruction;
+use super::hole::{NoHoleNode, YesHoleNode};
 
 impl<EntireStores> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode>
 where

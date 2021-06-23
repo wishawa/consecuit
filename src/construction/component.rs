@@ -1,22 +1,14 @@
+use super::hook::{HookBuilder, HookConstruction};
 use crate::{
-    hook::{HookBuilder, HookConstruction, HookReturn},
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
 use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
 use web_sys::Element;
 
-use self::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
-pub mod bare;
-mod hole;
-pub mod subtree;
-pub use subtree::mount;
-mod subtrees;
-mod types;
-pub use subtrees::{opt_comp, vec_comps};
-pub use types::{
-    ComponentFunc, ComponentProps, ComponentReturn, ContainerReturn, DynComponentReturn,
-};
+use super::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
+
+use super::types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn};
 
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,

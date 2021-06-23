@@ -1,15 +1,13 @@
-mod component;
+mod construction;
 mod executor;
-mod hook;
 mod hooks;
 mod stores;
 mod unmounted_lock;
 
-pub use component::{
+pub use construction::{
     mount, opt_comp, vec_comps, ComponentBuilder, ComponentReturn, ContainerReturn,
-    DynComponentReturn,
+    DynComponentReturn, HookBuilder, HookReturn,
 };
 pub use executor::{batch_updates, run_later};
-pub use hook::{HookBuilder, HookReturn};
 pub use hooks::*;
 pub use reia_macros::reia_tree;

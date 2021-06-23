@@ -2,7 +2,7 @@ use web_sys::Element;
 
 use crate::stores::StoresList;
 
-use super::ComponentConstruction;
+use super::component::ComponentConstruction;
 
 #[sealed::sealed]
 pub trait MaybeHoleNode: 'static + Clone {}

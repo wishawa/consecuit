@@ -1,14 +1,13 @@
 use std::cell::RefCell;
 
-use crate::{
-    stores::{StoreCons, StoreConsEnd, StoresList},
-    ComponentBuilder,
-};
+use super::component::{ComponentBuilder, ComponentConstruction};
+
+use crate::stores::{StoreCons, StoreConsEnd, StoresList};
 
 use super::{
     hole::{MaybeHoleNode, NoHoleNode, YesHoleNode},
+    hook::HookConstruction,
     subtree::Subtree,
-    ComponentConstruction,
 };
 
 #[sealed::sealed]
@@ -46,3 +45,20 @@ pub type DynComponentReturn<Props> = ComponentConstruction<
     NoHoleNode,
     NoHoleNode,
 >;
+
+#[sealed::sealed]
+pub trait HookReturn<Value> {
+    type StoresList: StoresList;
+    fn get_val(self) -> Value;
+}
+
+#[sealed::sealed]
+impl<UsedStores, Value> HookReturn<Value> for (HookConstruction<StoreConsEnd, UsedStores>, Value)
+where
+    UsedStores: StoresList,
+{
+    type StoresList = UsedStores;
+    fn get_val(self) -> Value {
+        self.1
+    }
+}
