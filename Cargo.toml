@@ -34,7 +34,6 @@ features = [
 members = [
 	"html/",
 	"macros/",
-	"examples/minimal_counter/",
-	"examples/playground/",
+	"examples/counters/",
 	"examples/todomvc"
 ]
