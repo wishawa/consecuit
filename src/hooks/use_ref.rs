@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     construction::{HookBuilder, HookReturn},
-    unmounted_lock::UnmountedLock,
+    unmounted_lock::{SubtreeUnmountedError, UnmountedLock},
 };
 
 #[derive(Clone)]
@@ -21,24 +21,27 @@ impl<T: Default + 'static> PartialEq for ReiaRef<T> {
 }
 
 impl<T: Default + 'static> ReiaRef<T> {
-    pub fn visit_with<Ret: 'static, F: FnOnce(&T) -> Ret>(&self, func: F) -> Result<Ret, ()> {
+    pub fn visit_with<Ret: 'static, F: FnOnce(&T) -> Ret>(
+        &self,
+        func: F,
+    ) -> Result<Ret, SubtreeUnmountedError> {
         if self.lock.is_mounted() {
             Ok(func(self.inside.borrow().deref()))
         } else {
-            Err(())
+            Err(SubtreeUnmountedError)
         }
     }
     pub fn visit_mut_with<Ret: 'static, F: FnOnce(&mut T) -> Ret>(
         &self,
         func: F,
-    ) -> Result<Ret, ()> {
+    ) -> Result<Ret, SubtreeUnmountedError> {
         if self.lock.is_mounted() {
             Ok(func(self.inside.borrow_mut().deref_mut()))
         } else {
-            Err(())
+            Err(SubtreeUnmountedError)
         }
     }
-    pub fn set_in(&self, value: T) -> Result<(), ()> {
+    pub fn set_in(&self, value: T) -> Result<(), SubtreeUnmountedError> {
         self.visit_mut_with(|v| {
             *v = value;
         })
@@ -46,7 +49,7 @@ impl<T: Default + 'static> ReiaRef<T> {
 }
 
 impl<T: Clone + Default + 'static> ReiaRef<T> {
-    pub fn clone_out(&self) -> Result<T, ()> {
+    pub fn clone_out(&self) -> Result<T, SubtreeUnmountedError> {
         self.visit_with(|v| v.clone())
     }
 }

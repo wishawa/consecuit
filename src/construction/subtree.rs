@@ -81,7 +81,7 @@ where
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         };
-        component_store.comp(self.func.clone(), props);
+        component_store.comp(self.func, props);
     }
 }
 

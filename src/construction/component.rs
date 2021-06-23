@@ -3,7 +3,7 @@ use crate::{
     stores::{StoreCons, StoreConsEnd, StoresList},
     unmounted_lock::UnmountedLock,
 };
-use std::{cell::RefCell, marker::PhantomData, mem::transmute, ops::DerefMut};
+use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
 use web_sys::Element;
 
 use super::hole::{MaybeHoleNode, NoHoleNode, YesHoleNode};
@@ -102,7 +102,7 @@ where
 }
 
 pub(crate) trait ComponentStore {
-    fn render(self: &'static Self);
+    fn render(&'static self);
 }
 
 struct InitializedComponentInfo<Ret, Props>
@@ -135,7 +135,7 @@ where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
-    fn render(self: &'static Self) {
+    fn render(&'static self) {
         let mut ran_borrow = self.initialized.borrow_mut();
         let stores = &self.stores;
         let InitializedComponentInfo {
@@ -146,7 +146,8 @@ where
             parent_node,
         } = ran_borrow.deref_mut().as_mut().unwrap();
 
-        let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(stores) };
+        let untyped_stores: *const () =
+            stores as *const <Ret as ComponentReturn>::StoresList as *const ();
         let reia = ComponentBuilder {
             hook_builder: HookBuilder {
                 untyped_stores,
@@ -196,7 +197,7 @@ where
                     if component_props == *props {
                         false
                     } else {
-                        *props = component_props.clone();
+                        *props = component_props;
                         true
                     }
                 }
@@ -265,9 +266,9 @@ where
                 current: store,
                 entire: PhantomData,
                 lock: rest_stores.lock.clone(),
-                current_component: rest_stores.current_component.clone(),
+                current_component: rest_stores.current_component,
             },
-            parent_node: last_node.0.clone(),
+            parent_node: last_node.0,
             ret_node,
             last_node: NoHoleNode,
         };

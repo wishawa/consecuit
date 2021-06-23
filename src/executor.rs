@@ -25,7 +25,8 @@ impl Hash for RerenderTask {
 
 impl PartialEq for RerenderTask {
     fn eq(&self, other: &RerenderTask) -> bool {
-        (self.comp as *const _ == other.comp as *const _) && (self.lock == other.lock)
+        (self.comp as *const _ as *const () == other.comp as *const _ as *const ())
+            && (self.lock == other.lock)
     }
 }
 

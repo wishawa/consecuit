@@ -16,7 +16,7 @@ use super::{
     types::{ComponentFunc, ComponentProps, ComponentReturn},
 };
 
-fn get_or_create_container<'a>(opt: &'a mut Option<Element>, parent: Element) -> Element {
+fn get_or_create_container(opt: &mut Option<Element>, parent: Element) -> Element {
     opt.get_or_insert_with(|| {
         let container = create_wrapper_div();
         parent.append_child(&container).unwrap();

@@ -1,4 +1,4 @@
-use std::{marker::PhantomData, mem::transmute};
+use std::marker::PhantomData;
 
 use super::component::ComponentStore;
 use super::types::HookReturn;
@@ -8,14 +8,14 @@ use crate::{
 };
 
 pub struct HookBuilder {
-    pub(crate) untyped_stores: &'static (),
+    pub(crate) untyped_stores: *const (),
     pub(crate) lock: UnmountedLock,
     pub(crate) current_component: &'static dyn ComponentStore,
 }
 
 impl HookBuilder {
     pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
-        let current: &T = unsafe { transmute::<&'static (), &'static T>(self.untyped_stores) };
+        let current: &T = unsafe { &*(self.untyped_stores as *const T) };
         HookConstruction {
             current,
             entire: PhantomData,
@@ -68,7 +68,7 @@ fn run_hook<Arg, Out, Ret>(
 where
     Ret: HookReturn<Out>,
 {
-    let untyped_stores = unsafe { transmute::<&'static Ret::StoresList, &'static ()>(store) };
+    let untyped_stores = store as *const <Ret as HookReturn<Out>>::StoresList as *const ();
     let reia = HookBuilder {
         untyped_stores,
         lock,

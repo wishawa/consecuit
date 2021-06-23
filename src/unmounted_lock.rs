@@ -1,4 +1,6 @@
 use std::{
+    error::Error,
+    fmt::Display,
     rc::Rc,
     sync::atomic::{AtomicBool, Ordering},
 };
@@ -26,3 +28,14 @@ impl UnmountedLock {
         Rc::as_ptr(&self.0)
     }
 }
+
+#[derive(Debug)]
+pub struct SubtreeUnmountedError;
+
+impl Display for SubtreeUnmountedError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("Attempted to use an unmounted subtree.")
+    }
+}
+
+impl Error for SubtreeUnmountedError {}
