@@ -7,7 +7,7 @@ use crate::{
 };
 
 use super::{
-    component::{ComponentBuilder, ComponentConstruction, ComponentStore, ComponentStoreInstance},
+    component::{ComponentConstruction, ComponentStore, ComponentStoreInstance},
     hole::NoHoleNode,
     hook::HookConstruction,
     types::{ComponentFunc, ComponentProps, ComponentReturn},
@@ -83,20 +83,6 @@ where
         };
         component_store.comp(self.func, props);
     }
-}
-
-pub fn mount<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
-where
-    Ret: ComponentReturn,
-{
-    let document = window().unwrap().document().unwrap();
-
-    let app_root: Element = document.get_element_by_id("reia-app-root").unwrap();
-
-    let root_tree = mount_subtree(function, (), app_root);
-    root_tree.re_render(());
-
-    Box::leak(Box::new(root_tree));
 }
 
 pub(crate) fn create_wrapper_div() -> Element {
