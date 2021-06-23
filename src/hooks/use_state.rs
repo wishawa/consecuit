@@ -6,12 +6,12 @@ use crate::{
 use super::use_ref::{use_ref, ReiaRef};
 
 #[derive(Clone, PartialEq)]
-pub struct StateSetter<T: 'static> {
+pub struct Updater<T: 'static> {
     state: ReiaRef<Option<T>>,
     rerender_task: RerenderTask,
 }
 
-impl<T> StateSetter<T> {
+impl<T> Updater<T> {
     pub fn set(&self, value: T) {
         self.state
             .visit_mut_with(|state| *state = Some(value))
@@ -19,7 +19,7 @@ impl<T> StateSetter<T> {
         self.rerender_task.clone().enqueue();
     }
 }
-impl<T: Clone> StateSetter<T> {
+impl<T: Clone> Updater<T> {
     pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
         self.state
             .visit_mut_with(|state| *state = Some(func(state.clone().unwrap())))
@@ -28,10 +28,7 @@ impl<T: Clone> StateSetter<T> {
     }
 }
 
-pub fn use_state_from<T, F>(
-    reia: HookBuilder,
-    default_from: F,
-) -> impl HookReturn<(T, StateSetter<T>)>
+pub fn use_state_from<T, F>(reia: HookBuilder, default_from: F) -> impl HookReturn<(T, Updater<T>)>
 where
     T: Clone + 'static,
     F: FnOnce() -> T,
@@ -41,14 +38,14 @@ where
     let value = state
         .visit_mut_with(|opt| opt.get_or_insert_with(default_from).clone())
         .unwrap();
-    let setter = StateSetter {
+    let setter = Updater {
         state,
         rerender_task: RerenderTask::new(reia.current_component, reia.lock.clone()),
     };
     (reia, (value, setter))
 }
 
-pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, StateSetter<T>)>
+pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, Updater<T>)>
 where
     T: Clone + 'static,
 {

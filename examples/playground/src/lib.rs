@@ -45,14 +45,14 @@ fn count_button(
 
 fn use_counter(
     reia: HookBuilder,
-    level_setter: StateSetter<i32>,
+    level_setter: Updater<i32>,
 ) -> impl HookReturn<(i32, Callback<MouseEvent>, Callback<MouseEvent>)> {
     let reia = reia.init();
     let (reia, (count, count_setter)) = reia.hook(use_state, 0);
     let (reia, increment) = reia.hook(
         use_memo,
         (
-            |count_setter: StateSetter<i32>| {
+            |count_setter: Updater<i32>| {
                 Callback::new(move |_| {
                     count_setter.update_with(|value| value + 1);
                 })
@@ -63,7 +63,7 @@ fn use_counter(
     let (reia, decrement) = reia.hook(
         use_memo,
         (
-            |count_setter: StateSetter<i32>| {
+            |count_setter: Updater<i32>| {
                 Callback::new(move |_| {
                     count_setter.update_with(|value| value - 1);
                 })
@@ -74,7 +74,7 @@ fn use_counter(
     let (reia, _) = reia.hook(
         use_effect,
         (
-            |(count, count_setter, level_setter): (i32, StateSetter<i32>, StateSetter<i32>)| {
+            |(count, count_setter, level_setter): (i32, Updater<i32>, Updater<i32>)| {
                 if count > 15 {
                     count_setter.set(0);
                     level_setter.update_with(|lvl| lvl + 1);

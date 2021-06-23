@@ -32,7 +32,7 @@ fn use_counter(
     let (reia, increment) = reia.hook(
         use_memo,
         (
-            |count_setter: StateSetter<i32>| {
+            |count_setter: Updater<i32>| {
                 Callback::new(move |_ev| {
                     count_setter.update_with(|value| value + 1);
                 })
@@ -43,7 +43,7 @@ fn use_counter(
     let (reia, decrement) = reia.hook(
         use_memo,
         (
-            |count_setter: StateSetter<i32>| {
+            |count_setter: Updater<i32>| {
                 Callback::new(move |_ev| {
                     count_setter.update_with(|value| value - 1);
                 })

@@ -16,7 +16,7 @@ pub fn todos_from_str(s: &str) -> Vector<Todo> {
 }
 
 #[derive(Clone, PartialEq)]
-pub struct TodosReducer(pub StateSetter<Vector<Todo>>);
+pub struct TodosReducer(pub Updater<Vector<Todo>>);
 
 pub enum TodosReduction {
     Add(String),

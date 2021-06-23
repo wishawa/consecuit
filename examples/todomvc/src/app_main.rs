@@ -183,7 +183,7 @@ fn one_todo(
 
 fn todo_edit(
     reia: ComponentBuilder,
-    (todo, reducer, idx, edit_setter): (Todo, TodosReducer, usize, StateSetter<bool>),
+    (todo, reducer, idx, edit_setter): (Todo, TodosReducer, usize, Updater<bool>),
 ) -> impl ComponentReturn {
     let reia = reia.init();
     let edit_setter_cloned = edit_setter.clone();
