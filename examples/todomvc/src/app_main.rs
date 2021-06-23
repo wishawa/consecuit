@@ -301,18 +301,24 @@ fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosRe
         }
         Vector::new()
     });
+    let todos_cloned = todos.clone();
+    let on_beforeunload = Callback::new(move |_ev| {
+        if let Some(storage) = web_sys::window().unwrap().local_storage().unwrap() {
+            storage
+                .set_item(TODOS_STORAGE_KEY, &todos_to_string(&todos_cloned))
+                .unwrap();
+        }
+    });
     let (reia, _) = reia.hook(
         use_effect,
         (
-            |todos: Vector<Todo>| {
-                if let Some(storage) = web_sys::window().unwrap().local_storage().unwrap() {
-                    storage
-                        .set_item(TODOS_STORAGE_KEY, &todos_to_string(&todos))
-                        .unwrap();
-                }
+            |on_beforeunload: Callback<web_sys::Event>| {
+                web_sys::window()
+                    .unwrap()
+                    .set_onbeforeunload(Some(on_beforeunload.as_websys_function()));
                 || {}
             },
-            todos.clone(),
+            on_beforeunload,
         ),
     );
     (reia, (todos, TodosReducer(setter)))
