@@ -131,21 +131,24 @@ where
     }
 }
 
-impl<Ret, Props> ComponentStore for ComponentStoreInstance<Ret, Props>
+impl<Ret, Props> ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
-    fn render(&'static self) {
-        let mut ran_borrow = self.initialized.borrow_mut();
+    fn render_with_info_and_props(
+        &'static self,
+        info: &mut InitializedComponentInfo<Ret, Props>,
+        props: Props,
+    ) {
         let stores = &self.stores;
         let InitializedComponentInfo {
             func,
-            props,
             my_hole,
             lock,
             parent_node,
-        } = ran_borrow.deref_mut().as_mut().unwrap();
+            ..
+        } = info;
 
         let untyped_stores: *const () =
             stores as *const <Ret as ComponentReturn>::StoresList as *const ();
@@ -157,9 +160,21 @@ where
             },
             parent_node: parent_node.clone(),
         };
-        let hole = func(reia, props.clone()).get_node();
+        let hole = func(reia, props).get_node();
 
         *my_hole = Some(hole);
+    }
+}
+
+impl<Ret, Props> ComponentStore for ComponentStoreInstance<Ret, Props>
+where
+    Props: ComponentProps,
+    Ret: ComponentReturn,
+{
+    fn render(&'static self) {
+        let mut borrow = self.initialized.borrow_mut();
+        let info = borrow.as_mut().unwrap();
+        self.render_with_info_and_props(info, info.props.clone());
     }
 }
 
@@ -190,41 +205,28 @@ where
             ..
         } = self;
         let (rests, container_store) = hook_stores.use_one_store();
-        let should_render = {
-            let mut ran_borrow = container_store.initialized.borrow_mut();
-            match ran_borrow.deref_mut() {
-                Some(ran_info) => {
-                    let props = &mut ran_info.props;
-                    if component_props == *props {
-                        false
-                    } else {
-                        *props = component_props;
-                        true
-                    }
+
+        let last_node = match container_store.initialized.borrow_mut().deref_mut() {
+            Some(info) => {
+                if component_props != info.props {
+                    container_store.render_with_info_and_props(info, component_props.clone());
+                    info.props = component_props;
                 }
-                opt_none => {
-                    *opt_none = Some(InitializedComponentInfo {
-                        func: component_func,
-                        props: component_props,
-                        my_hole: None,
-                        lock: rests.lock.clone(),
-                        parent_node: parent_node.clone(),
-                    });
-                    true
-                }
+                info.my_hole.clone().unwrap()
+            }
+            opt_none => {
+                *opt_none = Some(InitializedComponentInfo {
+                    func: component_func,
+                    props: component_props.clone(),
+                    my_hole: None,
+                    lock: rests.lock.clone(),
+                    parent_node: parent_node.clone(),
+                });
+                let info = opt_none.as_mut().unwrap();
+                container_store.render_with_info_and_props(info, component_props);
+                info.my_hole.clone().unwrap()
             }
         };
-        if should_render {
-            container_store.render();
-        }
-        let last_node = container_store
-            .initialized
-            .borrow()
-            .as_ref()
-            .unwrap()
-            .my_hole
-            .clone()
-            .unwrap();
         ComponentConstruction {
             hook_stores: rests,
             parent_node,
