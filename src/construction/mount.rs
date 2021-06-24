@@ -1,8 +1,8 @@
-use web_sys::{window, Element};
+use web_sys::{window, Node};
 
 use super::{
     component::ComponentBuilder,
-    subtree::{mount_subtree, Subtree, SubtreeInstance},
+    subtree::{mount_subtree, SubtreeInstance},
     types::ComponentReturn,
 };
 
@@ -24,12 +24,12 @@ where
 /// The component must be a Consecuit component that takes `()` (empty tuple) as props.
 ///
 /// See [`crate`] for what a Consecuit component looks like.
-pub fn mount_app_at<Ret>(function: fn(ComponentBuilder, ()) -> Ret, element: Element)
+pub fn mount_app_at<Ret>(function: fn(ComponentBuilder, ()) -> Ret, node: Node)
 where
     Ret: ComponentReturn,
 {
     Box::leak(Box::new(unsafe {
-        mount_app_without_leaking_at(function, element)
+        mount_app_without_leaking_at(function, node)
     }));
 }
 
@@ -49,13 +49,12 @@ where
 /// Dropping from inside an event callback or [`run_later`][crate::executor::run_later] is probably fine.
 pub unsafe fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,
-    element: Element,
+    node: Node,
 ) -> SubtreeInstance<Ret, ()>
 where
     Ret: ComponentReturn,
 {
-    let root_tree = mount_subtree(function, (), element);
-    root_tree.re_render(());
+    let root_tree = mount_subtree(function, (), node);
 
     root_tree
 }

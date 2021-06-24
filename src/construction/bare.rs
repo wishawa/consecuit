@@ -1,4 +1,4 @@
-use web_sys::Element;
+use web_sys::Node;
 
 use crate::stores::{StoreConsEnd, StoresList};
 
@@ -19,7 +19,7 @@ where
     /// If you want to use this, use `consecuit_html`'s source code as example.
     pub fn bare_container_node(
         self,
-        node: Element,
+        node: Node,
     ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, YesHoleNode> {
         let ComponentConstruction {
             hook_stores,

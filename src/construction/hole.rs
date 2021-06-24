@@ -1,4 +1,4 @@
-use web_sys::Element;
+use web_sys::Node;
 
 use crate::stores::StoresList;
 
@@ -16,7 +16,7 @@ impl MaybeHoleNode for NoHoleNode {}
 #[derive(Clone)]
 
 /// Internal use.
-pub struct YesHoleNode(pub(crate) Element);
+pub struct YesHoleNode(pub(crate) Node);
 #[sealed::sealed]
 impl MaybeHoleNode for YesHoleNode {}
 

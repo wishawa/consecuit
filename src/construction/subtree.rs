@@ -1,5 +1,5 @@
 use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
-use web_sys::{window, Element, HtmlElement};
+use web_sys::{window, Node};
 
 use crate::{
     locking::UnmountedLock,
@@ -22,10 +22,6 @@ When [mounting the app][crate::construction::mount::mount_app], Consecuit create
 
 [`opt_comp`][crate::construction::subtrees::opt_comp] creates a subtree for its component.
 [`vec_comps`][crate::construction::subtrees::vec_comps] creates a subtree for each of its components.
-
-A subtree wraps its children in a `<div style="display: contents">`.
-Do take this into account when writing CSS selectors.
-
  */
 pub struct SubtreeInstance<Ret, Props>
 where
@@ -34,7 +30,8 @@ where
 {
     stores: Box<TreeStores<Ret, Props>>,
     lock: UnmountedLock,
-    container: Element,
+    parent: Node,
+    nodes: Vec<Node>,
     func: ComponentFunc<Ret, Props>,
 }
 
@@ -45,7 +42,9 @@ where
 {
     fn drop(&mut self) {
         self.lock.unmount();
-        self.container.remove();
+        self.nodes.iter().for_each(|node| {
+            self.parent.remove_child(node).unwrap();
+        });
     }
 }
 
@@ -92,7 +91,7 @@ where
                 lock: self.lock.clone(),
                 current_component: &DUMMY_ROOT,
             },
-            parent_node: self.container.clone(),
+            parent_node: self.parent.clone(),
             last_node: NoHoleNode,
             ret_node: NoHoleNode,
         };
@@ -100,18 +99,10 @@ where
     }
 }
 
-pub(crate) fn create_wrapper_div() -> Element {
-    use wasm_bindgen::JsCast;
-    let document = window().unwrap().document().unwrap();
-    let wrapper: HtmlElement = document.create_element("div").unwrap().dyn_into().unwrap();
-    wrapper.style().set_property("display", "contents").unwrap();
-    wrapper.into()
-}
-
 pub(crate) fn mount_subtree<Ret, Props>(
     func: ComponentFunc<Ret, Props>,
     props: Props,
-    container: Element,
+    container: Node,
 ) -> SubtreeInstance<Ret, Props>
 where
     Ret: ComponentReturn,
@@ -120,14 +111,22 @@ where
     let stores: TreeStores<Ret, Props> = StoresList::create();
     let stores = Box::new(stores);
     let lock = UnmountedLock::new_mounted();
-    let subtree_root = create_wrapper_div();
-    let subtree = SubtreeInstance {
+    let document = window().unwrap().document().unwrap();
+    let fragment = document.create_document_fragment();
+    let parent = fragment.clone().into();
+    let mut subtree = SubtreeInstance {
         stores,
         lock,
-        container: subtree_root.clone(),
+        parent,
+        nodes: Vec::new(),
         func,
     };
     subtree.re_render(props);
-    container.append_child(&subtree_root).unwrap();
+    let child_nodes = fragment.child_nodes();
+    let length = child_nodes.length();
+    let nodes = (0..length).map(|i| child_nodes.item(i).unwrap()).collect();
+    container.append_child(&fragment).unwrap();
+    subtree.nodes = nodes;
+    subtree.parent = container;
     subtree
 }

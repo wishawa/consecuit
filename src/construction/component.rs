@@ -3,7 +3,7 @@ use crate::{
     stores::{StoreCons, StoreConsEnd, StoresList},
 };
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
-use web_sys::Element;
+use web_sys::Node;
 
 use super::{
     hole::{MaybeHoleNode, NoHoleNode, YesHoleNode},
@@ -18,7 +18,7 @@ For more information on how to write components, see the docs at [crate].
 */
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,
-    pub(crate) parent_node: Element,
+    pub(crate) parent_node: Node,
 }
 
 impl ComponentBuilder {
@@ -51,7 +51,7 @@ pub struct ComponentConstruction<
     ReturnNode: MaybeHoleNode,
 > {
     pub(crate) hook_stores: HookConstruction<CurrentStores, EntireStores>,
-    pub(crate) parent_node: Element,
+    pub(crate) parent_node: Node,
     pub(crate) last_node: LastNode,
     pub(crate) ret_node: ReturnNode,
 }
@@ -64,13 +64,13 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
 {
-    /// Get the parent [Element] the current component should render on.
+    /// Get the parent [Node] the current component should render on.
     ///
     /// This is for creating your own base component.
     /// If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
     ///
     /// If you want to use this, use `consecuit_html`'s source code as example.
-    pub fn get_parent_node(&self) -> Element {
+    pub fn get_parent_node(&self) -> Node {
         self.parent_node.clone()
     }
 }
@@ -140,7 +140,7 @@ where
 {
     func: ComponentFunc<Ret, Props>,
     props: Props,
-    parent_node: Element,
+    parent_node: Node,
     my_hole: Option<Ret::HoleNode>,
     lock: UnmountedLock,
 }

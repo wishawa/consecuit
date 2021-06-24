@@ -22,10 +22,12 @@ version = "0.3.51"
 version = "0.3.51"
 features = [
 	'Document',
+	'DocumentFragment',
 	'Element',
 	'Window',
 	'HtmlElement',
 	'Node',
+	'NodeList',
 	'CssStyleDeclaration',
 	'console',
 ]

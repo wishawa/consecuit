@@ -1,7 +1,7 @@
 use crate::shared::SharedProp;
 use consecuit::prelude::*;
 use im_rc::Vector;
-use web_sys::{window, Element, HtmlElement};
+use web_sys::{window, HtmlElement, Node};
 
 use wasm_bindgen::JsCast;
 
@@ -74,7 +74,7 @@ where
 {
     pub tag_name: &'static str,
     pub props: HtmlProps<T>,
-    pub parent: Element,
+    pub parent: Node,
 }
 
 pub(crate) fn use_element<T: HtmlComponent>(

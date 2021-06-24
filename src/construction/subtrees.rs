@@ -1,7 +1,7 @@
 use std::{cell::RefCell, ops::DerefMut};
 
 use im_rc::Vector;
-use web_sys::Element;
+use web_sys::Node;
 
 use crate::{
     hooks::{use_ref, Reference},
@@ -14,11 +14,19 @@ use super::{
 };
 
 use super::{
-    subtree::{create_wrapper_div, mount_subtree, Subtree, SubtreeInstance},
+    subtree::{mount_subtree, Subtree, SubtreeInstance},
     types::{ComponentFunc, ComponentProps, ComponentReturn},
 };
 
-fn get_or_create_container(opt: &mut Option<Element>, parent: Element) -> Element {
+fn get_or_create_container(opt: &mut Option<Node>, parent: Node) -> Node {
+    fn create_wrapper_div() -> Node {
+        use wasm_bindgen::JsCast;
+        let document = web_sys::window().unwrap().document().unwrap();
+        let wrapper: web_sys::HtmlElement =
+            document.create_element("div").unwrap().dyn_into().unwrap();
+        wrapper.style().set_property("display", "contents").unwrap();
+        wrapper.into()
+    }
     opt.get_or_insert_with(|| {
         let container = create_wrapper_div();
         parent.append_child(&container).unwrap();
@@ -46,6 +54,8 @@ cc_tree!(
 ```
 
 Component is mounted/unmouned as its own [Subtree][SubtreeInstance].
+
+The child component is wrapped in a `<div style="display: contents">...</div>`.
 */
 pub fn opt_comp<Ret, Props>(
     cc: ComponentBuilder,
@@ -56,7 +66,7 @@ where
     Props: ComponentProps,
 {
     let cc = cc.init();
-    let (cc, container): (_, Reference<Option<Element>>) = cc.hook(use_ref, ());
+    let (cc, container): (_, Reference<Option<Node>>) = cc.hook(use_ref, ());
     let (cc, subtree): (_, Reference<Option<SubtreeInstance<Ret, Props>>>) = cc.hook(use_ref, ());
     let parent = container
         .visit_mut_with(|container_opt| {
@@ -107,6 +117,8 @@ cc_tree!(
 ```
 
 Each component is mounted/unmouned as its own [Subtree][SubtreeInstance].
+
+The child components are wrapped in a `<div style="display: contents">...</div>`.
 */
 
 pub fn vec_comps<Ret, Props>(
@@ -118,7 +130,7 @@ where
     Props: ComponentProps,
 {
     let cc = cc.init();
-    let (cc, container): (_, Reference<Option<Element>>) = cc.hook(use_ref, ());
+    let (cc, container): (_, Reference<Option<Node>>) = cc.hook(use_ref, ());
     let (cc, subtree): (_, Reference<Vec<SubtreeInstance<Ret, Props>>>) = cc.hook(use_ref, ());
     let parent = container
         .visit_mut_with(|container_opt| {
