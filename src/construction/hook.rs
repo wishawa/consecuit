@@ -22,6 +22,17 @@ impl HookBuilder {
     /// Make it ready to call `.hook(...)`.
     /// You shouldn't need this, as we have a shortbut that automatically call it when you call `.hook(...)`.
     pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
+        /*
+        Each Reia hook gets a type-erased `HookBuilder` as input.
+        The actual input type is encoded in the called hook's `impl HookReturn<...>` return type.
+
+        The caller (`reia.hook(...)`) and the called hook must agree on the return type of the called hook,
+        so both know the called hook's true input type.
+
+        The caller erases that type information from the input, but the called hook knows the type, so it unsafely cast back back correctly.
+
+        Without this trick, each hook/component's signature would need to list out every state-slot it and its descendants use.
+        */
         let current: &T = unsafe { &*(self.untyped_stores as *const T) };
         HookConstruction {
             current,
@@ -36,7 +47,7 @@ impl HookBuilder {
 
 You can use it to call other hooks.
 
-You must return it at the end of your hook function. (See the doc for [`crate`] on how to write hooks).
+You must return it at the end of your hook function. (See the doc at [`crate`] on how to write hooks).
  */
 pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList> {
     pub(crate) current: &'static CurrentStores,

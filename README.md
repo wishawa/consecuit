@@ -1,5 +1,8 @@
 # Reia
 
+[<img alt="crates.io" src="https://img.shields.io/crates/v/reia?style=for-the-badge" height="20">](https://crates.io/crates/reia)
+[<img alt="crates.io" src="https://img.shields.io/docsrs/reia?style=for-the-badge" height="20">](https://docs.rs/reia)
+
 An **experimental** functional web UI framework that uses the Rust type system for hooks and more.
 
 ## How is this different from other frameworks?
@@ -26,7 +29,7 @@ An **experimental** functional web UI framework that uses the Rust type system f
 ## What does it look like?
 Take a look at our
 [TodoMVC](https://wishawa.github.io/reia/todomvc)
-(and see its [source code](https://github.com/wishawa/reia/tree/main/examples/todomvc)).
+(and see [its source code](https://github.com/wishawa/reia/tree/main/examples/todomvc)).
 
 Or if you want something simpler, here is the code for a counter.
 
@@ -65,26 +68,4 @@ one without macro and one with logic extracted into a `use_counter` function.
 
 
 
-## ⚠ Use of Unsafe ⚠
-**Don't panic! Everything publicly exported is safe.**
-
-Reia uses unsafe in two ways:
-
-* To cheat lifetime:
-
-	Functional architecture and web system interop don't play well with lifetime.
-	We transmute some internal things to `'static` and use locks to provide safety.
-
-* To erase input type in the function signatures of components and hooks:
-
-	Each Reia component gets a type-erased `ComponentBuilder` as input.
-	The actual input type is encoded in the component's `impl Trait` return type.
-
-	The caller (`reia.comp(...)`) and the component must agree on the return type of the component,
-	so both know the component's true input type.
-	
-	The caller erases that type information from the input, but the component knows the type, so it transmutes back correctly.
-
-	Without this trick,
-	each hook/component's signature would need to list out every state-slot it and its descendants use.
-
+**This crate uses unsafe.**

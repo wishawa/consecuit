@@ -77,7 +77,8 @@ where
         let stores_borrow = unsafe {
             // This unsafe is really unsafe.
             // The stores list is NOT really &'static.
-            // Always check the UnmountedLock before accessing it.
+            // We must always check the lock before accessing it.
+            // This is why use_ref's ReiaRef can fail with SubtreeUnmountedError.
             transmute::<&'_ TreeStores<Ret, Props>, &'static TreeStores<Ret, Props>>(
                 self.stores.borrow(),
             )

@@ -1,6 +1,7 @@
 use crate::{
     construction::{hook::HookBuilder, types::HookReturn},
     executor::RerenderTask,
+    locking::SubtreeUnmountedError,
 };
 
 use super::use_ref::{use_ref, ReiaRef};
@@ -21,26 +22,41 @@ impl<T> Updater<T> {
 
     The closure takes the current value and returns the new value.
 
-    This will queue a rerender.
+    This will silently fail if the state no longer exist (i.e. the component had been unmounted).
 
+    This will queue a rerender.
     */
     pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
+        self.try_update_with(func).ok();
+    }
+
+    /** Like the [`update_with`][Updater::update_with()] method, but returns result (no silent failure).
+
+    */
+    pub fn try_update_with<F: FnOnce(T) -> T>(&self, func: F) -> Result<(), SubtreeUnmountedError> {
         self.state
-            .visit_mut_with(|state| *state = Some(func(state.take().unwrap())))
-            .unwrap();
+            .visit_mut_with(|state| *state = Some(func(state.take().unwrap())))?;
         self.rerender_task.clone().enqueue();
+        Ok(())
     }
 
     /** Set the state value to the given value.
 
-    This will queue a rerender.
+    This will silently fail if the state no longer exist (i.e. the component had been unmounted).
 
+    This will queue a rerender.
     */
     pub fn set_to(&self, value: T) {
-        self.state
-            .visit_mut_with(|state| *state = Some(value))
-            .unwrap();
+        self.try_set_to(value).ok();
+    }
+
+    /** Like the [`set_to`][Updater::set_to()] method, but returns result (no silent failure).
+
+    */
+    pub fn try_set_to(&self, value: T) -> Result<(), SubtreeUnmountedError> {
+        self.state.visit_mut_with(|state| *state = Some(value))?;
         self.rerender_task.clone().enqueue();
+        Ok(())
     }
 }
 

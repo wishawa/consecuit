@@ -42,7 +42,7 @@ impl ComponentBuilder {
 
 You can use it to call hooks and render other components.
 
-See the doc for [`crate`] on how to write components.
+See the doc at [`crate`] on how to write components.
  */
 pub struct ComponentConstruction<
     CurrentStores: StoresList,
@@ -119,6 +119,7 @@ where
     }
 }
 
+/// Internal use
 pub struct ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,

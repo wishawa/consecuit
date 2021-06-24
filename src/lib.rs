@@ -1,11 +1,25 @@
 /*!
+
+# Reia
 An experimental functional web UI framework that uses the Rust type system for hooks and more.
+
+---
 
 This crate is a library for building web UI with functional components and hooks.
 
 See the [README](https://github.com/wishawa/reia) for an overview.
 
-Reia uses functional components and hooks, not unlike React and many other libraries.
+Also take a look at [our TodoMVC](https://wishawa.github.io/reia/todomvc) and [its source code](https://github.com/wishawa/reia/tree/main/examples/todomvc).
+
+# Using Reia
+
+Below, we show you how to
+
+* Write and use hooks.
+* Write and use components.
+* Write and use container components.
+
+The [the counters example](https://github.com/wishawa/reia/tree/main/examples/counters/src/lib.rs) is also good for getting started.
 
 ## Hooks
 
@@ -96,25 +110,33 @@ reia_tree!(
 )
 ```
 
-As you might have figurede out from the code above already:
+As you might have figured out from the code above already:
 
 * Use the name of the component function is the name of the tag.
-* Put the props in a curly braces beside the tag name.
+* Put the props in curly braces beside the tag name.
 If there are none, the macro will attempt to use the [`Default::default`] value (and error if the props doesn't implement Default).
 * Use string literal or any [`AsRef<str>`] type in braces to create text node.
 
-Here is an example of a full component function:
+Here is an example of a component function:
 
 ```
 fn show_plus_calculation(reia: ComponentBuilder, (lhs, rhs): (i32, i32)) -> impl ComponentReturn {
     let result = lhs + rhs;
+
+    // These 2 lines are just to show how to use hooks
+    let (reia, _some_example_1) = reia.hook(use_example_hook, 1234);
+    let (reia, _some_example_2) = reia.hook(use_another_hook, 5678);
+
+    // All there `h5`, `span`, `b` are from the `reia_html` crate.
     reia_tree!(
+        <my_website_header />
         <h5>"Calculation Result:"</h5>
         <span>{lhs.to_string()}</span>
         <span {html_props().class_name("plus-sign")}>" + "</span>
         <span>{rhs.to_string()}</span>
         <span {html_props().class_name("equal-sign")}>" = "</span>
         <span><b>{result.to_string()}</b></span>
+        <my_website_footer />
     )
 }
 ```
