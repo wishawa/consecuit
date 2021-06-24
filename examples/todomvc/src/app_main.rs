@@ -256,7 +256,7 @@ fn bottom_controls(
     });
     cc_tree!(
         <div {html_props().class_name(if !todos.is_empty() {
-            "flex flex-row items-center sm:flex-wrap p-2 font-light border-t-2 border-gray-100"
+            "flex flex-row items-center flex-wrap sm:flex-nowrap p-2 font-light border-t-2 border-gray-100"
         } else {
             "hidden"
         })}>
@@ -281,7 +281,7 @@ fn bottom_controls(
                     "Clear Completed"
                 </button>
             </div>
-            <div {html_props().class_name("flex-1 flex flex-row order-3 sm:order-2 min-w-full sm:min-w-min justify center")}>
+            <div {html_props().class_name("flex-1 flex flex-row order-3 sm:order-2 min-w-full sm:min-w-min justify-center")}>
                 <filter_button {(ListFilter::All, filter)} />
                 <filter_button {(ListFilter::Active, filter)} />
                 <filter_button {(ListFilter::Completed, filter)} />
