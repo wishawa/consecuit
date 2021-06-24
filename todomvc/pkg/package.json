@@ -1,0 +1,15 @@
+{
+  "name": "consecuit_todomvc",
+  "collaborators": [
+    "Wisha Wa <wisha.wa@yandex.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "consecuit_todomvc_bg.wasm",
+    "consecuit_todomvc.js",
+    "consecuit_todomvc.d.ts"
+  ],
+  "module": "consecuit_todomvc.js",
+  "types": "consecuit_todomvc.d.ts",
+  "sideEffects": false
+}
