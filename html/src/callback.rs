@@ -4,6 +4,22 @@ use consecuit::prelude::batch_updates;
 use js_sys::Function;
 use wasm_bindgen::{convert::FromWasmAbi, prelude::Closure, JsCast};
 
+/** A callback for HTML attributes like `onclick`, `oninput`, etc.
+
+Create one with `Callback::new`, and pass it to the prop builder. Like this:
+
+```
+let click_handler = Callback::new(move |ev: web_sys::MouseEvent| {
+    web_sys::console::log_1(
+        &"You clicked the button!".into()
+    );
+});
+
+cc_tree!(
+    <button {html_props().onclick(click_handler)}>"click me!"</button>
+)
+
+*/
 #[derive(Clone)]
 pub struct Callback<E: FromWasmAbi + 'static>(Rc<Closure<dyn Fn(E)>>);
 

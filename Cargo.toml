@@ -13,7 +13,7 @@ crate-type = ["cdylib", "rlib"]
 sealed = "0.3.0"
 wasm-bindgen = "0.2.74"
 im-rc = "15.0.0"
-consecuit_macros = { path = "./macros/" }
+consecuit_macros = { path = "./macros/", version = "^0.1.0" }
 
 [dependencies.js-sys]
 version = "0.3.51"

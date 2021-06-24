@@ -8,7 +8,7 @@ use crate::{
     locking::{SubtreeUnmountedError, UnmountedLock},
 };
 
-/** A reference with interior mutability. Somewhat like [RefCell].
+/** A reference with interior mutability. Somewhat like [RefCell]. Returned by [use_ref].
 
 This can be read from and written to anytime. Writing to it does not trigger rerender.
 

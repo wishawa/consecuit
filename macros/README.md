@@ -1,0 +1,1 @@
+This crate contain macros for [Consecuit](https://crates.io/crates/consecuit).
