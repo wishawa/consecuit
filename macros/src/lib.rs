@@ -1,18 +1,37 @@
 use std::convert::TryFrom;
 
-use proc_macro2::TokenStream;
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 use syn::{
     parse::{Parse, ParseStream},
-    parse_macro_input, parse_quote, ExprBlock, ExprPath,
+    parse_macro_input, parse_quote, ExprBlock, ExprPath, Token,
 };
 use syn_rsx::Node;
 
 #[proc_macro]
 pub fn cc_tree(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let nodes = parse_macro_input!(input as ConsecuitNodes);
-    let tokens = nodes.build_top();
+    let CcTreeInput { cc_name, nodes } = parse_macro_input!(input as CcTreeInput);
+    let tokens = nodes.build_top(cc_name);
     tokens.into()
+}
+
+struct CcTreeInput {
+    cc_name: Ident,
+    nodes: ConsecuitNodes,
+}
+
+impl Parse for CcTreeInput {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let cc_name = if input.peek2(Token![,]) {
+            let cc_name: Ident = input.parse()?;
+            let _comma: Token![,] = input.parse()?;
+            cc_name
+        } else {
+            Ident::new("cc", Span::call_site())
+        };
+        let nodes = ConsecuitNodes::parse(input)?;
+        Ok(Self { cc_name, nodes })
+    }
 }
 
 struct ConsecuitNodes(Vec<ConsecuitNode>);
@@ -116,14 +135,15 @@ impl TryFrom<Node> for ConsecuitNode {
 }
 
 impl ConsecuitNodes {
-    fn build_top(&self) -> TokenStream {
-        let tokens = self.build();
+    fn build_top(&self, cc_name: Ident) -> TokenStream {
+        let tokens = self.build(cc_name.clone());
         quote! {
             #[allow(unused_braces)]
-            cc#tokens
+            #cc_name
+            #tokens
         }
     }
-    fn build(&self) -> TokenStream {
+    fn build(&self, cc_name: Ident) -> TokenStream {
         let tokens = self.0.iter().map(|n| {
             let ConsecuitNode {
                 func,
@@ -140,10 +160,10 @@ impl ConsecuitNodes {
                     quote! {}
                 }
             } else {
-                let inner = children.build();
+                let inner = children.build(cc_name.clone());
                 quote! {
-                    .child(|cc| {
-                        cc
+                    .child(|#cc_name| {
+                        #cc_name
                         #inner
                     })
                 }
