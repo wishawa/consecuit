@@ -97,6 +97,7 @@ In the function body, you can write normal code, and call hooks the same way as 
 You can also use the [`cc_tree`][consecuit_macros::cc_tree] macro to render other components. Like this:
 
 ```
+use consecuit_html::prelude::*; // <- consecuit_html provides html components like div and span
 cc_tree!(
     <div>
         <div {html_props().class_name("some-class-name").onclick(onclick_callback)}>
@@ -120,6 +121,8 @@ If there are none, the macro will attempt to use the [`Default::default`] value 
 Here is an example of a component function:
 
 ```
+use consecuit::prelude::*;
+use consecuit_html::prelude::*;
 fn show_plus_calculation(cc: ComponentBuilder, (lhs, rhs): (i32, i32)) -> impl ComponentReturn {
     let result = lhs + rhs;
 
