@@ -25,6 +25,9 @@ pub fn app_footer(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
     cc_tree!(
         <footer {html_props().class_name("mt-16 p-4 flex flex-col")}>
             <footer_span>
+                "Double click to edit todos."
+            </footer_span>
+            <footer_span>
                 "Written by "
                 <hoverable_link {("Wisha Wa", "https://github.com/wishawa/")} />
             </footer_span>
