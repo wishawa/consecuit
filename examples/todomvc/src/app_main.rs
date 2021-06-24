@@ -13,7 +13,7 @@ fn use_text_edit(
 ) -> impl HookReturn<HtmlProps<web_sys::HtmlInputElement>> {
     const ENTER_KEY: u32 = 13;
     const ESCAPE_KEY: u32 = 27;
-    let cc = cc.init();
+
     let (cc, input_ref) = cc.hook(use_ref, ());
     let cloned_input_ref = input_ref.clone();
     let submit = move || {
@@ -62,7 +62,6 @@ fn top_box(
     cc: ComponentBuilder,
     (todos, reducer): (Vector<Todo>, TodosReducer),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     let cloned_reducer = reducer.clone();
     let is_empty = todos.is_empty();
     let all_completed = todos.iter().all(|td| td.completed);
@@ -106,7 +105,6 @@ fn one_todo(
     cc: ComponentBuilder,
     (todo, reducer, idx): (Todo, TodosReducer, usize),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     let reducer_cloned = reducer.clone();
     let toggle = Callback::new(move |_ev| {
         reducer_cloned.reduce(TodosReduction::Toggle(idx));
@@ -163,7 +161,6 @@ fn todo_edit(
     cc: ComponentBuilder,
     (todo, reducer, idx, edit_setter): (Todo, TodosReducer, usize, Updater<bool>),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     let edit_setter_cloned = edit_setter.clone();
     let (cc, input_props) = cc.hook(
         use_text_edit,
@@ -211,7 +208,6 @@ fn main_list(
     cc: ComponentBuilder,
     (todos, reducer, filter): (Vector<Todo>, TodosReducer, ListFilter),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     let props: Vector<(Todo, TodosReducer, usize)> = todos
         .iter()
         .enumerate()
@@ -230,7 +226,6 @@ fn filter_button(
     let unselected_classes: String =
         format!("{} border-transparent hover:border-red-100", SHARED_CLASS);
 
-    let cc = cc.init();
     let href = match this {
         ListFilter::All => "#/all",
         ListFilter::Active => "#/active",
@@ -256,7 +251,6 @@ fn bottom_controls(
     cc: ComponentBuilder,
     (todos, reducer, filter): (Vector<Todo>, TodosReducer, ListFilter),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     let on_clear = Callback::new(move |_ev| {
         reducer.reduce(TodosReduction::ClearCompleted());
     });
@@ -358,7 +352,6 @@ fn use_filter(cc: HookBuilder, _: ()) -> impl HookReturn<ListFilter> {
 }
 
 pub fn app_main(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let cc = cc.init();
     let (cc, (todos, reducer)) = cc.hook(use_todos, ());
     let (cc, filter) = cc.hook(use_filter, ());
     cc_tree!(

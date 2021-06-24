@@ -2,7 +2,6 @@ use consecuit::prelude::*;
 use consecuit_html::prelude::*;
 
 fn footer_span(cc: ComponentBuilder, _: ()) -> impl ContainerReturn {
-    let cc = cc.init();
     cc_tree! (
         <span {html_props().class_name("m-0.5 text-xs text-center text-gray-500")} HOLE />
     )
@@ -12,7 +11,6 @@ fn hoverable_link(
     cc: ComponentBuilder,
     (text, href): (&'static str, &'static str),
 ) -> impl ComponentReturn {
-    let cc = cc.init();
     cc_tree!(
         <a {HtmlProps::<web_sys::HtmlAnchorElement>::new().class_name("hover:underline").href(href)}>
             {text}
@@ -21,7 +19,6 @@ fn hoverable_link(
 }
 
 pub fn app_footer(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let cc = cc.init();
     cc_tree!(
         <footer {html_props().class_name("mt-16 p-4 flex flex-col")}>
             <footer_span>
