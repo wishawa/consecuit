@@ -300,12 +300,12 @@ where
 
     ```
     cc.comp(table, html_props())
-        .child(|r| {
-            r.comp(tr, html_props())
-            .child(|r| {
-                r.comp(td, html_props())
-                .child(|r| {
-                    r.comp(text_node, "hello")
+        .child(|cc| {
+            cc.comp(tr, html_props())
+            .child(|cc| {
+                cc.comp(td, html_props())
+                .child(|cc| {
+                    cc.comp(text_node, "hello")
                 })
             })
         })

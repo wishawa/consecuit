@@ -79,10 +79,10 @@ fn counter_no_macro(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
     });
 
     cc.comp(button, html_props().onclick(decrement))
-        .child(|r| r.comp(text_node, "-"))
+        .child(|cc| cc.comp(text_node, "-"))
         .comp(text_node, count.to_string())
         .comp(button, html_props().onclick(increment))
-        .child(|r| r.comp(text_node, "+"))
+        .child(|cc| cc.comp(text_node, "+"))
 }
 
 fn counter_memo(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
