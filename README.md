@@ -69,4 +69,5 @@ one without macro and one with logic extracted into a `use_counter` function.
 [The docs](https://docs.rs/consecuit) have more info on creating components and hooks.
 
 **This crate uses unsafe.**
+
 Don't worry. All publicly exposed function is safe.
