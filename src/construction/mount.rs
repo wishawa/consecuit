@@ -19,7 +19,7 @@ where
     mount_app_at(function, body)
 }
 
-/// Mount the given component on the given [`Element`]. This uses [`mount_app_without_leaking_at`] and leaks the result.
+/// Mount the given component on the given [`Node`]. This uses [`mount_app_without_leaking_at`] and leaks the result.
 ///
 /// The component must be a Consecuit component that takes `()` (empty tuple) as props.
 ///
@@ -33,7 +33,7 @@ where
     }));
 }
 
-/// Mount the given component on the given [`Element`], returning a [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] which will unmount the app when dropped.
+/// Mount the given component on the given [`Node`], returning a [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] which will unmount the app when dropped.
 ///
 /// Normally you should use [`mount_app`] or [`mount_app_at`]. Only use this if you have a way to store the returned value.
 ///

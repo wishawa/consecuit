@@ -11,7 +11,7 @@ use super::{
     types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
 };
 
-/** The initial `consecuit` object every component takes as first argument.
+/** The initial `consecuit` or `cc` object every component takes as first argument.
 
 For more information on how to write components, see the docs at [crate].
 
@@ -38,7 +38,7 @@ impl ComponentBuilder {
     }
 }
 
-/** This is the `consecuit` object in your component function.
+/** This is the `consecuit` or `cc` object in your component function.
 
 You can use it to call hooks and render other components.
 
@@ -222,7 +222,7 @@ where
 {
     /** Render the given component with the given prop.
 
-    This consumes the `consecuit` object, and returns a new one.
+    This consumes the `consecuit` or `cc` object, and returns a new one.
 
     This is equivalent to a tag in the [`cc_tree!`][consecuit_macros::cc_tree] macro.
 
@@ -294,7 +294,7 @@ where
 {
     /** Descend into the hole of the last component with the given closure.
 
-    This consumes the `consecuit` object, and returns a new one.
+    This consumes the `consecuit` or `cc` object, and returns a new one.
 
     Use this to nest components. For example:
 

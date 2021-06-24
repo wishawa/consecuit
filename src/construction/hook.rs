@@ -7,7 +7,7 @@ use crate::{
 
 use super::{component::ComponentStore, types::HookReturn};
 
-/** The initial `consecuit` object that every hook takes as first argument.
+/** The initial `consecuit` or `cc` object that every hook takes as first argument.
 
 For more information on how to write hooks, see the docs at [crate].
 
@@ -43,7 +43,7 @@ impl HookBuilder {
     }
 }
 
-/** This is the `consecuit` object in your hook function.
+/** This is the `consecuit` or `cc` object in your hook function.
 
 You can use it to call other hooks.
 
