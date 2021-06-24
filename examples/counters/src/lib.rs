@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
-    mount::mount_app(counters);
+    consecuit::mount::mount_app(counters);
     Ok(())
 }
 

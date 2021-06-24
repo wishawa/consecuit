@@ -187,7 +187,10 @@ pub mod executor;
 pub mod hooks;
 pub mod locking;
 mod stores;
+
 pub use consecuit_macros;
+
+pub use construction::mount;
 
 pub mod prelude {
     /*! Just import me.
@@ -196,7 +199,6 @@ pub mod prelude {
     pub use crate::construction::{
         component::ComponentBuilder,
         hook::HookBuilder,
-        mount,
         subtrees::*,
         types::{ComponentReturn, ContainerReturn, DynComponentReturn, HookReturn},
     };

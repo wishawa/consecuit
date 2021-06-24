@@ -14,7 +14,7 @@ pub fn run() -> Result<(), JsValue> {
     println!("Hello, world!");
     use std::panic;
     panic::set_hook(Box::new(console_error_panic_hook::hook));
-    mount::mount_app(app);
+    consecuit::mount::mount_app(app);
     Ok(())
 }
 
