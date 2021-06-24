@@ -1,6 +1,6 @@
 use web_sys::{window, Text};
 
-use reia::*;
+use reia::prelude::*;
 
 pub fn text_node(reia: ComponentBuilder, value: impl AsRef<str>) -> impl ComponentReturn {
     let reia = reia.init();

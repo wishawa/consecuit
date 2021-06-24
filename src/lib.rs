@@ -10,17 +10,17 @@ Reia uses functional components and hooks, not unlike React and many other libra
 ## Hooks
 
 A Reia hook is a function that can call other Reia hooks.
-So you can build your own hook by composing the basic hooks like [`use_state`], [`use_ref`], and [`use_effect`].
+So you can build your own hook by composing the basic hooks like [`use_state`][hooks::use_state], [`use_ref`][hooks::use_ref], and [`use_effect`][hooks::use_effect].
 
 A Reia hook must be a function that takes 2 arguments:
-Reia's [`HookBuilder`], and the args, which can be any type.
+Reia's [`HookBuilder`][construction::hook::HookBuilder], and the args, which can be any type.
 
-The return type should not be named out concretely, but rather written as `impl Trait` of [`HookReturn`], with the actual value as the generic parameter.
+The return type should not be named out concretely, but rather written as `impl Trait` of [`HookReturn`][construction::types::HookReturn], with the actual value as the generic parameter.
 
 The signature for a `use_i32_state` hook might look something like this
 
 ```
-use reia::*
+use reia::prelude::*;
 fn use_i32_state(reia: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)>
 ```
 
@@ -47,7 +47,7 @@ When you are done and want to return from your hook, return `(reia, <your hook r
 Our `use_i32_state` might look like this in full:
 
 ```
-use reia::*
+use reia::prelude::*;
 fn use_i32_state(reia: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)> {
     // Use the `use_state` hook.
     let (reia, (number, updater)) = reia.hook(use_state, initial_value);
@@ -67,20 +67,20 @@ A Reia component is a function that can call Reia hooks, and render other Reia c
 You can use the HTML components provided by the reia_html crate as building blocks for your components' UI.
 
 A Reia component must be a function that takes 2 arguments:
-Reia's [`ComponentBuilder`], and the props, which can be any type that is [`PartialEq`] and [`Clone`], and `'static` (i.e. not a borrow).
+Reia's [`ComponentBuilder`][construction::component::ComponentBuilder], and the props, which can be any type that is [`PartialEq`] and [`Clone`], and `'static` (i.e. not a borrow).
 (a component can only have 1 props).
 
-The return type should not be named out concretely, but rather written as `impl Trait` of [`ComponentReturn`].
+The return type should not be named out concretely, but rather written as `impl Trait` of [`ComponentReturn`][construction::types::ComponentReturn].
 Here is an example:
 
 ```
-use reia::*
+use reia::prelude::*;
 fn my_component(reia: ComponentBuilder, props: MyComponentProps) -> impl ComponentReturn
 ```
 
 In the function body, you can write normal code, and call hooks the same way as for hook functions documented above.
 
-You can also use the [`reia_tree`] macro to render other components. Like this:
+You can also use the [`reia_tree`][reia_macros::reia_tree] macro to render other components. Like this:
 
 ```
 reia_tree!(
@@ -157,16 +157,22 @@ fn my_container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
 A container component must have exactly one hole.
 */
 
-mod construction;
-mod executor;
-mod hooks;
+pub mod construction;
+pub mod executor;
+pub mod hooks;
 mod stores;
 mod unmounted_lock;
+pub use reia_macros;
 
-pub use construction::{
-    mount_app, mount_app_at, mount_app_without_leaking_at, opt_comp, vec_comps, ComponentBuilder,
-    ComponentReturn, ContainerReturn, DynComponentReturn, HookBuilder, HookReturn,
-};
-pub use executor::{batch_updates, run_later};
-pub use hooks::*;
-pub use reia_macros::reia_tree;
+pub mod prelude {
+    pub use crate::construction::{
+        component::ComponentBuilder,
+        hook::HookBuilder,
+        mount,
+        subtrees::*,
+        types::{ComponentReturn, ContainerReturn, DynComponentReturn, HookReturn},
+    };
+    pub use crate::executor::{batch_updates, run_later};
+    pub use crate::hooks::*;
+    pub use reia_macros::reia_tree;
+}

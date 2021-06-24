@@ -1,7 +1,7 @@
 use std::{ops::Deref, rc::Rc};
 
 use js_sys::Function;
-use reia::batch_updates;
+use reia::prelude::batch_updates;
 use wasm_bindgen::{convert::FromWasmAbi, prelude::Closure, JsCast};
 
 #[derive(Clone)]

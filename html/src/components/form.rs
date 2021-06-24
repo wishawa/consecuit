@@ -1,5 +1,5 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::{ComponentBuilder, ContainerReturn};
+use reia::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlFormElement;
 pub fn form(reia: ComponentBuilder, props: HtmlProps<HtmlFormElement>) -> impl ContainerReturn {
     let reia = reia.init();

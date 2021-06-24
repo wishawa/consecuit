@@ -1,4 +1,4 @@
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 
 pub fn app_header(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {

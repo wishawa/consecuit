@@ -1,6 +1,6 @@
 use crate::shared::SharedProp;
 use im_rc::Vector;
-use reia::*;
+use reia::prelude::*;
 use web_sys::{window, Element, HtmlElement};
 
 use wasm_bindgen::JsCast;

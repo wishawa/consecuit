@@ -49,6 +49,9 @@ where
     }
 }
 
+/** Internal use. Sealed.
+
+*/
 #[sealed::sealed]
 pub trait Subtree {
     type Props;

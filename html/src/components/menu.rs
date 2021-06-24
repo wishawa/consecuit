@@ -1,5 +1,5 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::{ComponentBuilder, ContainerReturn};
+use reia::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlMenuElement;
 pub fn menu(reia: ComponentBuilder, props: HtmlProps<HtmlMenuElement>) -> impl ContainerReturn {
     let reia = reia.init();

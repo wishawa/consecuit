@@ -27,7 +27,7 @@ fn get_or_create_container(opt: &mut Option<Element>, parent: Element) -> Elemen
     .clone()
 }
 
-/** A wrapper that monuts/unmounts the given component based on the `Option<Props>`.
+/** A wrapper component that monuts/unmounts the given component based on the `Option<Props>`.
 
 Takes a tuple of `(the component function, Option<its props>)`.
 
@@ -81,7 +81,7 @@ where
     reia.bare_leaf_node()
 }
 
-/** A wrapper that monuts/unmounts a number of the given component based on the `Vector<Props>`.
+/** A wrapper component  that monuts/unmounts a number of the given component based on the `Vector<Props>`.
 
 Note that this takes a [`im_rc::Vector`], not a [`std::vec::Vec`].
 

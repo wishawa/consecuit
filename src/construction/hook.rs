@@ -7,6 +7,11 @@ use crate::{
 
 use super::{component::ComponentStore, types::HookReturn};
 
+/** The initial `reia` object that every hook takes as first argument.
+
+For more information on how to write hooks, see the docs at [crate].
+
+*/
 pub struct HookBuilder {
     pub(crate) untyped_stores: *const (),
     pub(crate) lock: UnmountedLock,

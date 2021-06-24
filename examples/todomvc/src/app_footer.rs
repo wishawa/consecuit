@@ -1,4 +1,4 @@
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 
 fn footer_span(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {

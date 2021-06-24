@@ -1,5 +1,5 @@
 use im_rc::Vector;
-use reia::*;
+use reia::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]

@@ -1,5 +1,5 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::{ComponentBuilder, ContainerReturn};
+use reia::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlTitleElement;
 pub fn title(reia: ComponentBuilder, props: HtmlProps<HtmlTitleElement>) -> impl ContainerReturn {
     let reia = reia.init();

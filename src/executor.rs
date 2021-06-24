@@ -8,7 +8,7 @@ use std::{
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::{console, window};
 
-use crate::{construction::ComponentStore, unmounted_lock::UnmountedLock};
+use crate::{construction::component::ComponentStore, unmounted_lock::UnmountedLock};
 
 #[derive(Clone)]
 pub(crate) struct RerenderTask {

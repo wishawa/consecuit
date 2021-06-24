@@ -11,6 +11,11 @@ use super::{
     types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
 };
 
+/** The initial `reia` object every component takes as first argument.
+
+For more information on how to write components, see the docs at [crate].
+
+*/
 pub struct ComponentBuilder {
     pub(crate) hook_builder: HookBuilder,
     pub(crate) parent_node: Element,

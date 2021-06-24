@@ -1,10 +1,10 @@
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
 pub fn run() -> Result<(), JsValue> {
-    mount_app(counters);
+    mount::mount_app(counters);
     Ok(())
 }
 

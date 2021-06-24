@@ -1,11 +1,11 @@
 use crate::{
-    construction::{HookBuilder, HookReturn},
+    construction::{hook::HookBuilder, types::HookReturn},
     executor::RerenderTask,
 };
 
 use super::use_ref::{use_ref, ReiaRef};
 
-/** Can be used to update the state.
+/** A handle returned by [use_state] for updating the state.
 
 Updating the state will schedule a rerender.
 

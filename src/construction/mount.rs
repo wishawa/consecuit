@@ -1,8 +1,10 @@
 use web_sys::{window, Element};
 
-use crate::{ComponentBuilder, ComponentReturn};
-
-use super::subtree::{mount_subtree, Subtree, SubtreeInstance};
+use super::{
+    component::ComponentBuilder,
+    subtree::{mount_subtree, Subtree, SubtreeInstance},
+    types::ComponentReturn,
+};
 
 /// Mount the given component on the <body> element. This passes <body> to [`mount_app_at`].
 ///

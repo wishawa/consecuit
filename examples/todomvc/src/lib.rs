@@ -1,4 +1,4 @@
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 use wasm_bindgen::prelude::*;
 mod app_header;
@@ -14,7 +14,7 @@ pub fn run() -> Result<(), JsValue> {
     println!("Hello, world!");
     use std::panic;
     panic::set_hook(Box::new(console_error_panic_hook::hook));
-    reia::mount_app(app);
+    mount::mount_app(app);
     Ok(())
 }
 

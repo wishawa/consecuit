@@ -1,5 +1,5 @@
 use im_rc::Vector;
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 
 use crate::model::{todos_from_str, todos_to_string, Todo, TodosReducer, TodosReduction};

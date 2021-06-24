@@ -1,4 +1,4 @@
-use crate::{HookBuilder, HookReturn};
+use crate::construction::{hook::HookBuilder, types::HookReturn};
 
 use super::{use_ref, ReiaRef};
 

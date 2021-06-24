@@ -1,5 +1,5 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::{ComponentBuilder, ContainerReturn};
+use reia::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlImageElement;
 pub fn img(reia: ComponentBuilder, props: HtmlProps<HtmlImageElement>) -> impl ContainerReturn {
     let reia = reia.init();

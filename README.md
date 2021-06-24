@@ -31,7 +31,7 @@ Take a look at our
 Or if you want something simpler, here is the code for a counter.
 
 ```rust
-use reia::*;
+use reia::prelude::*;
 use reia_html::prelude::*;
 use wasm_bindgen::prelude::*;
 
