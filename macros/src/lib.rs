@@ -1,3 +1,8 @@
+/*! Macros to make Consecuit easier to use.
+
+There is currently only one macro: [cc_tree]. It let you write components in JSX style.
+*/
+
 use std::convert::TryFrom;
 
 use proc_macro2::{Ident, Span, TokenStream};
@@ -8,6 +13,57 @@ use syn::{
 };
 use syn_rsx::Node;
 
+/** Macro to let you write UI in JSX style.
+
+This:
+
+```
+cc_tree!(
+    <div>
+        "This is a text node"
+        {format!("hi: {}", name)}
+        <span {html_props().class_name("text-span")}>"This is a text node in a span"</span>
+        <my_component { MyComponentProps { value: 5 } } />
+    </div>
+)
+```
+
+expands to:
+
+```
+cc.comp(div, Default::default())
+.child(|cc| {
+    cc.comp(text_node, "This is a text node")
+    .comp(text_node, { format!("hi: {}", name) })
+    .comp(span, html_props().class_name("text-span"))
+    .child(|cc| {
+        cc.comp(text_node, "This is a text node in a span")
+    })
+    .comp(my_component, MyComponentProps { value: 5 })
+})
+```
+
+As you might have figured out from above already:
+
+* Use the name of the component function is the name of the tag.
+* Put the props in curly braces beside the tag name.
+If there are none, the macro will attempt to use the [`Default::default`] value (and error if the props doesn't implement Default).
+* Use string literal or any [`AsRef<str>`] type in braces to create text node.
+
+
+If you use names other than `cc` for your Consecuit object, you can specify it as first arg to the macro:
+
+```
+fn my_comp(consecuit_object: ComponentBuilder, _props: ()) -> impl ComponentReturn {
+    cc_tree!(consecuit_object,
+        <div>
+            <my_other_component />
+            "blah blah"
+        </div>
+    )
+}
+```
+*/
 #[proc_macro]
 pub fn cc_tree(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let CcTreeInput { cc_name, nodes } = parse_macro_input!(input as CcTreeInput);
