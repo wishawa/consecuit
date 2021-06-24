@@ -11,7 +11,7 @@ use super::{
     types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
 };
 
-/** The initial `reia` object every component takes as first argument.
+/** The initial `consecuit` object every component takes as first argument.
 
 For more information on how to write components, see the docs at [crate].
 
@@ -38,7 +38,7 @@ impl ComponentBuilder {
     }
 }
 
-/** This is the `reia` object in your component function.
+/** This is the `consecuit` object in your component function.
 
 You can use it to call hooks and render other components.
 
@@ -67,9 +67,9 @@ where
     /// Get the parent [Element] the current component should render on.
     ///
     /// This is for creating your own base component.
-    /// If you stick with the ones provided by the `reia_html` crate, you won't need this.
+    /// If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
     ///
-    /// If you want to use this, use `reia_html`'s source code as example.
+    /// If you want to use this, use `consecuit_html`'s source code as example.
     pub fn get_parent_node(&self) -> Element {
         self.parent_node.clone()
     }
@@ -86,8 +86,8 @@ where
 {
     /** Use the given hook, with the given arg.
 
-    Consumes `self`. Returns a tuple of `(reia, <return value of hook>)`.
-    You can use the returned `reia` to call more hooks.
+    Consumes `self`. Returns a tuple of `(cc, <return value of hook>)`.
+    You can use the returned `cc` to call more hooks.
 
     See the docs at [crate] for more info on how to write and use hooks.
      */
@@ -179,7 +179,7 @@ where
 
         let untyped_stores: *const () =
             stores as *const <Ret as ComponentReturn>::StoresList as *const ();
-        let reia = ComponentBuilder {
+        let cc = ComponentBuilder {
             hook_builder: HookBuilder {
                 untyped_stores,
                 lock: lock.clone(),
@@ -187,7 +187,7 @@ where
             },
             parent_node: parent_node.clone(),
         };
-        let hole = func(reia, props).get_node();
+        let hole = func(cc, props).get_node();
 
         *my_hole = Some(hole);
     }
@@ -222,13 +222,13 @@ where
 {
     /** Render the given component with the given prop.
 
-    This consumes the `reia` object, and returns a new one.
+    This consumes the `consecuit` object, and returns a new one.
 
-    This is equivalent to a tag in the [`reia_tree!`][reia_macros::reia_tree] macro.
+    This is equivalent to a tag in the [`cc_tree!`][consecuit_macros::cc_tree] macro.
 
     For example:
     ```
-    reia_tree!(
+    cc_tree!(
         <div />
         <footer {html_props().class_name("hi")} />
     )
@@ -237,7 +237,7 @@ where
     is equivalent to
 
     ```
-    reia.comp(div, Default::default())
+    cc.comp(div, Default::default())
         .comp(footer, html_props().class_name("hi"))
     ```
     */
@@ -294,12 +294,12 @@ where
 {
     /** Descend into the hole of the last component with the given closure.
 
-    This consumes the `reia` object, and returns a new one.
+    This consumes the `consecuit` object, and returns a new one.
 
     Use this to nest components. For example:
 
     ```
-    reia.comp(table, html_props())
+    cc.comp(table, html_props())
         .child(|r| {
             r.comp(tr, html_props())
             .child(|r| {
@@ -311,10 +311,10 @@ where
         })
     ```
 
-    The [`reia_tree!`][reia_macros::reia_tree] macro equivalent for the above code is:
+    The [`cc_tree!`][consecuit_macros::cc_tree] macro equivalent for the above code is:
 
     ```
-    reia_tree!(
+    cc_tree!(
         <table {html_props()}>
             <tr {html_props()}>
                 <td {html_props()}>

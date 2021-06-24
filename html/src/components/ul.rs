@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlUListElement;
-pub fn ul(reia: ComponentBuilder, props: HtmlProps<HtmlUListElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn ul(cc: ComponentBuilder, props: HtmlProps<HtmlUListElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlUListElement>,
         UseElementArgs {
             tag_name: "ul",
@@ -12,5 +12,5 @@ pub fn ul(reia: ComponentBuilder, props: HtmlProps<HtmlUListElement>) -> impl Co
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

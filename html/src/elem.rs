@@ -1,6 +1,6 @@
 use crate::shared::SharedProp;
+use consecuit::prelude::*;
 use im_rc::Vector;
-use reia::prelude::*;
 use web_sys::{window, Element, HtmlElement};
 
 use wasm_bindgen::JsCast;
@@ -26,11 +26,11 @@ pub struct HtmlProps<E: HtmlComponent>(pub(crate) Vector<HtmlProp<E>>);
 pub(crate) enum HtmlProp<E: HtmlComponent> {
     Shared(SharedProp),
     Own(E::PropEnum),
-    Ref(ReiaRef<Option<E>>),
+    Ref(Reference<Option<E>>),
 }
 
 impl<E: HtmlComponent> HtmlProps<E> {
-    pub fn reference(mut self, reference: ReiaRef<Option<E>>) -> Self {
+    pub fn reference(mut self, reference: Reference<Option<E>>) -> Self {
         self.0.push_back(HtmlProp::Ref(reference));
         self
     }
@@ -78,16 +78,16 @@ where
 }
 
 pub(crate) fn use_element<T: HtmlComponent>(
-    reia: HookBuilder,
+    cc: HookBuilder,
     args: UseElementArgs<T>,
 ) -> impl HookReturn<T> {
-    let reia = reia.init();
+    let cc = cc.init();
     let UseElementArgs {
         tag_name,
         props,
         parent,
     } = args;
-    let (reia, store): (_, ReiaRef<Option<T>>) = reia.hook(use_ref, ());
+    let (cc, store): (_, Reference<Option<T>>) = cc.hook(use_ref, ());
     let elem = store
         .visit_mut_with(|opt| {
             let elem = opt.get_or_insert_with(|| {
@@ -105,7 +105,7 @@ pub(crate) fn use_element<T: HtmlComponent>(
         })
         .unwrap();
 
-    let (reia, last_props): (_, ReiaRef<Option<Vector<HtmlProp<T>>>>) = reia.hook(use_ref, ());
+    let (cc, last_props): (_, Reference<Option<Vector<HtmlProp<T>>>>) = cc.hook(use_ref, ());
     last_props
         .visit_mut_with(|opt| {
             if let Some(last) = opt {
@@ -132,5 +132,5 @@ pub(crate) fn use_element<T: HtmlComponent>(
         })
         .unwrap();
 
-    (reia, elem)
+    (cc, elem)
 }

@@ -7,7 +7,7 @@ use crate::{
 
 use super::{component::ComponentStore, types::HookReturn};
 
-/** The initial `reia` object that every hook takes as first argument.
+/** The initial `consecuit` object that every hook takes as first argument.
 
 For more information on how to write hooks, see the docs at [crate].
 
@@ -23,10 +23,10 @@ impl HookBuilder {
     /// You shouldn't need this, as we have a shortbut that automatically call it when you call `.hook(...)`.
     pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
         /*
-        Each Reia hook gets a type-erased `HookBuilder` as input.
+        Each Consecuit hook gets a type-erased `HookBuilder` as input.
         The actual input type is encoded in the called hook's `impl HookReturn<...>` return type.
 
-        The caller (`reia.hook(...)`) and the called hook must agree on the return type of the called hook,
+        The caller (`cc.hook(...)`) and the called hook must agree on the return type of the called hook,
         so both know the called hook's true input type.
 
         The caller erases that type information from the input, but the called hook knows the type, so it unsafely cast back back correctly.
@@ -43,7 +43,7 @@ impl HookBuilder {
     }
 }
 
-/** This is the `reia` object in your hook function.
+/** This is the `consecuit` object in your hook function.
 
 You can use it to call other hooks.
 
@@ -93,12 +93,12 @@ where
     Ret: HookReturn<Out>,
 {
     let untyped_stores = store as *const <Ret as HookReturn<Out>>::StoresList as *const ();
-    let reia = HookBuilder {
+    let cc = HookBuilder {
         untyped_stores,
         lock,
         current_component,
     };
-    let out: Out = hook_func(reia, hook_arg).get_val();
+    let out: Out = hook_func(cc, hook_arg).get_val();
     out
 }
 
@@ -111,8 +111,8 @@ where
 {
     /** Use the given hook, with the given arg.
 
-    Consumes `self`. Returns a tuple of `(reia, <return value of hook>)`.
-    You can use the returned `reia` to call more hooks.
+    Consumes `self`. Returns a tuple of `(cc, <return value of hook>)`.
+    You can use the returned `cc` to call more hooks.
 
     See the docs at [crate] for more info on how to write and use hooks.
      */

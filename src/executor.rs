@@ -157,11 +157,11 @@ thread_local! {
 
 /** Batch the state updates started inside the given closure. **READ BEFORE USE**
 
-Reia batch updates using setTimeout anyway, even if you are not using this.
+Consecuit batch updates using setTimeout anyway, even if you are not using this.
 
 Using this will avoid the setTimeout.
 
-**Updates from inside [crate::hooks::use_effect()], reia_html's Callback, and [run_later] are already batched.**
+**Updates from inside [crate::hooks::use_effect()], consecuit_html's Callback, and [run_later] are already batched.**
 
 */
 pub fn batch_updates(f: impl FnOnce()) {
@@ -170,17 +170,17 @@ pub fn batch_updates(f: impl FnOnce()) {
 
 /** Schedule the given closure to run after the current component finishes rendering.
 
-Example use to focus a reia_html's input field:
+Example use to focus a consecuit_html's input field:
 
 ```
-use reia_html::prelude::*;
-let (reia, input_ref) = reia.hook(use_ref, ());
-let (reia, _) = reia.hook(use_effect, (|input_ref: ReiaRef<Option<web_sys::HtmlInputElement>>| {
+use consecuit_html::prelude::*;
+let (cc, input_ref) = cc.hook(use_ref, ());
+let (cc, _) = cc.hook(use_effect, (|input_ref: Reference<Option<web_sys::HtmlInputElement>>| {
     run_later(move || {
         input_ref.visit_with(|opt| opt.as_ref().unwrap().focus().unwrap()).unwrap();
     })
 }, input_ref.clone()))
-reia_tree!(
+cc_tree!(
     <input html_props().reference(input_ref) />
 )
 

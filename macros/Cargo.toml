@@ -1,5 +1,5 @@
 [package]
-name = "reia_macros"
+name = "consecuit_macros"
 version = "0.1.0"
 authors = ["Wisha Wa <wisha.wa@yandex.com>"]
 edition = "2018"

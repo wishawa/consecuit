@@ -1,5 +1,5 @@
-use reia::prelude::*;
-use reia_html::prelude::*;
+use consecuit::prelude::*;
+use consecuit_html::prelude::*;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen(start)]
@@ -8,8 +8,8 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn counters(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    reia_tree!(
+fn counters(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    cc_tree!(
         <table>
             <tr>
                 <td>
@@ -47,8 +47,8 @@ fn counters(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
     )
 }
 
-fn counter_basic(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let (reia, (count, setter)) = reia.hook(use_state, 0);
+fn counter_basic(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let (cc, (count, setter)) = cc.hook(use_state, 0);
 
     let setter1 = setter.clone();
     let decrement = Callback::new(move |_ev| {
@@ -59,15 +59,15 @@ fn counter_basic(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         setter.update_with(|v| v + 1);
     });
 
-    reia_tree!(
+    cc_tree!(
         <button {html_props().onclick(decrement)}>"-"</button>
         {count.to_string()}
         <button {html_props().onclick(increment)}>"+"</button>
     )
 }
 
-fn counter_no_macro(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let (reia, (count, setter)) = reia.hook(use_state, 0);
+fn counter_no_macro(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let (cc, (count, setter)) = cc.hook(use_state, 0);
 
     let setter1 = setter.clone();
     let decrement = Callback::new(move |_ev| {
@@ -78,17 +78,17 @@ fn counter_no_macro(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         setter.update_with(|v| v + 1);
     });
 
-    reia.comp(button, html_props().onclick(decrement))
+    cc.comp(button, html_props().onclick(decrement))
         .child(|r| r.comp(text_node, "-"))
         .comp(text_node, count.to_string())
         .comp(button, html_props().onclick(increment))
         .child(|r| r.comp(text_node, "+"))
 }
 
-fn counter_memo(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let (reia, (count, setter)) = reia.hook(use_state, 0);
+fn counter_memo(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let (cc, (count, setter)) = cc.hook(use_state, 0);
 
-    let (reia, decrement) = reia.hook(
+    let (cc, decrement) = cc.hook(
         use_memo,
         (
             |setter: Updater<i32>| {
@@ -100,7 +100,7 @@ fn counter_memo(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         ),
     );
 
-    let (reia, increment) = reia.hook(
+    let (cc, increment) = cc.hook(
         use_memo,
         (
             |setter: Updater<i32>| {
@@ -112,23 +112,23 @@ fn counter_memo(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
         ),
     );
 
-    reia_tree!(
+    cc_tree!(
         <button {html_props().onclick(decrement)}>"-"</button>
         {count.to_string()}
         <button {html_props().onclick(increment)}>"+"</button>
     )
 }
 
-fn counter_hook_extracted(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
+fn counter_hook_extracted(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
     fn use_counter(
-        reia: HookBuilder,
+        cc: HookBuilder,
         _: (),
     ) -> impl HookReturn<(
         i32,
         Callback<web_sys::MouseEvent>,
         Callback<web_sys::MouseEvent>,
     )> {
-        let (reia, (count, setter)) = reia.hook(use_state, 0);
+        let (cc, (count, setter)) = cc.hook(use_state, 0);
         let setter1 = setter.clone();
         let decrement = Callback::new(move |_ev| {
             setter1.update_with(|v| v - 1);
@@ -137,10 +137,10 @@ fn counter_hook_extracted(reia: ComponentBuilder, _: ()) -> impl ComponentReturn
         let increment = Callback::new(move |_ev| {
             setter.update_with(|v| v + 1);
         });
-        (reia, (count, decrement, increment))
+        (cc, (count, decrement, increment))
     }
-    let (reia, (count, decrement, increment)) = reia.hook(use_counter, ());
-    reia_tree!(
+    let (cc, (count, decrement, increment)) = cc.hook(use_counter, ());
+    cc_tree!(
         <button {html_props().onclick(decrement)}>"-"</button>
         {count.to_string()}
         <button {html_props().onclick(increment)}>"+"</button>

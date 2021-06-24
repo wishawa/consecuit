@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlDataElement;
-pub fn data(reia: ComponentBuilder, props: HtmlProps<HtmlDataElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn data(cc: ComponentBuilder, props: HtmlProps<HtmlDataElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlDataElement>,
         UseElementArgs {
             tag_name: "data",
@@ -12,5 +12,5 @@ pub fn data(reia: ComponentBuilder, props: HtmlProps<HtmlDataElement>) -> impl C
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

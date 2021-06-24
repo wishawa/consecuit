@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlStyleElement;
-pub fn style(reia: ComponentBuilder, props: HtmlProps<HtmlStyleElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn style(cc: ComponentBuilder, props: HtmlProps<HtmlStyleElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlStyleElement>,
         UseElementArgs {
             tag_name: "style",
@@ -12,5 +12,5 @@ pub fn style(reia: ComponentBuilder, props: HtmlProps<HtmlStyleElement>) -> impl
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

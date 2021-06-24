@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlSourceElement;
-pub fn source(reia: ComponentBuilder, props: HtmlProps<HtmlSourceElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn source(cc: ComponentBuilder, props: HtmlProps<HtmlSourceElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlSourceElement>,
         UseElementArgs {
             tag_name: "source",
@@ -12,5 +12,5 @@ pub fn source(reia: ComponentBuilder, props: HtmlProps<HtmlSourceElement>) -> im
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

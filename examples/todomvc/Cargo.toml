@@ -1,5 +1,5 @@
 [package]
-name = "reia_todomvc"
+name = "consecuit_todomvc"
 version = "0.1.0"
 authors = ["Wisha Wa <wisha.wa@yandex.com>"]
 edition = "2018"
@@ -12,8 +12,8 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 wasm-bindgen = "0.2.74"
 console_error_panic_hook = "0.1.6"
-reia = { path = "../../", version = "0.1.0" }
-reia_html = { path = "../../html/" }
+consecuit = { path = "../../", version = "0.1.0" }
+consecuit_html = { path = "../../html/" }
 im-rc = { version = "15.0.0", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

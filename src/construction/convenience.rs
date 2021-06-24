@@ -10,9 +10,9 @@ use super::{
 use crate::stores::{StoreCons, StoresList};
 
 impl HookBuilder {
-    /// This is a shortcut that calls `reia.init().hook(...)`
+    /// This is a shortcut that calls `cc.init().hook(...)`
     ///
-    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every hook function.
+    /// It is here so you don't have to write `let cc = cc.init();` at the beginning of every hook function.
     ///
     /// See the docs at [`crate`] on how to call hooks.
     /// See [`HookConstruction`] for the actual `.hook(...)`.
@@ -33,9 +33,9 @@ impl HookBuilder {
 }
 
 impl ComponentBuilder {
-    /// This is a shortcut that calls `reia.init().hook(...)`
+    /// This is a shortcut that calls `cc.init().hook(...)`
     ///
-    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    /// It is here so you don't have to write `let cc = cc.init();` at the beginning of every component.
     ///
     /// See the docs at [`crate`] on how to call hooks.
     /// See [`ComponentConstruction`] for the actual `.hook(...)`.
@@ -59,9 +59,9 @@ impl ComponentBuilder {
         self.init().hook(hook_func, hook_arg)
     }
 
-    /// This is a shortcut that calls `reia.init().comp(...)`
+    /// This is a shortcut that calls `cc.init().comp(...)`
     ///
-    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    /// It is here so you don't have to write `let cc = cc.init();` at the beginning of every component.
     ///
     /// See the docs at [`crate`] on how to compose components.
     /// See [`ComponentConstruction`] for the actual `.comp(...)`.
@@ -83,9 +83,9 @@ impl ComponentBuilder {
         self.init().comp(component_func, component_props)
     }
 
-    /// This is a shortcut that calls `reia.init().dyn_comp(...)`
+    /// This is a shortcut that calls `cc.init().dyn_comp(...)`
     ///
-    /// It is here so you don't have to write `let reia = reia.init();` at the beginning of every component.
+    /// It is here so you don't have to write `let cc = cc.init();` at the beginning of every component.
     ///
     /// See [`ComponentConstruction`] for the actual `.dyn_comp(...)` for more details.
     pub fn dyn_comp<Props, Ret, RestStores>(

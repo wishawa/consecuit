@@ -2,7 +2,7 @@ use std::borrow::BorrowMut;
 
 use crate::construction::{hook::HookBuilder, types::HookReturn};
 
-use super::{use_ref, ReiaRef};
+use super::{use_ref, Reference};
 
 struct StoredEffect<Args, OnDrop>
 where
@@ -41,7 +41,7 @@ For React devs, this is equivalent to `react-hooks/exhaustive-deps` being enforc
 Example using this to change the page title when some data change:
 
 ```
-let (reia, _) = reia.hook(use_effect, (
+let (cc, _) = cc.hook(use_effect, (
     |deps: (String, u32)| {
         let title = format!("Profile - {}, age {}", deps.0, deps.1);
         web_sys::window().unwrap().document().unwrap().set_title(&title);
@@ -52,14 +52,14 @@ let (reia, _) = reia.hook(use_effect, (
 
  */
 pub fn use_effect<Args, OnDrop>(
-    reia: HookBuilder,
+    cc: HookBuilder,
     (func, args): (fn(Args) -> OnDrop, Args),
 ) -> impl HookReturn<()>
 where
     OnDrop: FnOnce() + 'static,
     Args: PartialEq + Clone + 'static,
 {
-    use_effect_relaxed(reia, (func, args))
+    use_effect_relaxed(cc, (func, args))
 }
 
 /** Like [use_effect], but takes a closure instead of a function.
@@ -68,7 +68,7 @@ This mean you don't have to pass every dependency through `args`.
 For React devs, this is equivalent to `react-hooks/exhaustive-deps` not being enforced.
  */
 pub fn use_effect_relaxed<Args, OnDrop, Eff>(
-    reia: HookBuilder,
+    cc: HookBuilder,
     (func, args): (Eff, Args),
 ) -> impl HookReturn<()>
 where
@@ -76,8 +76,8 @@ where
     Args: PartialEq + Clone + 'static,
     Eff: FnOnce(Args) -> OnDrop,
 {
-    let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Option<StoredEffect<Args, OnDrop>>>) = reia.hook(use_ref, ());
+    let cc = cc.init();
+    let (cc, store): (_, Reference<Option<StoredEffect<Args, OnDrop>>>) = cc.hook(use_ref, ());
     let should_run = store
         .visit_mut_with(|opt| match opt {
             Some(stored) => {
@@ -108,5 +108,5 @@ where
             })
             .unwrap();
     }
-    (reia, ())
+    (cc, ())
 }

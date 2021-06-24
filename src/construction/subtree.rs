@@ -18,7 +18,7 @@ type TreeStores<Ret, Props> =
 
 /** A subtree is a part of the app that is mounted and unmounted together.
 
-When [mounting the app][crate::construction::mount::mount_app], Reia creates a subtree for it.
+When [mounting the app][crate::construction::mount::mount_app], Consecuit creates a subtree for it.
 
 [`opt_comp`][crate::construction::subtrees::opt_comp] creates a subtree for its component.
 [`vec_comps`][crate::construction::subtrees::vec_comps] creates a subtree for each of its components.
@@ -78,7 +78,7 @@ where
             // This unsafe is really unsafe.
             // The stores list is NOT really &'static.
             // We must always check the lock before accessing it.
-            // This is why use_ref's ReiaRef can fail with SubtreeUnmountedError.
+            // This is why use_ref's Reference can fail with SubtreeUnmountedError.
             transmute::<&'_ TreeStores<Ret, Props>, &'static TreeStores<Ret, Props>>(
                 self.stores.borrow(),
             )

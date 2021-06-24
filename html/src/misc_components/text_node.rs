@@ -1,11 +1,11 @@
 use web_sys::{window, Text};
 
-use reia::prelude::*;
+use consecuit::prelude::*;
 
-pub fn text_node(reia: ComponentBuilder, value: impl AsRef<str>) -> impl ComponentReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, store): (_, ReiaRef<Option<Text>>) = reia.hook(use_ref, ());
+pub fn text_node(cc: ComponentBuilder, value: impl AsRef<str>) -> impl ComponentReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, store): (_, Reference<Option<Text>>) = cc.hook(use_ref, ());
     let text = store
         .visit_mut_with(|opt| {
             let text = opt.get_or_insert_with(|| {
@@ -18,5 +18,5 @@ pub fn text_node(reia: ComponentBuilder, value: impl AsRef<str>) -> impl Compone
         })
         .unwrap();
     text.set_node_value(Some(value.as_ref()));
-    reia.bare_leaf_node()
+    cc.bare_leaf_node()
 }

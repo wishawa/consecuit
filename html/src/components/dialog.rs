@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlDialogElement;
-pub fn dialog(reia: ComponentBuilder, props: HtmlProps<HtmlDialogElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn dialog(cc: ComponentBuilder, props: HtmlProps<HtmlDialogElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlDialogElement>,
         UseElementArgs {
             tag_name: "dialog",
@@ -12,5 +12,5 @@ pub fn dialog(reia: ComponentBuilder, props: HtmlProps<HtmlDialogElement>) -> im
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

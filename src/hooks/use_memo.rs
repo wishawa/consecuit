@@ -1,6 +1,6 @@
 use crate::construction::{hook::HookBuilder, types::HookReturn};
 
-use super::{use_ref, ReiaRef};
+use super::{use_ref, Reference};
 
 /** Memoize the computation.
 
@@ -18,7 +18,7 @@ For React devs, this is equivalent to `react-hooks/exhaustive-deps` being enforc
 Example using this to find the factors of a large number:
 
 ```
-let (reia, factors) = reia.hook(use_memo, (
+let (cc, factors) = cc.hook(use_memo, (
     |number: i32| {
         let factors = Vec::new();
         for i in 2..number {
@@ -33,14 +33,14 @@ let (reia, factors) = reia.hook(use_memo, (
 ```
  */
 pub fn use_memo<Deps, Res>(
-    reia: HookBuilder,
+    cc: HookBuilder,
     (compute, deps): (fn(Deps) -> Res, Deps),
 ) -> impl HookReturn<Res>
 where
     Deps: Clone + PartialEq + 'static,
     Res: Clone + 'static,
 {
-    use_memo_relaxed(reia, (compute, deps))
+    use_memo_relaxed(cc, (compute, deps))
 }
 
 /** Like [use_memo], but takes a closure instead of a function.
@@ -51,15 +51,15 @@ For React devs, this is equivalent to `react-hooks/exhaustive-deps` not being en
 */
 
 pub fn use_memo_relaxed<Deps, Res, Compute: FnOnce(Deps) -> Res>(
-    reia: HookBuilder,
+    cc: HookBuilder,
     (compute, deps): (Compute, Deps),
 ) -> impl HookReturn<Res>
 where
     Deps: Clone + PartialEq + 'static,
     Res: Clone + 'static,
 {
-    let reia = reia.init();
-    let (reia, store): (_, ReiaRef<Option<(Deps, Res)>>) = reia.hook(use_ref, ());
+    let cc = cc.init();
+    let (cc, store): (_, Reference<Option<(Deps, Res)>>) = cc.hook(use_ref, ());
     let res = store
         .visit_mut_with(|opt| match opt {
             Some(stored) => {
@@ -75,5 +75,5 @@ where
             }
         })
         .unwrap();
-    (reia, res)
+    (cc, res)
 }

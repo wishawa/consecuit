@@ -1,28 +1,28 @@
-use reia::prelude::*;
-use reia_html::prelude::*;
+use consecuit::prelude::*;
+use consecuit_html::prelude::*;
 
-fn footer_span(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
-    let reia = reia.init();
-    reia_tree! (
+fn footer_span(cc: ComponentBuilder, _: ()) -> impl ContainerReturn {
+    let cc = cc.init();
+    cc_tree! (
         <span {html_props().class_name("m-0.5 text-xs text-center text-gray-500")} HOLE />
     )
 }
 
 fn hoverable_link(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (text, href): (&'static str, &'static str),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
-    reia_tree!(
+    let cc = cc.init();
+    cc_tree!(
         <a {HtmlProps::<web_sys::HtmlAnchorElement>::new().class_name("hover:underline").href(href)}>
             {text}
         </a>
     )
 }
 
-pub fn app_footer(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let reia = reia.init();
-    reia_tree!(
+pub fn app_footer(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let cc = cc.init();
+    cc_tree!(
         <footer {html_props().class_name("mt-16 p-4 flex flex-col")}>
             <footer_span>
                 "Written by "
@@ -30,7 +30,7 @@ pub fn app_footer(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
             </footer_span>
             <footer_span>
                 "with "
-                <hoverable_link {("Reia", "https://github.com/wishawa/reia")} />
+                <hoverable_link {("Consecuit", "https://github.com/wishawa/consecuit")} />
                 " and "
                 <hoverable_link {("Tailwind CSS", "https://tailwindcss.com/")} />
             </footer_span>

@@ -35,7 +35,7 @@ impl UnmountedLock {
 
 /** A failure where the subtree you are trying to do something with had been unmounted.
 
-For example, [crate::hooks::ReiaRef] have many methods that may error out with this.
+For example, [crate::hooks::Reference] have many methods that may error out with this.
 
 */
 #[derive(Debug)]

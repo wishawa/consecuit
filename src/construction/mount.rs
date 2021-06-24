@@ -8,9 +8,9 @@ use super::{
 
 /// Mount the given component on the <body> element. This passes <body> to [`mount_app_at`].
 ///
-/// The component must be a Reia component that takes `()` (empty tuple) as props.
+/// The component must be a Consecuit component that takes `()` (empty tuple) as props.
 ///
-/// See [`crate`] for what a Reia component looks like.
+/// See [`crate`] for what a Consecuit component looks like.
 pub fn mount_app<Ret>(function: fn(ComponentBuilder, ()) -> Ret)
 where
     Ret: ComponentReturn,
@@ -21,9 +21,9 @@ where
 
 /// Mount the given component on the given [`Element`]. This uses [`mount_app_without_leaking_at`] and leaks the result.
 ///
-/// The component must be a Reia component that takes `()` (empty tuple) as props.
+/// The component must be a Consecuit component that takes `()` (empty tuple) as props.
 ///
-/// See [`crate`] for what a Reia component looks like.
+/// See [`crate`] for what a Consecuit component looks like.
 pub fn mount_app_at<Ret>(function: fn(ComponentBuilder, ()) -> Ret, element: Element)
 where
     Ret: ComponentReturn,
@@ -37,15 +37,15 @@ where
 ///
 /// Normally you should use [`mount_app`] or [`mount_app_at`]. Only use this if you have a way to store the returned value.
 ///
-/// The component must be a Reia component that takes `()` (empty tuple) as props.
+/// The component must be a Consecuit component that takes `()` (empty tuple) as props.
 ///
-/// See [`crate`] for what a Reia component looks like.
+/// See [`crate`] for what a Consecuit component looks like.
 ///
-/// This is unsafe because dropping the returned [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] while Reia is rendering could cause unsafe behavior.
+/// This is unsafe because dropping the returned [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] while Consecuit is rendering could cause unsafe behavior.
 ///
 /// If you're going to use it, make sure you keep the [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] forever.
 ///
-/// If you're really going to drop it, make sure to NOT do so from inside Reia hooks/components/use_effect/....
+/// If you're really going to drop it, make sure to NOT do so from inside Consecuit hooks/components/use_effect/....
 /// Dropping from inside an event callback or [`run_later`][crate::executor::run_later] is probably fine.
 pub unsafe fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,

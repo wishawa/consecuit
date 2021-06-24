@@ -1,17 +1,17 @@
 /*!
 
-# Reia
+# Consecuit
 An experimental functional web UI framework that uses the Rust type system for hooks and more.
 
 ---
 
 This crate is a library for building web UI with functional components and hooks.
 
-See the [README](https://github.com/wishawa/reia) for an overview.
+See the [README](https://github.com/wishawa/consecuit) for an overview.
 
-Also take a look at [our TodoMVC](https://wishawa.github.io/reia/todomvc) and [its source code](https://github.com/wishawa/reia/tree/main/examples/todomvc).
+Also take a look at [our TodoMVC](https://wishawa.github.io/consecuit/todomvc) and [its source code](https://github.com/wishawa/consecuit/tree/main/examples/todomvc).
 
-# Using Reia
+# Using Consecuit
 
 Below, we show you how to
 
@@ -19,85 +19,85 @@ Below, we show you how to
 * Write and use components.
 * Write and use container components.
 
-The [the counters example](https://github.com/wishawa/reia/tree/main/examples/counters/src/lib.rs) is also good for getting started.
+The [the counters example](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs) is also good for getting started.
 
 ## Hooks
 
-A Reia hook is a function that can call other Reia hooks.
+A Consecuit hook is a function that can call other Consecuit hooks.
 So you can build your own hook by composing the basic hooks like [`use_state`][hooks::use_state], [`use_ref`][hooks::use_ref], and [`use_effect`][hooks::use_effect].
 
-A Reia hook must be a function that takes 2 arguments:
-Reia's [`HookBuilder`][construction::hook::HookBuilder], and the args, which can be any type.
+A Consecuit hook must be a function that takes 2 arguments:
+Consecuit's [`HookBuilder`][construction::hook::HookBuilder], and the args, which can be any type.
 
 The return type should not be named out concretely, but rather written as `impl Trait` of [`HookReturn`][construction::types::HookReturn], with the actual value as the generic parameter.
 
 The signature for a `use_i32_state` hook might look something like this
 
 ```
-use reia::prelude::*;
-fn use_i32_state(reia: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)>
+use consecuit::prelude::*;
+fn use_i32_state(cc: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)>
 ```
 
 In the function body, you can write code just like a normal function.
 
-To use other hooks, call `reia.hook(<hook function>, <hook args>)`.
+To use other hooks, call `cc.hook(<hook function>, <hook args>)`.
 
-This will consume `reia` and return a new one, along with the return value of the hook, in a tuple like this `(reia. <hook return value>)`.
+This will consume `cc` and return a new one, along with the return value of the hook, in a tuple like this `(cc. <hook return value>)`.
 
-You then can do whatever you want with the `<hook return value>`, and you can use the use the returned `reia` to call more hooks.
+You then can do whatever you want with the `<hook return value>`, and you can use the use the returned `cc` to call more hooks.
 
 ```
-let (reia, some_hook_result) = reia.hook(some_hook_function, some_hook_args);
+let (cc, some_hook_result) = cc.hook(some_hook_function, some_hook_args);
 println!("{:?}", some_hook_result + 1);
-let (reia, another_hook_result) = reia.hook(another_hook_function, another_hook_args);
+let (cc, another_hook_result) = cc.hook(another_hook_function, another_hook_args);
 ```
 
-When you are done and want to return from your hook, return `(reia, <your hook return value>)`.
+When you are done and want to return from your hook, return `(cc, <your hook return value>)`.
 
 ```
-(reia, some_value)
+(cc, some_value)
 ```
 
 Our `use_i32_state` might look like this in full:
 
 ```
-use reia::prelude::*;
-fn use_i32_state(reia: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)> {
+use consecuit::prelude::*;
+fn use_i32_state(cc: HookBuilder, initial_value: i32) -> impl HookReturn<(i32, Updater<i32>)> {
     // Use the `use_state` hook.
-    let (reia, (number, updater)) = reia.hook(use_state, initial_value);
+    let (cc, (number, updater)) = cc.hook(use_state, initial_value);
     // Print the value.
     prinln!("The state is {}", number.to_string());
     // Return
-    (reia, (number, updater))
+    (cc, (number, updater))
 }
 ```
 
-Take a look at [the counters example](https://github.com/wishawa/reia/tree/main/examples/counters/src/lib.rs),
+Take a look at [the counters example](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs),
 specifically the function `counter_hook_extracted`, to see how we extract logic into a new hook.
 
 ## Components
 
-A Reia component is a function that can call Reia hooks, and render other Reia components.
-You can use the HTML components provided by the reia_html crate as building blocks for your components' UI.
+A Consecuit component is a function that can call Consecuit hooks, and render other Consecuit components.
+You can use the HTML components provided by the consecuit_html crate as building blocks for your components' UI.
 
-A Reia component must be a function that takes 2 arguments:
-Reia's [`ComponentBuilder`][construction::component::ComponentBuilder], and the props, which can be any type that is [`PartialEq`] and [`Clone`], and `'static` (i.e. not a borrow).
+A Consecuit component must be a function that takes 2 arguments:
+Consecuit's [`ComponentBuilder`][construction::component::ComponentBuilder], and the props, which can be any type that is [`PartialEq`] and [`Clone`], and `'static` (i.e. not a borrow).
 (a component can only have 1 props).
 
 The return type should not be named out concretely, but rather written as `impl Trait` of [`ComponentReturn`][construction::types::ComponentReturn].
 Here is an example:
 
 ```
-use reia::prelude::*;
-fn my_component(reia: ComponentBuilder, props: MyComponentProps) -> impl ComponentReturn
+use consecuit::prelude::*;
+fn my_component(cc: ComponentBuilder, props: MyComponentProps) -> impl ComponentReturn
 ```
 
 In the function body, you can write normal code, and call hooks the same way as for hook functions documented above.
 
-You can also use the [`reia_tree`][reia_macros::reia_tree] macro to render other components. Like this:
+You can also use the [`cc_tree`][consecuit_macros::cc_tree] macro to render other components. Like this:
 
 ```
-reia_tree!(
+cc_tree!(
     <div>
         <div {html_props().class_name("some-class-name").onclick(onclick_callback)}>
             <span>"I'm a string literal"</span>
@@ -120,15 +120,15 @@ If there are none, the macro will attempt to use the [`Default::default`] value 
 Here is an example of a component function:
 
 ```
-fn show_plus_calculation(reia: ComponentBuilder, (lhs, rhs): (i32, i32)) -> impl ComponentReturn {
+fn show_plus_calculation(cc: ComponentBuilder, (lhs, rhs): (i32, i32)) -> impl ComponentReturn {
     let result = lhs + rhs;
 
     // These 2 lines are just to show how to use hooks
-    let (reia, _some_example_1) = reia.hook(use_example_hook, 1234);
-    let (reia, _some_example_2) = reia.hook(use_another_hook, 5678);
+    let (cc, _some_example_1) = cc.hook(use_example_hook, 1234);
+    let (cc, _some_example_2) = cc.hook(use_another_hook, 5678);
 
-    // All there `h5`, `span`, `b` are from the `reia_html` crate.
-    reia_tree!(
+    // All there `h5`, `span`, `b` are from the `consecuit_html` crate.
+    cc_tree!(
         <my_website_header />
         <h5>"Calculation Result:"</h5>
         <span>{lhs.to_string()}</span>
@@ -144,14 +144,14 @@ fn show_plus_calculation(reia: ComponentBuilder, (lhs, rhs): (i32, i32)) -> impl
 ## Container Components
 
 Container components are components with 'hole', allowing you to give it children.
-Most components in the `reia_html` crate are containers.
+Most components in the `consecuit_html` crate are containers.
 
 Container components return `impl ContainerReturn` rather than `impl ComponentReturn`
 
 For example, you can give div and span childrens:
 
 ```
-reia_tree!(
+cc_tree!(
     <div>
         "This is a child I put in the div"
         "This is another child I put in the div"
@@ -166,8 +166,8 @@ This will "forward" the hole of that component.
 For example:
 
 ```
-fn my_container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
-    reia_tree!(
+fn my_container(cc: ComponentBuilder, _: ()) -> impl ContainerReturn {
+    cc_tree!(
         <div>
             "The hole of the div below is forwarded to become the hole of my_container!"
             <div HOLE />
@@ -184,7 +184,7 @@ pub mod executor;
 pub mod hooks;
 pub mod locking;
 mod stores;
-pub use reia_macros;
+pub use consecuit_macros;
 
 pub mod prelude {
     /*! Just import me.
@@ -199,5 +199,5 @@ pub mod prelude {
     };
     pub use crate::executor::{batch_updates, run_later};
     pub use crate::hooks::*;
-    pub use reia_macros::reia_tree;
+    pub use consecuit_macros::cc_tree;
 }

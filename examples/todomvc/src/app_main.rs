@@ -1,11 +1,11 @@
+use consecuit::prelude::*;
+use consecuit_html::prelude::*;
 use im_rc::Vector;
-use reia::prelude::*;
-use reia_html::prelude::*;
 
 use crate::model::{todos_from_str, todos_to_string, Todo, TodosReducer, TodosReduction};
 
 fn use_text_edit(
-    reia: HookBuilder,
+    cc: HookBuilder,
     (submit, escape): (
         impl Fn(String) + Clone + 'static,
         impl Fn() + Clone + 'static,
@@ -13,8 +13,8 @@ fn use_text_edit(
 ) -> impl HookReturn<HtmlProps<web_sys::HtmlInputElement>> {
     const ENTER_KEY: u32 = 13;
     const ESCAPE_KEY: u32 = 27;
-    let reia = reia.init();
-    let (reia, input_ref) = reia.hook(use_ref, ());
+    let cc = cc.init();
+    let (cc, input_ref) = cc.hook(use_ref, ());
     let cloned_input_ref = input_ref.clone();
     let submit = move || {
         let text = cloned_input_ref
@@ -37,10 +37,10 @@ fn use_text_edit(
     let on_blur = Callback::new(move |_ev| {
         submit_cloned();
     });
-    let (reia, _) = reia.hook(
+    let (cc, _) = cc.hook(
         use_effect,
         (
-            |input_ref: ReiaRef<Option<web_sys::HtmlInputElement>>| {
+            |input_ref: Reference<Option<web_sys::HtmlInputElement>>| {
                 run_later(move || {
                     input_ref
                         .visit_with(|opt| opt.as_ref().unwrap().focus().unwrap())
@@ -55,14 +55,14 @@ fn use_text_edit(
         .reference(input_ref)
         .onkeydown(on_keypress)
         .onblur(on_blur);
-    (reia, props)
+    (cc, props)
 }
 
 fn top_box(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (todos, reducer): (Vector<Todo>, TodosReducer),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
+    let cc = cc.init();
     let cloned_reducer = reducer.clone();
     let is_empty = todos.is_empty();
     let all_completed = todos.iter().all(|td| td.completed);
@@ -70,7 +70,7 @@ fn top_box(
         cloned_reducer.reduce(TodosReduction::ToggleAll(!all_completed));
     });
 
-    let (reia, input_props) = reia.hook(
+    let (cc, input_props) = cc.hook(
         use_text_edit,
         (
             move |text: String| {
@@ -82,7 +82,7 @@ fn top_box(
         ),
     );
 
-    reia_tree!(
+    cc_tree!(
         <div {html_props().class_name("flex flex-row text-2xl h-16")}>
             <button {html_props().class_name({
                 if is_empty {
@@ -101,10 +101,10 @@ fn top_box(
 }
 
 fn one_todo(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (todo, reducer, idx): (Todo, TodosReducer, usize),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
+    let cc = cc.init();
     let reducer_cloned = reducer.clone();
     let toggle = Callback::new(move |_ev| {
         reducer_cloned.reduce(TodosReduction::Toggle(idx));
@@ -113,12 +113,12 @@ fn one_todo(
     let remove = Callback::new(move |_ev| {
         reducer_cloned.reduce(TodosReduction::Remove(idx));
     });
-    let (reia, (edit, edit_setter)) = reia.hook(use_state, false);
+    let (cc, (edit, edit_setter)) = cc.hook(use_state, false);
     let edit_setter_cloned = edit_setter.clone();
     let enter_edit = Callback::new(move |_ev| {
         edit_setter_cloned.set_to(true);
     });
-    reia_tree!(
+    cc_tree!(
         <div {html_props().class_name("border-t-2 border-gray-100 text-2xl")}>
             <div {html_props().class_name(if edit {"hidden"} else {"flex flex-row group"})}>
                 <button {html_props().onclick(toggle).class_name({
@@ -154,12 +154,12 @@ fn one_todo(
 }
 
 fn todo_edit(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (todo, reducer, idx, edit_setter): (Todo, TodosReducer, usize, Updater<bool>),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
+    let cc = cc.init();
     let edit_setter_cloned = edit_setter.clone();
-    let (reia, input_props) = reia.hook(
+    let (cc, input_props) = cc.hook(
         use_text_edit,
         (
             move |text: String| {
@@ -175,7 +175,7 @@ fn todo_edit(
             },
         ),
     );
-    reia_tree!(
+    cc_tree!(
         <div {html_props().class_name("flex flex-row")}>
             <div {html_props().class_name("w-12")} />
             <input {input_props.value(todo.name).class_name("flex-1 p-2 shadow-inner")}/>
@@ -202,21 +202,21 @@ impl ListFilter {
 }
 
 fn main_list(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (todos, reducer, filter): (Vector<Todo>, TodosReducer, ListFilter),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
+    let cc = cc.init();
     let props: Vector<(Todo, TodosReducer, usize)> = todos
         .iter()
         .enumerate()
         .filter(|(_, td)| filter.filter(td))
         .map(|(idx, td)| (td.clone(), reducer.clone(), idx))
         .collect();
-    reia.comp(vec_comps, (one_todo, props))
+    cc.comp(vec_comps, (one_todo, props))
 }
 
 fn filter_button(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (this, current): (ListFilter, ListFilter),
 ) -> impl ComponentReturn {
     const SHARED_CLASS: &str = "rounded border px-1 mx-2";
@@ -224,7 +224,7 @@ fn filter_button(
     let unselected_classes: String =
         format!("{} border-transparent hover:border-red-900", SHARED_CLASS);
 
-    let reia = reia.init();
+    let cc = cc.init();
     let href = match this {
         ListFilter::All => "#/all",
         ListFilter::Active => "#/active",
@@ -235,7 +235,7 @@ fn filter_button(
         ListFilter::Active => "Active",
         ListFilter::Completed => "Completed",
     };
-    reia_tree!(
+    cc_tree!(
         <a {HtmlProps::<web_sys::HtmlAnchorElement>::new().href(href).class_name(if this == current {
             selected_classes
         } else {
@@ -247,14 +247,14 @@ fn filter_button(
 }
 
 fn bottom_controls(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (todos, reducer, filter): (Vector<Todo>, TodosReducer, ListFilter),
 ) -> impl ComponentReturn {
-    let reia = reia.init();
+    let cc = cc.init();
     let on_clear = Callback::new(move |_ev| {
         reducer.reduce(TodosReduction::ClearCompleted());
     });
-    reia_tree!(
+    cc_tree!(
         <div {html_props().class_name(if !todos.is_empty() {
             "flex flex-row items-center sm:flex-wrap p-2 font-light border-t-2 border-gray-100"
         } else {
@@ -290,10 +290,10 @@ fn bottom_controls(
     )
 }
 
-static TODOS_STORAGE_KEY: &str = "todos-reia";
+static TODOS_STORAGE_KEY: &str = "todos-consecuit";
 
-fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosReducer)> {
-    let (reia, (todos, setter)) = reia.init().hook(use_state_from, || {
+fn use_todos(cc: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosReducer)> {
+    let (cc, (todos, setter)) = cc.init().hook(use_state_from, || {
         if let Some(storage) = web_sys::window().unwrap().local_storage().unwrap() {
             if let Some(s) = storage.get_item(TODOS_STORAGE_KEY).unwrap() {
                 return todos_from_str(&s);
@@ -309,7 +309,7 @@ fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosRe
                 .unwrap();
         }
     });
-    let (reia, _) = reia.hook(
+    let (cc, _) = cc.hook(
         use_effect,
         (
             |on_beforeunload: Callback<web_sys::Event>| {
@@ -321,22 +321,22 @@ fn use_todos(reia: HookBuilder, _: ()) -> impl HookReturn<(Vector<Todo>, TodosRe
             on_beforeunload,
         ),
     );
-    (reia, (todos, TodosReducer(setter)))
+    (cc, (todos, TodosReducer(setter)))
 }
 
-fn use_filter(reia: HookBuilder, _: ()) -> impl HookReturn<ListFilter> {
+fn use_filter(cc: HookBuilder, _: ()) -> impl HookReturn<ListFilter> {
     let get_filter = || match &web_sys::window().unwrap().location().hash().unwrap() as &str {
         "#/all" => ListFilter::All,
         "#/active" => ListFilter::Active,
         "#/completed" => ListFilter::Completed,
         _ => ListFilter::All,
     };
-    let (reia, (filter, filter_setter)) = reia.hook(use_state_from, get_filter.clone());
+    let (cc, (filter, filter_setter)) = cc.hook(use_state_from, get_filter.clone());
     let on_hashchange = Callback::<web_sys::Event>::new(move |_ev| {
         let filter = get_filter();
         filter_setter.set_to(filter);
     });
-    let (reia, _) = reia.hook(
+    let (cc, _) = cc.hook(
         use_effect,
         (
             |on_hashchange: Callback<web_sys::Event>| {
@@ -348,14 +348,14 @@ fn use_filter(reia: HookBuilder, _: ()) -> impl HookReturn<ListFilter> {
             on_hashchange,
         ),
     );
-    (reia, filter)
+    (cc, filter)
 }
 
-pub fn app_main(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    let reia = reia.init();
-    let (reia, (todos, reducer)) = reia.hook(use_todos, ());
-    let (reia, filter) = reia.hook(use_filter, ());
-    reia_tree!(
+pub fn app_main(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    let cc = cc.init();
+    let (cc, (todos, reducer)) = cc.hook(use_todos, ());
+    let (cc, filter) = cc.hook(use_filter, ());
+    cc_tree!(
         <main {html_props().class_name("mt-8 shadow-xl w-full max-w-prose bg-white")}>
             <top_box {(todos.clone(), reducer.clone())} />
             <main_list {(todos.clone(), reducer.clone(), filter)} />

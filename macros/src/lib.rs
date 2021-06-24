@@ -9,42 +9,43 @@ use syn::{
 use syn_rsx::Node;
 
 #[proc_macro]
-pub fn reia_tree(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let nodes = parse_macro_input!(input as ReiaNodes);
+pub fn cc_tree(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let nodes = parse_macro_input!(input as ConsecuitNodes);
     let tokens = nodes.build_top();
     tokens.into()
 }
 
-struct ReiaNodes(Vec<ReiaNode>);
+struct ConsecuitNodes(Vec<ConsecuitNode>);
 
-struct ReiaNode {
+struct ConsecuitNode {
     func: ExprPath,
     props: ExprBlock,
-    children: ReiaNodes,
+    children: ConsecuitNodes,
     hole: bool,
 }
 
-impl Parse for ReiaNodes {
+impl Parse for ConsecuitNodes {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let parser_cfg = syn_rsx::ParserConfig::default();
         let parser = syn_rsx::Parser::new(parser_cfg);
         let nodes: Vec<Node> = parser.parse(input)?;
-        let nodes: syn::Result<Vec<ReiaNode>> = nodes.into_iter().map(ReiaNode::try_from).collect();
+        let nodes: syn::Result<Vec<ConsecuitNode>> =
+            nodes.into_iter().map(ConsecuitNode::try_from).collect();
         let nodes = nodes?;
-        Ok(ReiaNodes(nodes))
+        Ok(ConsecuitNodes(nodes))
     }
 }
 
-impl TryFrom<Node> for ReiaNode {
+impl TryFrom<Node> for ConsecuitNode {
     type Error = syn::Error;
     fn try_from(node: Node) -> syn::Result<Self> {
-        fn expr_into_text_node(expr: syn::Expr) -> ReiaNode {
-            let func = parse_quote!(::reia_html::misc_components::text_node);
+        fn expr_into_text_node(expr: syn::Expr) -> ConsecuitNode {
+            let func = parse_quote!(::consecuit_html::misc_components::text_node);
             let props = parse_quote!({#expr});
-            ReiaNode {
+            ConsecuitNode {
                 func,
                 props,
-                children: ReiaNodes(Vec::new()),
+                children: ConsecuitNodes(Vec::new()),
                 hole: false,
             }
         }
@@ -66,8 +67,8 @@ impl TryFrom<Node> for ReiaNode {
                 }?;
 
                 let children: syn::Result<Vec<Self>> =
-                    children.into_iter().map(ReiaNode::try_from).collect();
-                let children = ReiaNodes(children?);
+                    children.into_iter().map(ConsecuitNode::try_from).collect();
+                let children = ConsecuitNodes(children?);
 
                 let mut props = None;
                 let mut hole = false;
@@ -96,7 +97,7 @@ impl TryFrom<Node> for ReiaNode {
                 }
                 let props =
                     props.unwrap_or_else(|| parse_quote!({ ::std::default::Default::default() }));
-                ReiaNode {
+                ConsecuitNode {
                     func,
                     props,
                     children,
@@ -114,17 +115,17 @@ impl TryFrom<Node> for ReiaNode {
     }
 }
 
-impl ReiaNodes {
+impl ConsecuitNodes {
     fn build_top(&self) -> TokenStream {
         let tokens = self.build();
         quote! {
             #[allow(unused_braces)]
-            reia#tokens
+            cc#tokens
         }
     }
     fn build(&self) -> TokenStream {
         let tokens = self.0.iter().map(|n| {
-            let ReiaNode {
+            let ConsecuitNode {
                 func,
                 props,
                 children,
@@ -141,8 +142,8 @@ impl ReiaNodes {
             } else {
                 let inner = children.build();
                 quote! {
-                    .child(|reia| {
-                        reia
+                    .child(|cc| {
+                        cc
                         #inner
                     })
                 }

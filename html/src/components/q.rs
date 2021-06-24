@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlQuoteElement;
-pub fn q(reia: ComponentBuilder, props: HtmlProps<HtmlQuoteElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn q(cc: ComponentBuilder, props: HtmlProps<HtmlQuoteElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlQuoteElement>,
         UseElementArgs {
             tag_name: "q",
@@ -12,5 +12,5 @@ pub fn q(reia: ComponentBuilder, props: HtmlProps<HtmlQuoteElement>) -> impl Con
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

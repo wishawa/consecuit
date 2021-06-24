@@ -3,7 +3,7 @@
 */
 
 mod use_ref;
-pub use use_ref::{use_ref, ReiaRef};
+pub use use_ref::{use_ref, Reference};
 mod use_state;
 pub use use_state::{use_state, use_state_from, Updater};
 mod use_effect;

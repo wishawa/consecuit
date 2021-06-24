@@ -4,7 +4,7 @@ use im_rc::Vector;
 use web_sys::Element;
 
 use crate::{
-    hooks::{use_ref, ReiaRef},
+    hooks::{use_ref, Reference},
     stores::{StoreCons, StoresList},
 };
 
@@ -39,7 +39,7 @@ Component loses all state when unmounted.
 Use like this
 
 ```
-reia_tree!(
+cc_tree!(
     <opt_comp {(my_comp, Some(my_comp_props))} />
     <opt_comp {(other_comp, None)} />
 )
@@ -48,19 +48,19 @@ reia_tree!(
 Component is mounted/unmouned as its own [Subtree][SubtreeInstance].
 */
 pub fn opt_comp<Ret, Props>(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (func, props): (ComponentFunc<Ret, Props>, Option<Props>),
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
-    let reia = reia.init();
-    let (reia, container): (_, ReiaRef<Option<Element>>) = reia.hook(use_ref, ());
-    let (reia, subtree): (_, ReiaRef<Option<SubtreeInstance<Ret, Props>>>) = reia.hook(use_ref, ());
+    let cc = cc.init();
+    let (cc, container): (_, Reference<Option<Element>>) = cc.hook(use_ref, ());
+    let (cc, subtree): (_, Reference<Option<SubtreeInstance<Ret, Props>>>) = cc.hook(use_ref, ());
     let parent = container
         .visit_mut_with(|container_opt| {
-            get_or_create_container(container_opt, reia.get_parent_node())
+            get_or_create_container(container_opt, cc.get_parent_node())
         })
         .unwrap();
 
@@ -78,7 +78,7 @@ where
             }
         })
         .unwrap();
-    reia.bare_leaf_node()
+    cc.bare_leaf_node()
 }
 
 /** A wrapper component  that monuts/unmounts a number of the given component based on the `Vector<Props>`.
@@ -101,7 +101,7 @@ Components loses all state when unmounted.
 Use like this
 
 ```
-reia_tree!(
+cc_tree!(
     <vec_comps {(my_comp, vector![props1, props2, props3])} />
 )
 ```
@@ -110,19 +110,19 @@ Each component is mounted/unmouned as its own [Subtree][SubtreeInstance].
 */
 
 pub fn vec_comps<Ret, Props>(
-    reia: ComponentBuilder,
+    cc: ComponentBuilder,
     (func, mut props): (ComponentFunc<Ret, Props>, Vector<Props>),
 ) -> impl ComponentReturn
 where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
-    let reia = reia.init();
-    let (reia, container): (_, ReiaRef<Option<Element>>) = reia.hook(use_ref, ());
-    let (reia, subtree): (_, ReiaRef<Vec<SubtreeInstance<Ret, Props>>>) = reia.hook(use_ref, ());
+    let cc = cc.init();
+    let (cc, container): (_, Reference<Option<Element>>) = cc.hook(use_ref, ());
+    let (cc, subtree): (_, Reference<Vec<SubtreeInstance<Ret, Props>>>) = cc.hook(use_ref, ());
     let parent = container
         .visit_mut_with(|container_opt| {
-            get_or_create_container(container_opt, reia.get_parent_node())
+            get_or_create_container(container_opt, cc.get_parent_node())
         })
         .unwrap();
     subtree
@@ -145,7 +145,7 @@ where
             }
         })
         .unwrap();
-    reia.bare_leaf_node()
+    cc.bare_leaf_node()
 }
 
 impl<RestStores, EntireStores, Props, LastNode, CompHole>
@@ -171,16 +171,16 @@ where
     The task is a bit boilerplatey. Copy paste this code:
 
     ```
-    fn outer_comp(reia: ComponentBuilder, props: MyProp) -> DynComponentReturn<MyProp> {
-        fn inner_comp(reia: ComponentBuilder, props: MyProp) -> impl ComponentReturn {
-            reia_tree!(
+    fn outer_comp(cc: ComponentBuilder, props: MyProp) -> DynComponentReturn<MyProp> {
+        fn inner_comp(cc: ComponentBuilder, props: MyProp) -> impl ComponentReturn {
+            cc_tree!(
                 <div>
                     "hello, I'm a dynamic component. My props is:"
                     {props.to_string()}
                 </div>
             )
         }
-        reia.dyn_comp(inner_comp, props)
+        consecuit.dyn_comp(inner_comp, props)
         // inner_comp doesn't have to be an inner function. a closure works too.
     }
     ```

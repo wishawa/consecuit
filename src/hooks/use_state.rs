@@ -4,7 +4,7 @@ use crate::{
     locking::SubtreeUnmountedError,
 };
 
-use super::use_ref::{use_ref, ReiaRef};
+use super::use_ref::{use_ref, Reference};
 
 /** A handle returned by [use_state] for updating the state.
 
@@ -13,7 +13,7 @@ Updating the state will queue a rerender.
 */
 #[derive(Clone, PartialEq)]
 pub struct Updater<T: 'static> {
-    state: ReiaRef<Option<T>>,
+    state: Reference<Option<T>>,
     rerender_task: RerenderTask,
 }
 
@@ -67,29 +67,29 @@ Returns the value in the state, and an [Updater] that can be used to update it.
 Example:
 
 ```
-let (reia, (age, set_age)) = reia.hook(use_state_from, || {
+let (cc, (age, set_age)) = cc.hook(use_state_from, || {
     rand::random::<i32>()
 });
 ```
 
-Take a look at [the counters example](https://github.com/wishawa/reia/tree/main/examples/counters/src/lib.rs),
+Take a look at [the counters example](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs),
 for example on using this to create a counter.
 */
-pub fn use_state_from<T, F>(reia: HookBuilder, default_from: F) -> impl HookReturn<(T, Updater<T>)>
+pub fn use_state_from<T, F>(cc: HookBuilder, default_from: F) -> impl HookReturn<(T, Updater<T>)>
 where
     T: Clone + 'static,
     F: FnOnce() -> T,
 {
-    let reia = reia.init();
-    let (reia, state): (_, ReiaRef<Option<T>>) = reia.hook(use_ref::<Option<T>>, ());
+    let cc = cc.init();
+    let (cc, state): (_, Reference<Option<T>>) = cc.hook(use_ref::<Option<T>>, ());
     let value = state
         .visit_mut_with(|opt| opt.get_or_insert_with(default_from).clone())
         .unwrap();
     let setter = Updater {
         state,
-        rerender_task: RerenderTask::new(reia.current_component, reia.lock.clone()),
+        rerender_task: RerenderTask::new(cc.current_component, cc.lock.clone()),
     };
-    (reia, (value, setter))
+    (cc, (value, setter))
 }
 
 /** Use a state. The given value will be the default.
@@ -101,12 +101,12 @@ Returns the value in the state, and an [Updater] that can be used to update it.
 Example:
 
 ```
-let (reia, (age, set_age)) = reia.hook(use_state, 3);
+let (cc, (age, set_age)) = cc.hook(use_state, 3);
 ```
 */
-pub fn use_state<T>(reia: HookBuilder, default_value: T) -> impl HookReturn<(T, Updater<T>)>
+pub fn use_state<T>(cc: HookBuilder, default_value: T) -> impl HookReturn<(T, Updater<T>)>
 where
     T: Copy + Clone + 'static,
 {
-    use_state_from(reia, move || default_value)
+    use_state_from(cc, move || default_value)
 }

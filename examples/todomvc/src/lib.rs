@@ -1,5 +1,5 @@
-use reia::prelude::*;
-use reia_html::prelude::*;
+use consecuit::prelude::*;
+use consecuit_html::prelude::*;
 use wasm_bindgen::prelude::*;
 mod app_header;
 use app_header::app_header;
@@ -18,24 +18,24 @@ pub fn run() -> Result<(), JsValue> {
     Ok(())
 }
 
-fn container(reia: ComponentBuilder, _: ()) -> impl ContainerReturn {
-    reia_tree!(
+fn container(cc: ComponentBuilder, _: ()) -> impl ContainerReturn {
+    cc_tree!(
         <div {html_props().class_name("bg-gray-50 min-h-screen font-sans")}>
             <div {html_props().class_name("container mx-auto flex flex-col items-center")} HOLE />
         </div>
     )
 }
 
-fn sections(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    reia_tree!(
+fn sections(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    cc_tree!(
         <app_header />
         <app_main />
         <app_footer />
     )
 }
 
-fn app(reia: ComponentBuilder, _: ()) -> impl ComponentReturn {
-    reia_tree!(
+fn app(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
+    cc_tree!(
         <container>
             <sections />
         </container>

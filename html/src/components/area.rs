@@ -1,10 +1,10 @@
 use crate::elem::{use_element, HtmlProps, UseElementArgs};
-use reia::prelude::{ComponentBuilder, ContainerReturn};
+use consecuit::prelude::{ComponentBuilder, ContainerReturn};
 use web_sys::HtmlAreaElement;
-pub fn area(reia: ComponentBuilder, props: HtmlProps<HtmlAreaElement>) -> impl ContainerReturn {
-    let reia = reia.init();
-    let parent = reia.get_parent_node();
-    let (reia, elem) = reia.hook(
+pub fn area(cc: ComponentBuilder, props: HtmlProps<HtmlAreaElement>) -> impl ContainerReturn {
+    let cc = cc.init();
+    let parent = cc.get_parent_node();
+    let (cc, elem) = cc.hook(
         use_element::<HtmlAreaElement>,
         UseElementArgs {
             tag_name: "area",
@@ -12,5 +12,5 @@ pub fn area(reia: ComponentBuilder, props: HtmlProps<HtmlAreaElement>) -> impl C
             parent,
         },
     );
-    reia.bare_container_node(elem.into())
+    cc.bare_container_node(elem.into())
 }

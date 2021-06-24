@@ -15,19 +15,19 @@ This can be read from and written to anytime. Writing to it does not trigger rer
 This is often not neccessary. Use [super::use_state()] instead.
 */
 #[derive(Clone)]
-pub struct ReiaRef<T: Default + 'static> {
+pub struct Reference<T: Default + 'static> {
     inside: &'static RefCell<T>,
     lock: UnmountedLock,
 }
 
-impl<T: Default + 'static> PartialEq for ReiaRef<T> {
-    fn eq(&self, other: &ReiaRef<T>) -> bool {
+impl<T: Default + 'static> PartialEq for Reference<T> {
+    fn eq(&self, other: &Reference<T>) -> bool {
         self.inside.as_ptr() == other.inside.as_ptr()
     }
 }
 
-impl<T: Default + 'static> ReiaRef<T> {
-    /** Run the given closure with a borrow of the data inside the ReiaRef as argument.
+impl<T: Default + 'static> Reference<T> {
+    /** Run the given closure with a borrow of the data inside the Reference as argument.
 
     Returns a Result with the Ok variant being the return value of your closure.
 
@@ -45,7 +45,7 @@ impl<T: Default + 'static> ReiaRef<T> {
         }
     }
 
-    /** Run the given closure with a mutable borrow of the data inside the ReiaRef as argument.
+    /** Run the given closure with a mutable borrow of the data inside the Reference as argument.
 
     Returns a Result with the Ok variant being the return value of your closure.
 
@@ -77,7 +77,7 @@ impl<T: Default + 'static> ReiaRef<T> {
     }
 }
 
-impl<T: Clone + Default + 'static> ReiaRef<T> {
+impl<T: Clone + Default + 'static> Reference<T> {
     /** Return a clone of the value inside the Ref.
 
     The Ok variant is said value.
@@ -90,21 +90,21 @@ impl<T: Clone + Default + 'static> ReiaRef<T> {
     }
 }
 
-/** Use a [ReiaRef].
+/** Use a [Reference].
 
-The components of the `reia_html` crate can take a reference as prop, giving you a handle to the underlying [web_sys] handle of the component.
-See the `reia_html` crate documentations for more.
+The components of the `consecuit_html` crate can take a reference as prop, giving you a handle to the underlying [web_sys] handle of the component.
+See the `consecuit_html` crate documentations for more.
 
 */
-pub fn use_ref<T>(reia: HookBuilder, _: ()) -> impl HookReturn<ReiaRef<T>>
+pub fn use_ref<T>(cc: HookBuilder, _: ()) -> impl HookReturn<Reference<T>>
 where
     T: Default + 'static,
 {
-    let reia = reia.init();
-    let (reia, store): (_, &'static RefCell<T>) = reia.use_one_store();
-    let reia_ref = ReiaRef {
+    let cc = cc.init();
+    let (cc, store): (_, &'static RefCell<T>) = cc.use_one_store();
+    let reference = Reference {
         inside: store,
-        lock: reia.lock.clone(),
+        lock: cc.lock.clone(),
     };
-    (reia, reia_ref)
+    (cc, reference)
 }
