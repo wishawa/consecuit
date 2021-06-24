@@ -93,7 +93,9 @@ fn top_box(
                     "w-12 text-gray-400"
                 }
             }).onclick(on_toggle_all)}>
-                {if all_completed { "▼" } else { "▽" }}
+                <span {html_props().class_name("material-icons")}>
+                    "checklist"
+                </span>
             </button>
             <input {input_props.class_name("flex-1 min-w-0 p-2 placeholder-gray-300").placeholder("What needs to be done?")}/>
         </div>
@@ -128,7 +130,9 @@ fn one_todo(
                         "w-12 text-gray-400"
                     }
                 })}>
-                    {if todo.completed { "🗸" } else { "⭘" }}
+                    <span {html_props().class_name("material-icons")}>
+                        {if todo.completed { "check_circle" } else { "circle" }}
+                    </span>
                 </button>
                 <label {html_props().ondblclick(enter_edit).class_name({
                     const SHARED_CLASS: &str = "flex-1 min-w-0 flex items-center break-all p-2";
@@ -141,7 +145,9 @@ fn one_todo(
                     {todo.name.clone()}
                 </label>
                 <button {html_props().onclick(remove).class_name("w-12 text-red-700 opacity-0 group-hover:opacity-100")}>
-                    "🗙"
+                    <span {html_props().class_name("material-icons")}>
+                        "clear"
+                    </span>
                 </button>
             </div>
             <opt_comp {(todo_edit, if edit {
