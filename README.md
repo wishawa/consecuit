@@ -63,8 +63,9 @@ fn counter(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
     )
 }
 ```
-There are more counter examples [here](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs), including
-one without macro and one with logic extracted into a `use_counter` function.
+There are more counter examples [here](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs)
+(with live demo [here](https://wishawa.github.io/consecuit/counters/)),
+including one without macro and one with logic extracted into a `use_counter` function.
 
 [The docs](https://docs.rs/consecuit) have more info on creating components and hooks.
 
