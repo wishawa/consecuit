@@ -1,0 +1,15 @@
+{
+  "name": "consecuit_counters",
+  "collaborators": [
+    "Wisha Wa <wisha.wa@yandex.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "consecuit_counters_bg.wasm",
+    "consecuit_counters.js",
+    "consecuit_counters.d.ts"
+  ],
+  "module": "consecuit_counters.js",
+  "types": "consecuit_counters.d.ts",
+  "sideEffects": false
+}
