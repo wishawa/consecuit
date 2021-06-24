@@ -222,7 +222,7 @@ fn filter_button(
     const SHARED_CLASS: &str = "rounded border px-1 mx-2";
     let selected_classes: String = format!("{} border-red-900", SHARED_CLASS);
     let unselected_classes: String =
-        format!("{} border-transparent hover:border-red-900", SHARED_CLASS);
+        format!("{} border-transparent hover:border-red-100", SHARED_CLASS);
 
     let cc = cc.init();
     let href = match this {
