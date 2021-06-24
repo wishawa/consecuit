@@ -128,7 +128,7 @@ fn one_todo(
                         "w-12 text-gray-400"
                     }
                 })}>
-                    {if todo.completed { "☑" } else { "☐" }}
+                    {if todo.completed { "🗸" } else { "⭘" }}
                 </button>
                 <label {html_props().ondblclick(enter_edit).class_name({
                     const SHARED_CLASS: &str = "flex-1 min-w-0 flex items-center break-all p-2";
@@ -141,7 +141,7 @@ fn one_todo(
                     {todo.name.clone()}
                 </label>
                 <button {html_props().onclick(remove).class_name("w-12 text-red-700 opacity-0 group-hover:opacity-100")}>
-                    "🗴"
+                    "🗙"
                 </button>
             </div>
             <opt_comp {(todo_edit, if edit {
