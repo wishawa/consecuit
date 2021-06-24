@@ -31,7 +31,7 @@ where
     ///
     /// A component that returns `impl ContainerReturn` must have exactly one `.hole_here()`.
     ///
-    /// The [`crate::reia_tree`] macro equivalent to this is the `HOLE` attribute. Like
+    /// The [`reia_tree!`][reia_macros::reia_tree] macro equivalent to this is the `HOLE` attribute. Like
     /// `<div HOLE />`
     pub fn hole_here(self) -> ComponentConstruction<Stores, EntireStores, NoHoleNode, YesHoleNode> {
         let ComponentConstruction {

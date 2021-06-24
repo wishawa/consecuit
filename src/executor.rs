@@ -1,3 +1,7 @@
+/*! Render queue and batching.
+
+*/
+
 use std::{
     cell::RefCell,
     collections::{HashSet, VecDeque},
@@ -8,7 +12,7 @@ use std::{
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::{console, window};
 
-use crate::{construction::component::ComponentStore, unmounted_lock::UnmountedLock};
+use crate::{construction::component::ComponentStore, locking::UnmountedLock};
 
 #[derive(Clone)]
 pub(crate) struct RerenderTask {
@@ -157,7 +161,7 @@ Reia batch updates using setTimeout anyway, even if you are not using this.
 
 Using this will avoid the setTimeout.
 
-**Updates from inside [crate::use_effect], reia_html's Callback, and [run_later] are already batched.**
+**Updates from inside [crate::hooks::use_effect()], reia_html's Callback, and [run_later] are already batched.**
 
 */
 pub fn batch_updates(f: impl FnOnce()) {

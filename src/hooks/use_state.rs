@@ -7,7 +7,7 @@ use super::use_ref::{use_ref, ReiaRef};
 
 /** A handle returned by [use_state] for updating the state.
 
-Updating the state will schedule a rerender.
+Updating the state will queue a rerender.
 
 */
 #[derive(Clone, PartialEq)]
@@ -21,7 +21,7 @@ impl<T> Updater<T> {
 
     The closure takes the current value and returns the new value.
 
-    This will schedule a rerender.
+    This will queue a rerender.
 
     */
     pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
@@ -33,7 +33,7 @@ impl<T> Updater<T> {
 
     /** Set the state value to the given value.
 
-    This will schedule a rerender.
+    This will queue a rerender.
 
     */
     pub fn set_to(&self, value: T) {

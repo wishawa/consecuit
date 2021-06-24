@@ -2,8 +2,8 @@ use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
 use web_sys::{window, Element, HtmlElement};
 
 use crate::{
+    locking::UnmountedLock,
     stores::{StoreCons, StoresList},
-    unmounted_lock::UnmountedLock,
 };
 
 use super::{
@@ -18,10 +18,10 @@ type TreeStores<Ret, Props> =
 
 /** A subtree is a part of the app that is mounted and unmounted together.
 
-When mounting the app [`crate::mount_app`], Reia creates a subtree for it.
+When [mounting the app][crate::construction::mount::mount_app], Reia creates a subtree for it.
 
-[`crate::opt_comp`] creates a subtree for its component.
-[`crate::vec_comps`] creates a subtree for each of its components.
+[`opt_comp`][crate::construction::subtrees::opt_comp] creates a subtree for its component.
+[`vec_comps`][crate::construction::subtrees::vec_comps] creates a subtree for each of its components.
 
 A subtree wraps its children in a `<div style="display: contents">`.
 Do take this into account when writing CSS selectors.

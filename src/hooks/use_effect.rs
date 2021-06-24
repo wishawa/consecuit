@@ -33,7 +33,7 @@ The arg must be [PartialEq] + [Clone] + `'static`, because we need to store and 
 
 The effect runs as the component renders. Updating states inside `use_effect` will queue another render.
 
-If you want something to run after the component completed rendering, consider using [crate::run_later].
+If you want something to run after the component completed rendering, consider using [crate::executor::run_later].
 
 This takes a function rather than a closure, so every dependency must be passed through `args`.
 For React devs, this is equivalent to `react-hooks/exhaustive-deps` being enforced.

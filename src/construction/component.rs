@@ -1,6 +1,6 @@
 use crate::{
+    locking::UnmountedLock,
     stores::{StoreCons, StoreConsEnd, StoresList},
-    unmounted_lock::UnmountedLock,
 };
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
 use web_sys::Element;
@@ -22,6 +22,8 @@ pub struct ComponentBuilder {
 }
 
 impl ComponentBuilder {
+    /// Make it ready to call `.hook(...)`, `.comp(...)`.
+    /// You shouldn't need this, as we have a shortbut that automatically call it when you call `.hook(...)`, `.comp(...)`.
     pub fn init<T: StoresList>(self) -> ComponentConstruction<T, T, NoHoleNode, NoHoleNode> {
         let Self {
             hook_builder,
@@ -36,6 +38,12 @@ impl ComponentBuilder {
     }
 }
 
+/** This is the `reia` object in your component function.
+
+You can use it to call hooks and render other components.
+
+See the doc for [`crate`] on how to write components.
+ */
 pub struct ComponentConstruction<
     CurrentStores: StoresList,
     EntireStores: StoresList,
@@ -56,6 +64,12 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
 {
+    /// Get the parent [Element] the current component should render on.
+    ///
+    /// This is for creating your own base component.
+    /// If you stick with the ones provided by the `reia_html` crate, you won't need this.
+    ///
+    /// If you want to use this, use `reia_html`'s source code as example.
     pub fn get_parent_node(&self) -> Element {
         self.parent_node.clone()
     }
@@ -70,6 +84,13 @@ where
     LastNode: MaybeHoleNode,
     CompHole: MaybeHoleNode,
 {
+    /** Use the given hook, with the given arg.
+
+    Consumes `self`. Returns a tuple of `(reia, <return value of hook>)`.
+    You can use the returned `reia` to call more hooks.
+
+    See the docs at [crate] for more info on how to write and use hooks.
+     */
     pub fn hook<Arg, Ret, Out>(
         self,
         hook_func: fn(HookBuilder, Arg) -> Ret,
@@ -202,7 +223,7 @@ where
 
     This consumes the `reia` object, and returns a new one.
 
-    This is equivalent to a tag in the [`crate::reia_tree`] macro.
+    This is equivalent to a tag in the [`reia_tree!`][reia_macros::reia_tree] macro.
 
     For example:
     ```
@@ -289,7 +310,7 @@ where
         })
     ```
 
-    The [`crate::reia_tree`] macro equivalent for the above code is:
+    The [`reia_tree!`][reia_macros::reia_tree] macro equivalent for the above code is:
 
     ```
     reia_tree!(

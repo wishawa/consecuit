@@ -5,14 +5,14 @@ use std::{
 
 use crate::{
     construction::{hook::HookBuilder, types::HookReturn},
-    unmounted_lock::{SubtreeUnmountedError, UnmountedLock},
+    locking::{SubtreeUnmountedError, UnmountedLock},
 };
 
 /** A reference with interior mutability. Somewhat like [RefCell].
 
 This can be read from and written to anytime. Writing to it does not trigger rerender.
 
-This is often not neccessary. Use [super::use_state] instead.
+This is often not neccessary. Use [super::use_state()] instead.
 */
 #[derive(Clone)]
 pub struct ReiaRef<T: Default + 'static> {
@@ -31,7 +31,7 @@ impl<T: Default + 'static> ReiaRef<T> {
 
     Returns a Result with the Ok variant being the return value of your closure.
 
-    The error variant is [`SubtreeUnmountedError`].
+    The error variant is [`SubtreeUnmountedError`][crate::locking::SubtreeUnmountedError].
     This error is thrown if this function is called when the subtree where the [use_ref] this comes from had been unmounted.
     */
     pub fn visit_with<Ret: 'static, F: FnOnce(&T) -> Ret>(
@@ -49,7 +49,7 @@ impl<T: Default + 'static> ReiaRef<T> {
 
     Returns a Result with the Ok variant being the return value of your closure.
 
-    The error variant is [`SubtreeUnmountedError`].
+    The error variant is [`SubtreeUnmountedError`][crate::locking::SubtreeUnmountedError].
     This error is thrown if this function is called when the subtree where the [use_ref] this comes from had been unmounted.
     */
     pub fn visit_mut_with<Ret: 'static, F: FnOnce(&mut T) -> Ret>(
@@ -67,7 +67,7 @@ impl<T: Default + 'static> ReiaRef<T> {
 
     This does not trigger a rerender.
 
-    The error variant is [`SubtreeUnmountedError`].
+    The error variant is [`SubtreeUnmountedError`][crate::locking::SubtreeUnmountedError].
     This error is thrown if this function is called when the subtree where the [use_ref] this comes from had been unmounted.
     */
     pub fn set_in(&self, value: T) -> Result<(), SubtreeUnmountedError> {

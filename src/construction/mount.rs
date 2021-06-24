@@ -33,7 +33,7 @@ where
     }));
 }
 
-/// Mount the given component on the given [`Element`], returning a [`SubtreeInstance`] which will unmount the app when dropped.
+/// Mount the given component on the given [`Element`], returning a [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] which will unmount the app when dropped.
 ///
 /// Normally you should use [`mount_app`] or [`mount_app_at`]. Only use this if you have a way to store the returned value.
 ///
@@ -41,12 +41,12 @@ where
 ///
 /// See [`crate`] for what a Reia component looks like.
 ///
-/// This is unsafe because dropping the returned [`SubtreeInstance`] while Reia is rendering could cause unsafe behavior.
+/// This is unsafe because dropping the returned [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] while Reia is rendering could cause unsafe behavior.
 ///
-/// If you're going to use it, make sure you keep the [`SubtreeInstance`] forever.
+/// If you're going to use it, make sure you keep the [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] forever.
 ///
 /// If you're really going to drop it, make sure to NOT do so from inside Reia hooks/components/use_effect/....
-/// Dropping from inside an event callback or [`crate::run_later`] is probably fine.
+/// Dropping from inside an event callback or [`run_later`][crate::executor::run_later] is probably fine.
 pub unsafe fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,
     element: Element,

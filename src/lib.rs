@@ -160,11 +160,14 @@ A container component must have exactly one hole.
 pub mod construction;
 pub mod executor;
 pub mod hooks;
+pub mod locking;
 mod stores;
-mod unmounted_lock;
 pub use reia_macros;
 
 pub mod prelude {
+    /*! Just import me.
+
+    */
     pub use crate::construction::{
         component::ComponentBuilder,
         hook::HookBuilder,

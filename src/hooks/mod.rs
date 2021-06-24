@@ -1,3 +1,7 @@
+/*! Essential hooks you can build other hooks with.
+
+*/
+
 mod use_ref;
 pub use use_ref::{use_ref, ReiaRef};
 mod use_state;

@@ -1,8 +1,8 @@
 use std::marker::PhantomData;
 
 use crate::{
+    locking::UnmountedLock,
     stores::{StoreCons, StoresList},
-    unmounted_lock::UnmountedLock,
 };
 
 use super::{component::ComponentStore, types::HookReturn};
@@ -20,7 +20,7 @@ pub struct HookBuilder {
 
 impl HookBuilder {
     /// Make it ready to call `.hook(...)`.
-    /// You shouldn't need this, as we automatically call it in the `hook(...)` method of [HookBuilder].
+    /// You shouldn't need this, as we have a shortbut that automatically call it when you call `.hook(...)`.
     pub fn init<T: StoresList>(self) -> HookConstruction<T, T> {
         let current: &T = unsafe { &*(self.untyped_stores as *const T) };
         HookConstruction {
@@ -102,6 +102,8 @@ where
 
     Consumes `self`. Returns a tuple of `(reia, <return value of hook>)`.
     You can use the returned `reia` to call more hooks.
+
+    See the docs at [crate] for more info on how to write and use hooks.
      */
     pub fn hook<Arg, Out, Ret>(
         self,
