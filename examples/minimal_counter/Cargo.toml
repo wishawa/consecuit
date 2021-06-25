@@ -11,5 +11,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 wasm-bindgen = "0.2.74"
-consecuit = {path = "../../"}
-consecuit_html = {path = "../../html"}
+consecuit = "0.2.0"
+consecuit_html = "0.2.0"
