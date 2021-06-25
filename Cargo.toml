@@ -44,5 +44,6 @@ members = [
 	"html/",
 	"macros/",
 	"examples/counters/",
-	"examples/todomvc"
+	"examples/todomvc",
+	"examples/minimal_counter"
 ]
