@@ -45,7 +45,7 @@ where
 ///
 /// If you're going to use it, make sure you keep the [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] forever.
 ///
-/// If you're really going to drop it, make sure to NOT do so from inside Consecuit hooks/components/use_effect/....
+/// If you're really going to drop it, and make sure to NOT do so from inside Consecuit hooks/components/use_effect/....
 /// Dropping from inside an event callback or [`run_later`][crate::executor::run_later] is probably fine.
 pub unsafe fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,

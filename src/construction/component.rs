@@ -325,7 +325,11 @@ where
     )
     ```
 
-    Note that this only work on components that returns `impl ContainerReturn`.
+    Some restrictions:
+
+    * This only work on components that returns `impl ContainerReturn`.
+    * You can only use this once per component. `cc.comp(...).child(...).child(...)` is not valid.
+    * This is mutaully exclusive with `.hole_here()`. `cc.comp(...).hole_here().child(...)` is not valid.
 
      */
     pub fn child<Builder, ChildLastNode, ChildHole>(

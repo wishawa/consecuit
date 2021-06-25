@@ -1,10 +1,7 @@
-use std::cell::RefCell;
-
 use super::{
     component::{ComponentBuilder, ComponentConstruction, ComponentStoreInstance},
     hole::NoHoleNode,
     hook::{HookBuilder, HookConstruction},
-    subtree::Subtree,
     types::{ComponentFunc, ComponentProps, ComponentReturn, HookReturn},
 };
 use crate::stores::{StoreCons, StoresList};
@@ -81,28 +78,5 @@ impl ComponentBuilder {
         Props: ComponentProps,
     {
         self.init().comp(component_func, component_props)
-    }
-
-    /// This is a shortcut that calls `cc.init().dyn_comp(...)`
-    ///
-    /// It is here so you don't have to write `let cc = cc.init();` at the beginning of every component.
-    ///
-    /// See [`ComponentConstruction`] for the actual `.dyn_comp(...)` for more details.
-    pub fn dyn_comp<Props, Ret, RestStores>(
-        self,
-        component_func: ComponentFunc<Ret, Props>,
-        component_props: Props,
-    ) -> ComponentConstruction<
-        RestStores,
-        StoreCons<RefCell<Option<Box<dyn Subtree<Props = Props>>>>, RestStores>,
-        NoHoleNode,
-        NoHoleNode,
-    >
-    where
-        RestStores: StoresList,
-        Ret: ComponentReturn,
-        Props: ComponentProps,
-    {
-        self.init().dyn_comp(component_func, component_props)
     }
 }

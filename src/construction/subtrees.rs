@@ -192,8 +192,9 @@ where
                 </div>
             )
         }
-        consecuit.dyn_comp(inner_comp, props)
-        // inner_comp doesn't have to be an inner function. a closure works too.
+        let cc = cc.init(); // Initialize the component. `.hook(...)` and `.comp(...)` automatically does this, but `.dyn_comp(...)` doesn't.
+        cc.dyn_comp(inner_comp, props)
+        // inner_comp doesn't have to be an inner function. a closure works too (but it must be a non-capturing closure).
     }
     ```
 

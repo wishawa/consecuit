@@ -27,13 +27,16 @@ impl<T> Updater<T> {
     This will queue a rerender.
     */
     pub fn update_with<F: FnOnce(T) -> T>(&self, func: F) {
-        self.try_update_with(func).ok();
+        self.update_with_nonsilent(func).ok();
     }
 
     /** Like the [`update_with`][Updater::update_with()] method, but returns result (no silent failure).
 
     */
-    pub fn try_update_with<F: FnOnce(T) -> T>(&self, func: F) -> Result<(), SubtreeUnmountedError> {
+    pub fn update_with_nonsilent<F: FnOnce(T) -> T>(
+        &self,
+        func: F,
+    ) -> Result<(), SubtreeUnmountedError> {
         self.state
             .visit_mut_with(|state| *state = Some(func(state.take().unwrap())))?;
         self.rerender_task.clone().enqueue();
@@ -47,13 +50,13 @@ impl<T> Updater<T> {
     This will queue a rerender.
     */
     pub fn set_to(&self, value: T) {
-        self.try_set_to(value).ok();
+        self.set_to_nonsilent(value).ok();
     }
 
     /** Like the [`set_to`][Updater::set_to()] method, but returns result (no silent failure).
 
     */
-    pub fn try_set_to(&self, value: T) -> Result<(), SubtreeUnmountedError> {
+    pub fn set_to_nonsilent(&self, value: T) -> Result<(), SubtreeUnmountedError> {
         self.state.visit_mut_with(|state| *state = Some(value))?;
         self.rerender_task.clone().enqueue();
         Ok(())

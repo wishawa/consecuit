@@ -71,4 +71,4 @@ including one without macro and one with logic extracted into a `use_counter` fu
 
 **This crate uses unsafe.**
 
-Don't worry. All publicly exposed function is safe.
+All publicly exposed functions are safe.

@@ -11,12 +11,22 @@ impl<EntireStores> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode,
 where
     EntireStores: StoresList,
 {
-    /// Mark this component as a base container component.
-    ///
-    /// This is for creating your own base component.
-    /// If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
-    ///
-    /// If you want to use this, use `consecuit_html`'s source code as example.
+    /** Mark this component as a base container component.
+
+    This is for creating your own base component.
+
+    If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
+
+    Look at `consecuit_html`'s source code for example on how to create base components.
+
+    Note that when creating base components,
+    you are stepping outside the "functional" model, and some rules apply:
+
+    * Nodes should be created on initial render.
+    * You can create nodes in later renders, but they must be descendant of the nodes created on initial render.
+    * The node you pass to `bare_container_node` should be the same node in all render.
+
+    */
     pub fn bare_container_node(
         self,
         node: Node,
@@ -34,12 +44,20 @@ where
         }
     }
 
-    /// Mark this component as a base leaf (childless) component.
-    ///
-    /// This is for creating your own base component.
-    /// If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
-    ///
-    /// If you want to use this, use `consecuit_html`'s source code as example.
+    /** Mark this component as a base leaf (childless) component.
+
+    This is for creating your own base component.
+
+    If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
+    Look at `consecuit_html`'s source code for example on how to create base components.
+
+    Note that when creating base components,
+    you are stepping outside the "functional" model, and some rules apply:
+
+    * Nodes should be created on initial render.
+    * You can create nodes in later renders, but they must be descendant of the nodes created on initial render.
+
+    */
     pub fn bare_leaf_node(
         self,
     ) -> ComponentConstruction<StoreConsEnd, EntireStores, NoHoleNode, NoHoleNode> {
