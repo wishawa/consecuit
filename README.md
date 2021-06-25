@@ -62,6 +62,7 @@ fn counter(cc: ComponentBuilder, _: ()) -> impl ComponentReturn {
     )
 }
 ```
+
 There are more counter examples [here](https://github.com/wishawa/consecuit/tree/main/examples/counters/src/lib.rs)
 (with live demo [here](https://wishawa.github.io/consecuit/counters/)),
 including one without macro and one with logic extracted into a `use_counter` function.
@@ -70,82 +71,77 @@ including one without macro and one with logic extracted into a `use_counter` fu
 
 Follow our simple guide below:
 <details>
-    <summary>Click to expand guide</summary>
+<summary>Click to expand guide</summary>
 
-    Note: This guide is for you to get started as quickly as possible.
-    The WASM setup part of the guide is very basic.
-    You should read the [rustwasm book](https://rustwasm.github.io/wasm-bindgen/introduction.html) later on.
+Note: This guide is for you to get started as quickly as possible.
+The WASM setup part of the guide is very basic.
+You should read the [rustwasm book](https://rustwasm.github.io/wasm-bindgen/introduction.html) later on.
 
-    1. Initialize a new lib crate.
+1. Initialize a new lib crate.
+
+    ```shell
+    cargo new --lib YOUR_CRATE_NAME_HERE
+    cd YOUR_CRATE_NAME_HERE
+    ```
+
+1. Add this to your `Cargo.toml`:
+
+    ```
+    [lib]
+    crate-type = ["cdylib"]
+
+    [dependencies]
+    wasm-bindgen = "0.2.74"
+    consecuit = "0.2.0"
+    consecuit_html = "0.2.0"
+    ```
+
+1. Create an `index.html` in the root of your project with this content.
+
+    ```html
+    <html>
+    <head>
+        <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    </head>
+    <body>
+        <script type="module">
+            import init from './pkg/YOUR_CRATE_NAME_HERE.js';
+            init();
+        </script>
+    </body>
+    </html>
+    ```
+
+    (replace `YOUR_CRATE_NAME_HERE` with the name of your crate.)
+
+1. Install `wasm-pack`:
+
+    ```shell
+    cargo install wasm-pack
+    ```
+
+1. Write your code.
     
-        ```shell
-cargo new --lib YOUR_CRATE_NAME_HERE
-cd YOUR_CRATE_NAME_HERE
-        ```
+    You can copy-paste the [counters example above](https://github.com/wishawa/consecuit#what-does-it-look-like).
+            
+    Also take a look at [the examples directory](https://github.com/wishawa/consecuit/tree/main/examples/) and [the docs](https://docs.rs/consecuit).
 
-    1. Add this to your `Cargo.toml`:
+1. Build it!
 
-        ```
-[lib]
-crate-type = ["cdylib"]
+    ```shell
+    wasm-pack build --dev --target web
+    ```
 
-[dependencies]
-wasm-bindgen = "0.2.74"
-consecuit = "0.2.0"
-consecuit_html = "0.2.0"
-        ```
-    
-    1. Create an `index.html` in the root of your project with this content.
+1. Serve it!
 
-        ```html
-<html>
-<head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-</head>
-<body>
-    <script type="module">
-        import init from './pkg/YOUR_CRATE_NAME_HERE.js';
-        init();
-    </script>
-</body>
-</html>
-        ```
+    ```shell
+    # Install a simple web server.
+    cargo install microserver
+    # And run it!
+    microserver
+    ```
 
-        (replace `YOUR_CRATE_NAME_HERE` with the name of your crate.)
-
-    1. Install `wasm-pack`:
-
-        ```shell
-cargo install wasm-pack
-        ```
-
-    1. Write your code.
-    
-        You can copy-paste the [counters example above](https://github.com/wishawa/consecuit#what-does-it-look-like).
-        
-        Also take a look at [the examples directory](https://github.com/wishawa/consecuit/tree/main/examples/) and [the docs](https://docs.rs/consecuit).
-
-    1. Build it!
-
-        ```shell
-wasm-pack build --dev --target web
-        ```
-
-    1. Serve it!
-
-        Install a simple web server.
-
-        ```shell
-cargo install microserver
-        ```
-
-        And run it.
-
-        ```shell
-microserver
-        ```
-
-    Final code is in [examples/minimal_counter](https://github.com/wishawa/consecuit/tree/main/examples/minimal_counter).
+Final code is in [examples/minimal_counter](https://github.com/wishawa/consecuit/tree/main/examples/minimal_counter).
 </details>
 
 [The docs](https://docs.rs/consecuit) have more info on creating components and hooks.
