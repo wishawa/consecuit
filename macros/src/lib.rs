@@ -1,6 +1,6 @@
 /*! Macros to make Consecuit easier to use.
 
-There is currently only one macro: [cc_tree]. It let you write components in JSX style.
+There is currently only one macro: [cc_tree()]. It let you write components in JSX style.
 */
 
 use std::convert::TryFrom;
