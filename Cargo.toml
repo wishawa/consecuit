@@ -1,9 +1,9 @@
 [package]
 name = "consecuit"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Wisha Wa <wisha.wa@yandex.com>"]
 edition = "2018"
-license = "LGPL-2.1"
+license = "MPL-2.0"
 
 description = "A functional web UI framework that uses the type system for hooks and more"
 readme = "README.md"
@@ -18,15 +18,16 @@ crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 sealed = "0.3.0"
-wasm-bindgen = "0.2.74"
+wasm-bindgen = "0.2.78"
 im-rc = "15.0.0"
 consecuit_macros = { path = "./macros/", version = "^0.1.0" }
+owning_ref = "0.4.1"
 
 [dependencies.js-sys]
-version = "0.3.51"
+version = "0.3.55"
 
 [dependencies.web-sys]
-version = "0.3.51"
+version = "0.3.55"
 features = [
 	'Document',
 	'DocumentFragment',
