@@ -1,7 +1,7 @@
-use std::marker::PhantomData;
+use std::{any::Any, marker::PhantomData};
 
 use crate::{
-    locking::UnmountedLock,
+    locking::SharedPart,
     stores::{StoreCons, StoresList},
 };
 
@@ -13,9 +13,8 @@ For more information on how to write hooks, see the docs at [crate].
 
 */
 pub struct HookBuilder {
-    pub(crate) untyped_stores: *const (),
-    pub(crate) lock: UnmountedLock,
-    pub(crate) current_component: &'static dyn ComponentStore,
+    pub(crate) untyped_stores: SharedPart<dyn Any>,
+    pub(crate) current_component: SharedPart<dyn ComponentStore>,
 }
 
 impl HookBuilder {
@@ -33,11 +32,11 @@ impl HookBuilder {
 
         Without this trick, each hook/component's signature would need to list out every state-slot it and its descendants use.
         */
-        let current: &T = unsafe { &*(self.untyped_stores as *const T) };
+        //let current: &T = unsafe { &*(self.untyped_stores as *const T) };
+        let current: SharedPart<T> = self.untyped_stores.panicking_downcast();
         HookConstruction {
             current,
             entire: PhantomData,
-            lock: self.lock,
             current_component: self.current_component,
         }
     }
@@ -50,10 +49,9 @@ You can use it to call other hooks.
 You must return it at the end of your hook function. (See the doc at [`crate`] on how to write hooks).
  */
 pub struct HookConstruction<CurrentStores: StoresList, EntireStores: StoresList> {
-    pub(crate) current: &'static CurrentStores,
+    pub(crate) current: SharedPart<CurrentStores>,
     pub(crate) entire: PhantomData<EntireStores>,
-    pub(crate) lock: UnmountedLock,
-    pub(crate) current_component: &'static dyn ComponentStore,
+    pub(crate) current_component: SharedPart<dyn ComponentStore>,
 }
 
 impl<ThisStore, RestStores, EntireStores>
@@ -67,14 +65,15 @@ where
         self,
     ) -> (
         HookConstruction<RestStores, EntireStores>,
-        &'static ThisStore,
+        SharedPart<ThisStore>,
     ) {
         let Self { current, .. } = self;
-        let StoreCons(store, rest) = current;
+        //let StoreCons(store, rest) = current;
+        let store = current.clone().map(|s| &s.0);
+        let rest = current.map(|s| &s.1);
         let new_rs = HookConstruction {
             current: rest,
             entire: PhantomData,
-            lock: self.lock,
             current_component: self.current_component,
         };
 
@@ -83,19 +82,17 @@ where
 }
 
 fn run_hook<Arg, Out, Ret>(
-    store: &'static Ret::StoresList,
-    lock: UnmountedLock,
-    current_component: &'static dyn ComponentStore,
+    store: SharedPart<Ret::StoresList>,
+    current_component: SharedPart<dyn ComponentStore>,
     hook_func: fn(HookBuilder, Arg) -> Ret,
     hook_arg: Arg,
 ) -> Out
 where
     Ret: HookReturn<Out>,
 {
-    let untyped_stores = store as *const <Ret as HookReturn<Out>>::StoresList as *const ();
+    //let untyped_stores = store as *const <Ret as HookReturn<Out>>::StoresList as *const ();
     let cc = HookBuilder {
-        untyped_stores,
-        lock,
+        untyped_stores: store.upcast(),
         current_component,
     };
     let out: Out = hook_func(cc, hook_arg).get_val();
@@ -125,13 +122,7 @@ where
         Ret: HookReturn<Out, StoresList = ThisStore>,
     {
         let (rest_stores, store) = self.use_one_store();
-        let out = run_hook(
-            store,
-            rest_stores.lock.clone(),
-            rest_stores.current_component,
-            hook_func,
-            hook_arg,
-        );
+        let out = run_hook(store, rest_stores.current_component, hook_func, hook_arg);
         (rest_stores, out)
     }
 }

@@ -12,32 +12,25 @@ use std::{
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::{console, window};
 
-use crate::{construction::component::ComponentStore, locking::UnmountedLock};
+use crate::{construction::component::ComponentStore, locking::SharedPart};
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 pub(crate) struct RerenderTask {
-    pub(crate) comp: &'static dyn ComponentStore,
-    pub(crate) lock: UnmountedLock,
+    pub(crate) comp: SharedPart<dyn ComponentStore>,
 }
 
 impl Hash for RerenderTask {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        (self.comp as *const dyn ComponentStore, self.lock.as_ptr()).hash(state)
-    }
-}
-
-impl PartialEq for RerenderTask {
-    fn eq(&self, other: &RerenderTask) -> bool {
-        (self.comp as *const _ as *const () == other.comp as *const _ as *const ())
-            && (self.lock == other.lock)
+        let ptr = &(*self.comp) as *const dyn ComponentStore;
+        ptr.hash(state)
     }
 }
 
 impl Eq for RerenderTask {}
 
 impl RerenderTask {
-    pub(crate) fn new(comp: &'static dyn ComponentStore, lock: UnmountedLock) -> Self {
-        Self { comp, lock }
+    pub(crate) fn new(comp: SharedPart<dyn ComponentStore>) -> Self {
+        Self { comp }
     }
     pub(crate) fn enqueue(self) {
         PENDING_RERENDERS.with(|p| {
@@ -50,7 +43,7 @@ impl RerenderTask {
         PENDING_RERENDERS.with(|p| {
             p.borrow_mut().remove(&self);
         });
-        if self.lock.is_mounted() {
+        if self.comp.is_mounted() {
             self.comp.render();
         } else {
             console::warn_1(

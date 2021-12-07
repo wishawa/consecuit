@@ -1,5 +1,5 @@
 use crate::{
-    locking::UnmountedLock,
+    locking::SharedPart,
     stores::{StoreCons, StoreConsEnd, StoresList},
 };
 use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
@@ -69,7 +69,7 @@ where
     /// This is for creating your own base component.
     /// If you stick with the ones provided by the `consecuit_html` crate, you won't need this.
     ///
-    /// If you want to use this, use `consecuit_html`'s source code as example.
+    /// If you want to use this, see `consecuit_html`'s source code as example.
     pub fn get_parent_node(&self) -> Node {
         self.parent_node.clone()
     }
@@ -129,8 +129,20 @@ where
     initialized: RefCell<Option<InitializedComponentInfo<Ret, Props>>>,
 }
 
+impl<Ret, Props> ComponentStore for SharedPart<ComponentStoreInstance<Ret, Props>>
+where
+    Props: ComponentProps,
+    Ret: ComponentReturn,
+{
+    fn render(&self) {
+        let mut bm = self.initialized.borrow_mut();
+        let info = bm.as_mut().unwrap();
+        render_component(self.clone(), info.props.clone());
+    }
+}
+
 pub(crate) trait ComponentStore {
-    fn render(&'static self);
+    fn render(&self);
 }
 
 struct InitializedComponentInfo<Ret, Props>
@@ -142,7 +154,6 @@ where
     props: Props,
     parent_node: Node,
     my_hole: Option<Ret::HoleNode>,
-    lock: UnmountedLock,
 }
 
 impl<Ret, Props> Default for ComponentStoreInstance<Ret, Props>
@@ -158,51 +169,31 @@ where
     }
 }
 
-impl<Ret, Props> ComponentStoreInstance<Ret, Props>
+fn render_component<Ret, Props>(this: SharedPart<ComponentStoreInstance<Ret, Props>>, props: Props)
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
-    fn render_with_info_and_props(
-        &'static self,
-        info: &mut InitializedComponentInfo<Ret, Props>,
-        props: Props,
-    ) {
-        let stores = &self.stores;
-        let InitializedComponentInfo {
-            func,
-            my_hole,
-            lock,
-            parent_node,
-            ..
-        } = info;
+    let info = this.initialized.borrow_mut();
+    let info = info.as_mut().unwrap();
+    let stores = this.map(|ins| &ins.stores);
+    let InitializedComponentInfo {
+        func,
+        my_hole,
+        parent_node,
+        ..
+    } = info;
 
-        let untyped_stores: *const () =
-            stores as *const <Ret as ComponentReturn>::StoresList as *const ();
-        let cc = ComponentBuilder {
-            hook_builder: HookBuilder {
-                untyped_stores,
-                lock: lock.clone(),
-                current_component: self,
-            },
-            parent_node: parent_node.clone(),
-        };
-        let hole = func(cc, props).get_node();
+    let cc = ComponentBuilder {
+        hook_builder: HookBuilder {
+            untyped_stores: stores.upcast(),
+            current_component: this,
+        },
+        parent_node: parent_node.clone(),
+    };
+    let hole = func(cc, props).get_node();
 
-        *my_hole = Some(hole);
-    }
-}
-
-impl<Ret, Props> ComponentStore for ComponentStoreInstance<Ret, Props>
-where
-    Props: ComponentProps,
-    Ret: ComponentReturn,
-{
-    fn render(&'static self) {
-        let mut borrow = self.initialized.borrow_mut();
-        let info = borrow.as_mut().unwrap();
-        self.render_with_info_and_props(info, info.props.clone());
-    }
+    *my_hole = Some(hole);
 }
 
 impl<RestStores, EntireStores, Ret, Props, LastNode, CompHole>
@@ -257,7 +248,7 @@ where
         let last_node = match container_store.initialized.borrow_mut().deref_mut() {
             Some(info) => {
                 if component_props != info.props {
-                    container_store.render_with_info_and_props(info, component_props.clone());
+                    render_component(container_store, component_props.clone());
                     info.props = component_props;
                 }
                 info.my_hole.clone().unwrap()
@@ -267,11 +258,10 @@ where
                     func: component_func,
                     props: component_props.clone(),
                     my_hole: None,
-                    lock: rests.lock.clone(),
                     parent_node: parent_node.clone(),
                 });
                 let info = opt_none.as_mut().unwrap();
-                container_store.render_with_info_and_props(info, component_props);
+                render_component(container_store, component_props);
                 info.my_hole.clone().unwrap()
             }
         };
@@ -356,7 +346,6 @@ where
             hook_stores: HookConstruction {
                 current: store,
                 entire: PhantomData,
-                lock: rest_stores.lock.clone(),
                 current_component: rest_stores.current_component,
             },
             parent_node: last_node.0,
