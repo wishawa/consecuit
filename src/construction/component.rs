@@ -2,7 +2,7 @@ use crate::{
     locking::SharedPart,
     stores::{StoreCons, StoreConsEnd, StoresList},
 };
-use std::{cell::RefCell, marker::PhantomData, ops::DerefMut};
+use std::{any::Any, cell::RefCell, marker::PhantomData, ops::DerefMut};
 use web_sys::Node;
 
 use super::{
@@ -129,20 +129,52 @@ where
     initialized: RefCell<Option<InitializedComponentInfo<Ret, Props>>>,
 }
 
-impl<Ret, Props> ComponentStore for SharedPart<ComponentStoreInstance<Ret, Props>>
+impl<Ret, Props> ComponentStoreInstance<Ret, Props>
 where
     Props: ComponentProps,
     Ret: ComponentReturn,
 {
-    fn render(&self) {
-        let mut bm = self.initialized.borrow_mut();
-        let info = bm.as_mut().unwrap();
-        render_component(self.clone(), info.props.clone());
+    fn render(&self, hook_builder: HookBuilder, info: &mut InitializedComponentInfo<Ret, Props>) {
+        let InitializedComponentInfo {
+            func,
+            my_hole,
+            parent_node,
+            props,
+            ..
+        } = info;
+        let cc = ComponentBuilder {
+            hook_builder,
+            parent_node: parent_node.clone(),
+        };
+        let hole = func(cc, props.clone()).get_node();
+
+        *my_hole = Some(hole);
+    }
+}
+
+impl<Ret, Props> ComponentStore for ComponentStoreInstance<Ret, Props>
+where
+    Props: ComponentProps,
+    Ret: ComponentReturn,
+{
+    // fn render(&self) {
+    //     let mut bm = self.initialized.borrow_mut();
+    //     let info = bm.as_mut().unwrap();
+    //     render_component(self.clone(), info.props.clone());
+    // }
+    fn map_stores(&self) -> &dyn Any {
+        &self.stores as &dyn Any
+    }
+    fn dyn_render(&self, hook_builder: HookBuilder) {
+        let mut info = self.initialized.borrow_mut();
+        let info = info.as_mut().unwrap();
+        self.render(hook_builder, info)
     }
 }
 
 pub(crate) trait ComponentStore {
-    fn render(&self);
+    fn map_stores(&self) -> &dyn Any;
+    fn dyn_render(&self, hook_builder: HookBuilder);
 }
 
 struct InitializedComponentInfo<Ret, Props>
@@ -169,31 +201,13 @@ where
     }
 }
 
-fn render_component<Ret, Props>(this: SharedPart<ComponentStoreInstance<Ret, Props>>, props: Props)
-where
-    Props: ComponentProps,
-    Ret: ComponentReturn,
-{
-    let info = this.initialized.borrow_mut();
-    let info = info.as_mut().unwrap();
-    let stores = this.map(|ins| &ins.stores);
-    let InitializedComponentInfo {
-        func,
-        my_hole,
-        parent_node,
-        ..
-    } = info;
-
-    let cc = ComponentBuilder {
-        hook_builder: HookBuilder {
-            untyped_stores: stores.upcast(),
-            current_component: this,
-        },
-        parent_node: parent_node.clone(),
+pub(crate) fn render_dyn_component(this: SharedPart<dyn ComponentStore>) {
+    let stores = this.clone().map(ComponentStore::map_stores);
+    let hb = HookBuilder {
+        untyped_stores: stores,
+        current_component: this.clone(),
     };
-    let hole = func(cc, props).get_node();
-
-    *my_hole = Some(hole);
+    this.dyn_render(hb);
 }
 
 impl<RestStores, EntireStores, Ret, Props, LastNode, CompHole>
@@ -248,21 +262,39 @@ where
         let last_node = match container_store.initialized.borrow_mut().deref_mut() {
             Some(info) => {
                 if component_props != info.props {
-                    render_component(container_store, component_props.clone());
-                    info.props = component_props;
+                    let _old_props = std::mem::replace(&mut info.props, component_props);
+                    container_store.render(
+                        HookBuilder {
+                            untyped_stores: container_store.clone().map(|s| &s.stores).upcast(),
+                            current_component: container_store
+                                .clone()
+                                .map(|s| s as &dyn ComponentStore),
+                        },
+                        info,
+                    );
                 }
                 info.my_hole.clone().unwrap()
             }
             opt_none => {
-                *opt_none = Some(InitializedComponentInfo {
+                let mut info = InitializedComponentInfo {
                     func: component_func,
                     props: component_props.clone(),
                     my_hole: None,
                     parent_node: parent_node.clone(),
-                });
-                let info = opt_none.as_mut().unwrap();
-                render_component(container_store, component_props);
-                info.my_hole.clone().unwrap()
+                };
+
+                container_store.render(
+                    HookBuilder {
+                        untyped_stores: container_store.clone().map(|s| &s.stores).upcast(),
+                        current_component: container_store
+                            .clone()
+                            .map(|s| s as &dyn ComponentStore),
+                    },
+                    &mut info,
+                );
+                let hole = info.my_hole.clone().unwrap();
+                *opt_none = Some(info);
+                hole
             }
         };
         ComponentConstruction {
@@ -346,7 +378,7 @@ where
             hook_stores: HookConstruction {
                 current: store,
                 entire: PhantomData,
-                current_component: rest_stores.current_component,
+                current_component: rest_stores.current_component.clone(),
             },
             parent_node: last_node.0,
             ret_node,

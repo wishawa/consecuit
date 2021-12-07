@@ -12,7 +12,10 @@ use std::{
 use wasm_bindgen::{prelude::Closure, JsCast};
 use web_sys::{console, window};
 
-use crate::{construction::component::ComponentStore, locking::SharedPart};
+use crate::{
+    construction::component::{render_dyn_component, ComponentStore},
+    locking::SharedPart,
+};
 
 #[derive(Clone, PartialEq)]
 pub(crate) struct RerenderTask {
@@ -39,12 +42,12 @@ impl RerenderTask {
             }
         });
     }
-    fn execute(&self) {
+    fn execute(self) {
         PENDING_RERENDERS.with(|p| {
             p.borrow_mut().remove(&self);
         });
         if self.comp.is_mounted() {
-            self.comp.render();
+            render_dyn_component(self.comp);
         } else {
             console::warn_1(
                 &"Trying to render a component whose tree had been unmounted. This is a no-op."

@@ -90,7 +90,7 @@ where
         .unwrap();
     let setter = Updater {
         state,
-        rerender_task: RerenderTask::new(cc.current_component, cc.lock.clone()),
+        rerender_task: RerenderTask::new(cc.current_component.clone()),
     };
     (cc, (value, setter))
 }

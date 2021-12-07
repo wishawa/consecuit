@@ -5,7 +5,7 @@ use std::{
 
 use crate::{
     construction::{hook::HookBuilder, types::HookReturn},
-    locking::{SubtreeUnmountedError, UnmountedLock},
+    locking::{SharedPart, SubtreeUnmountedError},
 };
 
 /** A reference with interior mutability. Somewhat like [RefCell]. Returned by [use_ref].
@@ -16,8 +16,7 @@ This is often not neccessary. Use [super::use_state()] instead.
 */
 #[derive(Clone)]
 pub struct Reference<T: Default + 'static> {
-    inside: &'static RefCell<T>,
-    lock: UnmountedLock,
+    inside: SharedPart<RefCell<T>>,
 }
 
 impl<T: Default + 'static> PartialEq for Reference<T> {
@@ -38,7 +37,7 @@ impl<T: Default + 'static> Reference<T> {
         &self,
         func: F,
     ) -> Result<Ret, SubtreeUnmountedError> {
-        if self.lock.is_mounted() {
+        if self.inside.is_mounted() {
             Ok(func(self.inside.borrow().deref()))
         } else {
             Err(SubtreeUnmountedError)
@@ -56,7 +55,7 @@ impl<T: Default + 'static> Reference<T> {
         &self,
         func: F,
     ) -> Result<Ret, SubtreeUnmountedError> {
-        if self.lock.is_mounted() {
+        if self.inside.is_mounted() {
             Ok(func(self.inside.borrow_mut().deref_mut()))
         } else {
             Err(SubtreeUnmountedError)
@@ -101,10 +100,7 @@ where
     T: Default + 'static,
 {
     let cc = cc.init();
-    let (cc, store): (_, &'static RefCell<T>) = cc.use_one_store();
-    let reference = Reference {
-        inside: store,
-        lock: cc.lock.clone(),
-    };
+    let (cc, store): (_, SharedPart<RefCell<T>>) = cc.use_one_store();
+    let reference = Reference { inside: store };
     (cc, reference)
 }

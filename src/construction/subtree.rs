@@ -1,8 +1,9 @@
-use std::{borrow::Borrow, marker::PhantomData, mem::transmute};
+use std::{borrow::Borrow, marker::PhantomData};
 use web_sys::{window, Node};
 
 use crate::{
-    locking::UnmountedLock,
+    locking::SharedPart,
+    prelude::HookBuilder,
     stores::{StoreCons, StoresList},
 };
 
@@ -28,8 +29,7 @@ where
     Ret: ComponentReturn,
     Props: ComponentProps,
 {
-    stores: Box<TreeStores<Ret, Props>>,
-    lock: UnmountedLock,
+    stores: SharedPart<TreeStores<Ret, Props>>,
     parent: Node,
     nodes: Vec<Node>,
     func: ComponentFunc<Ret, Props>,
@@ -41,7 +41,7 @@ where
     Props: ComponentProps,
 {
     fn drop(&mut self) {
-        self.lock.unmount();
+        self.stores.unmount_tree();
         self.nodes.iter().for_each(|node| {
             self.parent.remove_child(node).unwrap();
         });
@@ -67,29 +67,24 @@ where
     fn re_render(&self, props: Self::Props) {
         struct DummyTreeRoot;
         impl ComponentStore for DummyTreeRoot {
-            fn render(&'static self) {
+            fn dyn_render(&self, _hb: HookBuilder) {
+                unreachable!("this dummy is never directly called")
+            }
+
+            fn map_stores(&self) -> &dyn std::any::Any {
                 unreachable!("this dummy is never directly called")
             }
         }
-        static DUMMY_ROOT: DummyTreeRoot = DummyTreeRoot;
+        let dummy_root = SharedPart::new(DummyTreeRoot).map(|p| p as &dyn ComponentStore);
 
-        let stores_borrow = unsafe {
-            // This unsafe is really unsafe.
-            // The stores list is NOT really &'static.
-            // We must always check the lock before accessing it.
-            // This is why use_ref's Reference can fail with SubtreeUnmountedError.
-            transmute::<&'_ TreeStores<Ret, Props>, &'static TreeStores<Ret, Props>>(
-                self.stores.borrow(),
-            )
-        };
+        let stores = self.stores.borrow().clone();
 
         type StillFullNodeComponentStore<T> = ComponentConstruction<T, T, NoHoleNode, NoHoleNode>;
         let component_store: StillFullNodeComponentStore<_> = ComponentConstruction {
             hook_stores: HookConstruction {
-                current: stores_borrow,
+                current: stores,
                 entire: PhantomData,
-                lock: self.lock.clone(),
-                current_component: &DUMMY_ROOT,
+                current_component: dummy_root.clone(),
             },
             parent_node: self.parent.clone(),
             last_node: NoHoleNode,
@@ -109,14 +104,12 @@ where
     Props: ComponentProps,
 {
     let stores: TreeStores<Ret, Props> = StoresList::create();
-    let stores = Box::new(stores);
-    let lock = UnmountedLock::new_mounted();
+    let stores = SharedPart::new(stores);
     let document = window().unwrap().document().unwrap();
     let fragment = document.create_document_fragment();
     let parent = fragment.clone().into();
     let mut subtree = SubtreeInstance {
         stores,
-        lock,
         parent,
         nodes: Vec::new(),
         func,

@@ -37,20 +37,20 @@ impl<T: ?Sized + 'static> Deref for SharedPart<T> {
 }
 
 impl<T: ?Sized + 'static> SharedPart<T> {
-    pub(crate) fn is_same_root<U>(&self, other: &SharedPart<U>) -> bool {
-        Rc::ptr_eq(self.0.as_owner(), other.0.as_owner())
-    }
     pub(crate) fn is_mounted(&self) -> bool {
         self.0.as_owner().mounted.load(Ordering::Acquire)
     }
     pub(crate) fn unmount_tree(&self) {
         self.0.as_owner().mounted.store(false, Ordering::Release)
     }
+    pub(crate) fn map<U: ?Sized, F: FnOnce(&T) -> &U>(self, op: F) -> SharedPart<U> {
+        SharedPart::<U>(self.0.map(op))
+    }
 }
 
 impl SharedPart<dyn Any> {
     pub(crate) fn panicking_downcast<T>(self) -> SharedPart<T> {
-        SharedPart::<T>(self.0.map(|a| a.downcast_ref().unwrap()))
+        self.map(|a| a.downcast_ref().unwrap())
     }
 }
 
@@ -69,9 +69,6 @@ impl<T: 'static> SharedPart<T> {
             data,
         });
         Self(RcRef::new(rc as Rc<WithLock<dyn Any>>).map(|p| p.data.downcast_ref().unwrap()))
-    }
-    pub(crate) fn map<U: ?Sized, F: FnOnce(&T) -> &U>(self, op: F) -> SharedPart<U> {
-        SharedPart::<U>(self.0.map(op))
     }
     pub(crate) fn upcast(self) -> SharedPart<dyn Any> {
         self.map(|f| (f as &dyn Any))

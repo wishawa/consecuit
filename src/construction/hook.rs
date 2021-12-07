@@ -32,7 +32,6 @@ impl HookBuilder {
 
         Without this trick, each hook/component's signature would need to list out every state-slot it and its descendants use.
         */
-        //let current: &T = unsafe { &*(self.untyped_stores as *const T) };
         let current: SharedPart<T> = self.untyped_stores.panicking_downcast();
         HookConstruction {
             current,
@@ -90,7 +89,6 @@ fn run_hook<Arg, Out, Ret>(
 where
     Ret: HookReturn<Out>,
 {
-    //let untyped_stores = store as *const <Ret as HookReturn<Out>>::StoresList as *const ();
     let cc = HookBuilder {
         untyped_stores: store.upcast(),
         current_component,
@@ -122,7 +120,12 @@ where
         Ret: HookReturn<Out, StoresList = ThisStore>,
     {
         let (rest_stores, store) = self.use_one_store();
-        let out = run_hook(store, rest_stores.current_component, hook_func, hook_arg);
+        let out = run_hook(
+            store,
+            rest_stores.current_component.clone(),
+            hook_func,
+            hook_arg,
+        );
         (rest_stores, out)
     }
 }

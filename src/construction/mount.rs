@@ -28,9 +28,7 @@ pub fn mount_app_at<Ret>(function: fn(ComponentBuilder, ()) -> Ret, node: Node)
 where
     Ret: ComponentReturn,
 {
-    Box::leak(Box::new(unsafe {
-        mount_app_without_leaking_at(function, node)
-    }));
+    Box::leak(Box::new(mount_app_without_leaking_at(function, node)));
 }
 
 /// Mount the given component on the given [`Node`], returning a [`SubtreeInstance`][crate::construction::subtree::SubtreeInstance] which will unmount the app when dropped.
@@ -47,7 +45,7 @@ where
 ///
 /// If you're really going to drop it, and make sure to NOT do so from inside Consecuit hooks/components/use_effect/....
 /// Dropping from inside an event callback or [`run_later`][crate::executor::run_later] is probably fine.
-pub unsafe fn mount_app_without_leaking_at<Ret>(
+pub fn mount_app_without_leaking_at<Ret>(
     function: fn(ComponentBuilder, ()) -> Ret,
     node: Node,
 ) -> SubtreeInstance<Ret, ()>
